@@ -4,7 +4,7 @@ let
   bootstrap = build_lib.bootstrap_machine 
     "nixostest" "nx"                # Hostname, username
     ["server" "gnome" "infosec"]    # Common configuration
-    ["john_sparta" "tim_diamond"]   # Authorized SSH keys
+    ["john"]                        # Authorized SSH keys
   ;
 in
 {
