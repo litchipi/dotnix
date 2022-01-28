@@ -4,7 +4,8 @@ My dotfiles for the NixOS setup.
 
 ## Usage
 On Nix 2.5.1:
-```nix build .#<machine>.<output format>
+```
+nix build .#<machine>.<output format>
 ```
 
 ### Example
@@ -41,10 +42,10 @@ The ident given will then be used to set them in the configuration.
 - Home manager for users
 - Cross compiling for Raspberry Pi
 - Scripts for easy usage
- - `deploy.sh <IP addr>`
- - `update_nixos.sh`
- - `burn_installer.sh /dev/X`
- - `create_raspi_sdcard.sh /dev/X`
+  - `deploy.sh <IP addr>`
+  - `update_nixos.sh`
+  - `burn_installer.sh /dev/X`
+  - `create_raspi_sdcard.sh /dev/X`
 
 ## Contributing
 If you feel like it, you can contribute and help me, use my dotnix as a template.
@@ -53,4 +54,5 @@ I would really appreciate:
 - Contributions by adding usefull common configurations
 - Usefull wrapper functions to make machine configuration more elegant
 - Help me advance on any topic of the TODO list
+
 Feel free to open an issue / PR :-)
