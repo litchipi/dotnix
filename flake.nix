@@ -1,15 +1,21 @@
 {
   description = "NixOs config builder";
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  inputs.nixosgen = {
-    url = "github:nix-community/nixos-generators";
-    inputs.nixpkgs.follows = "nixpkgs";
+
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+
+    nixosgen = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
+
   outputs = { self, nixpkgs, nixosgen }: 
   let
     # Additionnal modules
     base_modules = [
     ];
+
     # Common configuration added to scope, and enabled with a flag
     common_configs = [
       ./base/base.nix

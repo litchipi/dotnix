@@ -3,7 +3,8 @@ let
   # Library containing wrappers for machine definition
   build_lib = import ../lib/build.nix {config=config; lib=lib; pkgs=pkgs;};
 
-  # Creating the base configuration for user, hostName and authentication method
+  # Creating the base configuration for the machine and user.
+  # Look at the `lib/build.nix` file to see all the optionnal arguments
   bootstrap = build_lib.bootstrap_machine {
     hostname = "nixostest";
     user = "nx";
