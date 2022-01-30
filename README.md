@@ -38,7 +38,7 @@ All the output formats added (from `nixos-generators`) for now are:
 - iso-install: ISO image with the NixOS installer
 
 ## Adding the data
-In the file `lib/data.nix`, you can write all the "static" data such as SSH public keys.
+In the file `data.toml`, you can write all the "static" data such as SSH public keys.
 The ident given will then be used to set them in the configuration.
 
 ## TODO
