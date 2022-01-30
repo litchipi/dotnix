@@ -15,14 +15,18 @@ will output the configuration for `nixostest` as a `virtualbox` image.
 ## How it works
 
 ### Step 1: Create your machine configuration
-Inside the `machines/<machine_name>.nix` file, describe how you want your system.
-Please use the common configuration already defined in the `common/` directory by
-simply adding the name of the common config to the `build_lib.bootstrap_machine` function.
+Inside a `.nix` file, describe how you want your system. It's recommended to
+place them inside the `machines/` directory. \\
+As much as possible, use the common configuration already defined in the
+`common/` directory by simply enabling them with the `commonconf.<name>.enable` flag.
 
 Look at `machines/nixostest.nix` for a simple and commented example.
 
-### Step 2: Add the machine to the `all_machines.nix` file
-Copy the line from `nixostest` and modify it to your machine name and system type.
+### Step 2: Add the machine to the list in `flake.nix`
+In the end of the file, just add a line
+`{ fname=/path/to/your/<machine_name>.nix; system=<machine_system>; }`.
+
+This will create a target `.#<machine_name>.<format>` to be built with `nix build`
 
 ### Step 3: Build
 For example, `nix nuild .#test.iso-install`. \\

@@ -1,25 +1,24 @@
 { config, lib, pkgs, ... }:
 let
-  data = import ./data.nix;
-  base_conf = import ../base/base.nix {config=config; lib=lib; pkgs=pkgs;};
+  data = lib.importTOML ../data.toml;
 in
-  rec {
-
-  # Import a common config from its name
-  import_common_conf = confs : (
-    builtins.foldl'
-      (acc: conf: (acc // (import ( ../common + "/${conf}.nix") {config=config; lib=lib; pkgs=pkgs;})))
-      {} confs
-    );
-
-  # Bootstrap a machine configuration based on machine name, main user and common configs
-  bootstrap_machine = name : user : configs : auths :
   {
-      networking.hostName = name;
-      users.users."${user}" = {
-        isNormalUser = true;
-        extraGroups = [ "wheel" ];
-        openssh.authorizedKeys.keys = (builtins.map (ident: data.ssh_pubkeys."${ident}") auths);
+  # Bootstrap a machine configuration based on machine name, main user and common configs
+  bootstrap_machine = { hostname, user, ssh_auth_keys }:
+  {
+    networking.hostName = hostname;
+    users.users."${user}" = {
+      isNormalUser = true;
+      extraGroups = [ "wheel" ];
+      openssh.authorizedKeys.keys = (builtins.map (ident: data.ssh_pubkeys."${ident}") ssh_auth_keys);
+    };
+  };
+
+  create_common_conf = { name }: cfg:
+    {
+      options = {
+        commonconf."${name}".enable = lib.mkEnableOption "'${name}' common behavior";
       };
-    } // import_common_conf configs // base_conf;
+      config = lib.mkIf config.commonconf."${name}".enable cfg;
+    };
 }
