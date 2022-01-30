@@ -8,6 +8,7 @@ let
     hostname = "nixostest";
     user = "nx";
     ssh_auth_keys = ["john"];
+    base_hosts = false;
   };
 in
   {

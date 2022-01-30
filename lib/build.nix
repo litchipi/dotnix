@@ -15,9 +15,19 @@ in
   bootstrap_machine = {
     hostname, user,
     ssh_auth_keys,
+    base_hosts ? true, add_hosts ? "",
+    add_pkgs ? [],
   }:
   {
-    networking.hostName = hostname;
+    networking = {
+      hostName = hostname;
+      extraHosts = (
+        if base_hosts
+        then libdata.read_data ["base_hosts"]
+        else ""
+      ) + "\n" + add_hosts;
+    };
+
     users.users."${user}" = {
       isNormalUser = true;
       extraGroups = [ "wheel" ];
