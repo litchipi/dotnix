@@ -7,6 +7,9 @@
   };
   outputs = { self, nixpkgs, nixosgen }: 
   let
+    # Additionnal modules
+    base_modules = [
+    ];
     # Common configuration added to scope, and enabled with a flag
     common_configs = [
       ./base/base.nix
@@ -25,26 +28,26 @@
       );
 
     # Create output format derivation using nixos-generators
-    build_deriv_output = { machine, system, format} : nixosgen.nixosGenerate {
+    build_deriv_output = { machine, system, add_modules, format}: nixosgen.nixosGenerate {
       pkgs = nixpkgs.legacyPackages."${system}";
-      modules = [ machine ] ++ common_configs;
+      modules = [ machine ] ++ common_configs ++ base_modules ++ add_modules;
       inherit format;
     };
 
     # Create entire NixOS derivation for a machine
-    build_machine_deriv = machine: system: {
+    build_machine_deriv = { machine, system, add_modules }: {
       # Target when updating a live NixOS system
       nixos_upt = nixpkgs.lib.nixosSystem {
         inherit system;
-        modules = [ machine ] ++ common_configs;
+        modules = [ machine ] ++ common_configs ++ base_modules ++ add_modules;
       };
 
       # All outputs format using nixos-generators
-      vbox = build_deriv_output { inherit machine system; format="virtualbox"; };
-      iso = build_deriv_output { inherit machine system; format="iso"; };
-      sdraspi = build_deriv_output { inherit machine system; format="sd-aarch64"; };
-      kvmcli = build_deriv_output { inherit machine system; format="kvmcli"; };
-      iso-install = build_deriv_output { inherit machine system; format="install-iso"; };
+      vbox = build_deriv_output { inherit machine system add_modules; format="virtualbox"; };
+      iso = build_deriv_output { inherit machine system add_modules; format="iso"; };
+      sdraspi = build_deriv_output { inherit machine system add_modules; format="sd-aarch64"; };
+      kvmcli = build_deriv_output { inherit machine system add_modules; format="kvmcli"; };
+      iso-install = build_deriv_output { inherit machine system add_modules; format="install-iso"; };
     };
 
     # Build the derivation for each machine declared
@@ -53,7 +56,13 @@
       builtins.listToAttrs (
         builtins.map (machine: {
           name = name_from_fname machine.fname;
-          value = build_machine_deriv machine.fname machine.system;
+          value = build_machine_deriv {
+            machine = machine.fname;
+            system = machine.system;
+            add_modules = if builtins.hasAttr "add_modules" machine
+              then machine.add_modules
+              else [];
+          };
         }) machines
       );
   in
