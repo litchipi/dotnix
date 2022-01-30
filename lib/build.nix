@@ -36,11 +36,12 @@ in
     };
   };
 
-  create_common_conf = { name }: cfg:
+  # Create a common configuration to be enabled with a `enable` flag set to True
+  create_common_conf = { name, add_options ? {} }: cfg:
     {
       options = {
         commonconf."${name}".enable = lib.mkEnableOption "'${name}' common behavior";
-      };
+      } // add_options;
       config = lib.mkIf config.commonconf."${name}".enable cfg;
     };
 }
