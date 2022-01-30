@@ -42,7 +42,6 @@ In the file `data.toml`, you can write all the "static" data such as SSH public 
 The ident given will then be used to set them in the configuration.
 
 ## TODO
-- Storing secrets (SSH private keys, passwords, etc ...)
 - Home manager for users
 - Cross compiling for Raspberry Pi
 - Scripts for easy usage
