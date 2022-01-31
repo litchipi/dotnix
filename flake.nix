@@ -19,6 +19,7 @@
     # Common configuration added to scope, and enabled with a flag
     common_configs = [
       ./base/base.nix
+      ./common/classic_usage.nix
       ./common/gnome.nix
       ./common/server.nix
       ./common/infosec.nix

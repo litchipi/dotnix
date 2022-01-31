@@ -37,11 +37,20 @@ in
   };
 
   # Create a common configuration to be enabled with a `enable` flag set to True
-  create_common_conf = { name, add_options ? {} }: cfg:
+  create_common_conf = { name, add_options ? [] }: cfg:
     {
       options = {
-        commonconf."${name}".enable = lib.mkEnableOption "'${name}' common behavior";
-      } // add_options;
+        commonconf."${name}" = {
+          enable = lib.mkEnableOption "'${name}' common behavior";
+        } // builtins.listToAttrs (
+          builtins.map
+            (addopt: {
+              name = "${addopt.name}";
+              value = lib.mkOption addopt.option;
+            })
+            add_options);
+      };
+
       config = lib.mkIf config.commonconf."${name}".enable cfg;
     };
 }
