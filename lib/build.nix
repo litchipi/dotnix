@@ -25,6 +25,21 @@ let
         value = { enable = lib.mkEnableOption "Enable '${flag}' option"; };
       })
     flags);
+
+  # Create a common configuration to be enabled with a `enable` flag set to True
+  generate_config = user_config:
+  let
+    c = { enable_flags = []; add_options = []; } // user_config;
+  in
+    {
+      options = {
+        commonconf."${c.name}" = {
+          enable = lib.mkEnableOption "'${c.name}' common behavior";
+        } // (generate_add_opts c.add_options) // (generate_enable_opts c.enable_flags);
+      };
+      config = lib.mkIf config.commonconf."${c.name}".enable c.cfg;
+    };
+
 in
   {
   # Bootstrap a machine configuration based on machine name, main user and common configs
@@ -52,14 +67,6 @@ in
     };
   };
 
-  # Create a common configuration to be enabled with a `enable` flag set to True
-  create_common_conf = { name, enable_flags ? [], add_options ? [] }: cfg:
-    {
-      options = {
-        commonconf."${name}" = {
-          enable = lib.mkEnableOption "'${name}' common behavior";
-        } // (generate_add_opts add_options) // (generate_enable_opts enable_flags);
-      };
-      config = lib.mkIf config.commonconf."${name}".enable cfg;
-    };
+  create_common_confs = configs:
+    (lib.lists.fold (cfg: acc: lib.attrsets.recursiveUpdate acc (generate_config cfg)) {} configs);
 }
