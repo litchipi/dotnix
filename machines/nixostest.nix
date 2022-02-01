@@ -17,6 +17,9 @@ in
   commonconf.server.enable = true;
   commonconf.gnome.enable = true;
   commonconf.infosec.enable = true;
+  commonconf.music_production.enable = true;
+  commonconf.music_production.electro.enable = true;
+  commonconf.music_production.guitar.enable = false;
 
   # Custom configuration for this machine
   users.mutableUsers = false;
