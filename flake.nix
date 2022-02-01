@@ -52,7 +52,10 @@
       };
 
       # All outputs format using nixos-generators
-      vbox = build_deriv_output { inherit machine system add_modules; format="virtualbox"; };
+      vbox = build_deriv_output { inherit machine system;
+        add_modules=add_modules ++ [ ./format_cfg/virtualbox.nix ];
+        format="virtualbox";
+      };
       iso = build_deriv_output { inherit machine system add_modules; format="iso"; };
       sdraspi = build_deriv_output { inherit machine system add_modules; format="sd-aarch64"; };
       kvmcli = build_deriv_output { inherit machine system add_modules; format="kvmcli"; };
