@@ -12,6 +12,12 @@
 
   outputs = { self, nixpkgs, nixosgen }: 
   let
+    list_files = dir: map (f: dir + "/${f}") (nixpkgs.lib.attrNames (
+      nixpkgs.lib.filterAttrs
+        (_: entryType: entryType == "regular")
+        (builtins.readDir dir)
+    ));
+
     # Additionnal modules
     base_modules = [
     ];
@@ -19,11 +25,7 @@
     # Common configuration added to scope, and enabled with a flag
     common_configs = [
       ./base/base.nix
-      ./common/classic_usage.nix
-      ./common/gnome.nix
-      ./common/server.nix
-      ./common/infosec.nix
-    ];
+    ] ++ (list_files ./common);
 
     # Gets the base name of a file without the extension, from a path
     name_from_fname = fname :
