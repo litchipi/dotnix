@@ -9,6 +9,22 @@ let
     if (builtins.hasAttr user pwds.machine_login)
       then pwds.machine_login."${user}"
       else null;
+
+  generate_add_opts = all_opts: builtins.listToAttrs (
+    builtins.map
+      (addopt: {
+        name = "${addopt.name}";
+        value = lib.mkOption addopt.option;
+      })
+    all_opts);
+
+  generate_enable_opts = flags: builtins.listToAttrs (
+    builtins.map
+      (flag: {
+        name = "${flag}";
+        value = { enable = lib.mkEnableOption "Enable '${flag}' option"; };
+      })
+    flags);
 in
   {
   # Bootstrap a machine configuration based on machine name, main user and common configs
@@ -37,20 +53,13 @@ in
   };
 
   # Create a common configuration to be enabled with a `enable` flag set to True
-  create_common_conf = { name, add_options ? [] }: cfg:
+  create_common_conf = { name, enable_flags ? [], add_options ? [] }: cfg:
     {
       options = {
         commonconf."${name}" = {
           enable = lib.mkEnableOption "'${name}' common behavior";
-        } // builtins.listToAttrs (
-          builtins.map
-            (addopt: {
-              name = "${addopt.name}";
-              value = lib.mkOption addopt.option;
-            })
-            add_options);
+        } // (generate_add_opts add_options) // (generate_enable_opts enable_flags);
       };
-
       config = lib.mkIf config.commonconf."${name}".enable cfg;
     };
 }
