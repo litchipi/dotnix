@@ -43,13 +43,14 @@ let
 in
   {
   # Bootstrap a machine configuration based on machine name, main user and common configs
-  bootstrap_machine = {
+  build_machine = {
     hostname, user,
     ssh_auth_keys,
     base_hosts ? true, add_hosts ? "",
     add_pkgs ? [],
-  }:
-  {
+  }: cfg:
+  lib.attrsets.recursiveUpdate {
+
     networking = {
       hostName = hostname;
       extraHosts = (
@@ -59,13 +60,15 @@ in
       ) + "\n" + add_hosts;
     };
 
+    environment.systemPackages = with pkgs; add_pkgs;
+
     users.users."${user}" = {
       isNormalUser = true;
       extraGroups = [ "wheel" ];
       openssh.authorizedKeys.keys = libssh.get_authorized_keys user ssh_auth_keys;
       password = try_get_password user;
     };
-  };
+  } cfg;
 
   # Pass a list of common confs to generate, using recursiveUpdate to merge all in
   # on big configuration set.
