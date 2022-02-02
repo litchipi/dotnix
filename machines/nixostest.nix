@@ -1,26 +1,15 @@
 { config, lib, pkgs, ... }:
-let
-  # Library containing wrappers for machine definition
-  build_lib = import ../lib/build.nix {inherit config lib pkgs;};
-in
+{
+  # The name of the main user of the system
+  base.user = "nx";
+  # The system hostname
+  base.hostname = "nixostest";
+  # What SSH key to allow for remote login
+  #   (has to be a file in data/ssh/pubkeys/<name>.pub)
+  base.ssh_auth_keys = ["john"];
+  # Set up pre-defined base of custom host for IPs ?
+  base.base_hosts = false;
 
-# Arguments:
-#   hostname:       The system hostname
-#   user:           The main user of the system
-#   ssh_auth_keys:  The authorized SSH public keys (can be empty)
-#   base_hosts:     Add the pre-defined hostnames in /etc/hosts ? (default true)
-#   add_hosts:      Additionnal hosts to add to /etc/hosts ? (default "")
-#   add_pkgs:       Additionnal packages to add to the list ? (default [])
-#
-# If a password is defined for this user in data/secrets/passwords.toml, will use it
-# If none, you must provide at least one ssh_auth_keys.
-
-build_lib.build_machine {
-    hostname = "nixostest";
-    user = "nx";
-    ssh_auth_keys = ["john"];
-    base_hosts = false;
-} {
   # Common configuration to use
   commonconf.usage.basic.enable = true;
   commonconf.usage.server.enable = true;

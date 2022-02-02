@@ -4,12 +4,6 @@ let
   libdata = import ./manage_data.nix {inherit config lib pkgs;};
   libssh = import ./ssh.nix {inherit config lib pkgs;};
 
-  pwds = lib.importTOML ../data/secrets/passwords.toml;
-  try_get_password = user:
-    if (builtins.hasAttr user pwds.machine_login)
-      then pwds.machine_login."${user}"
-      else null;
-
   generate_add_opts = all_opts: builtins.listToAttrs (
     builtins.map
       (addopt: {
@@ -42,34 +36,6 @@ let
 
 in
   {
-  # Bootstrap a machine configuration based on machine name, main user and common configs
-  build_machine = {
-    hostname, user,
-    ssh_auth_keys,
-    base_hosts ? true, add_hosts ? "",
-    add_pkgs ? [],
-  }: cfg:
-  lib.attrsets.recursiveUpdate {
-
-    networking = {
-      hostName = hostname;
-      extraHosts = (
-        if base_hosts
-        then libdata.read_data ["base_hosts"]
-        else ""
-      ) + "\n" + add_hosts;
-    };
-
-    environment.systemPackages = with pkgs; add_pkgs;
-
-    users.users."${user}" = {
-      isNormalUser = true;
-      extraGroups = [ "wheel" ];
-      openssh.authorizedKeys.keys = libssh.get_authorized_keys user ssh_auth_keys;
-      password = try_get_password user;
-    };
-  } cfg;
-
   # Pass a list of common confs to generate, using recursiveUpdate to merge all in
   # on big configuration set.
   create_common_confs = name: configs:
