@@ -22,4 +22,9 @@
 
   # Custom configuration for this machine
   users.mutableUsers = false;
+
+  # Additionnal packages to install
+  environment.systemPackages = with pkgs; [
+    litchipi.pomodoro
+  ];
 }
