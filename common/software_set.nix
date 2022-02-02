@@ -42,6 +42,7 @@ in
       ];
       # Base
       environment.systemPackages = with pkgs; [
+        audacity
       ] ++
 
       # Electro
