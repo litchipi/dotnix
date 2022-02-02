@@ -38,7 +38,8 @@
 
     # Create output format derivation using nixos-generators
     build_deriv_output = { machine, system, add_modules, format}: nixosgen.nixosGenerate {
-      pkgs = nixpkgs.legacyPackages."${system}";
+      pkgs = nixpkgs.legacyPackages."${system}" //
+        (import ./overlays/overlays.nix nixpkgs.legacyPackages."${system}");
       modules = [ machine ] ++ common_configs ++ base_modules ++ add_modules;
       inherit format;
     };
