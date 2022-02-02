@@ -20,12 +20,11 @@
 
     # Additionnal modules
     base_modules = [
+      ./base/base.nix
     ];
 
     # Common configuration added to scope, and enabled with a flag
-    common_configs = [
-      ./base/base.nix
-    ] ++ (list_files ./common);
+    common_configs = list_files ./common;
 
     # Gets the base name of a file without the extension, from a path
     name_from_fname = fname :
@@ -72,9 +71,7 @@
           value = build_machine_deriv {
             machine = machine.fname;
             system = machine.system;
-            add_modules = if builtins.hasAttr "add_modules" machine
-              then machine.add_modules
-              else [];
+            add_modules = machine.add_modules or [];
           };
         }) machines
       );
