@@ -9,6 +9,7 @@ in
     name = "basic";
     cfg = {
       services.printing.enable = true;
+      commonconf.software.basic.enable = true;
     };
   }
 

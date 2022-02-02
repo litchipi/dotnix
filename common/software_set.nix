@@ -5,6 +5,25 @@ let
 in
   build_lib.create_common_confs "software" [
 
+  # Basic
+  {
+    name = "basic";
+    cfg = {
+      environment.systemPackages = with pkgs; [
+        evince                      # PDF viewer
+        gnome.nautilus              # File manager
+        vlc                         # Video player
+        gnome.eog                   # Image viewer
+        gnome.gnome-disk-utility    # Manage disks
+        gnome-usage                 # Ressources monitor
+        baobab                      # Disk space monitor
+        gnome.gedit                 # Notepad
+        alacritty                   # Terminal
+        firefox                     # Internet browser
+        deluge                      # Torrent client
+      ];
+    };
+  }
 
   # Infosec
   {
