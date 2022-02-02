@@ -14,11 +14,14 @@ let
 in
   {
   # Common configuration to use
-  commonconf.server.enable = true;
-  commonconf.gnome.enable = true;
-  commonconf.infosec.enable = true;
-  commonconf.music_production.enable = true;
-  commonconf.music_production.electro.enable = true;
+  commonconf.usage.basic.enable = true;
+  commonconf.usage.server.enable = true;
+
+  commonconf.software.infosec.enable = true;
+  commonconf.software.music_production.enable = true;
+  commonconf.software.music_production.electro.enable = true;
+
+  commonconf.wm.gnome.enable = true;
 
   # Custom configuration for this machine
   users.mutableUsers = false;

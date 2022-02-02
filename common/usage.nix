@@ -2,7 +2,7 @@
 let
   build_lib = import ../lib/build.nix {inherit config lib pkgs;};
 in
- build_lib.create_common_confs [
+ build_lib.create_common_confs "usage" [
  
   # Basic usage
   {

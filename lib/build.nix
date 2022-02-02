@@ -27,17 +27,17 @@ let
     flags);
 
   # Create a common configuration to be enabled with a `enable` flag set to True
-  generate_config = user_config:
+  generate_config = catname: user_config:
   let
     c = { enable_flags = []; add_options = []; } // user_config;
   in
     {
       options = {
-        commonconf."${c.name}" = {
-          enable = lib.mkEnableOption "'${c.name}' common behavior";
-        } // (generate_add_opts c.add_options) // (generate_enable_opts c.enable_flags);
+        commonconf."${catname}"."${c.name}" = lib.attrsets.recursiveUpdate {
+          enable = lib.mkEnableOption "'${catname}.${c.name}' common behavior";
+        } (lib.attrsets.recursiveUpdate (generate_add_opts c.add_options) (generate_enable_opts c.enable_flags));
       };
-      config = lib.mkIf config.commonconf."${c.name}".enable c.cfg;
+      config = lib.mkIf config.commonconf."${catname}"."${c.name}".enable c.cfg;
     };
 
 in
@@ -67,6 +67,8 @@ in
     };
   };
 
-  create_common_confs = configs:
-    (lib.lists.fold (cfg: acc: lib.attrsets.recursiveUpdate acc (generate_config cfg)) {} configs);
+  # Pass a list of common confs to generate, using recursiveUpdate to merge all in
+  # on big configuration set.
+  create_common_confs = name: configs:
+    (lib.lists.fold (cfg: acc: lib.attrsets.recursiveUpdate acc (generate_config name cfg)) {} configs);
 }
