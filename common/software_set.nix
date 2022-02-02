@@ -58,4 +58,27 @@ in
       ];
     };
   }
+
+  # TUI tools
+  {
+    name = "tui_tools";
+    cfg = {
+      environment.systemPackages = with pkgs; [
+        neovim
+        tmux
+        tmuxp
+        fzf
+        ripgrep
+        autojump
+        htop
+        irssi
+        jrnl
+        wkhtmltopdf
+        youtube-dl
+
+        # Custom TUI tools
+        litchipi.pomodoro
+      ];
+    };
+  }
 ]

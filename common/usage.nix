@@ -17,6 +17,7 @@ in
   {
     name = "server";
     cfg = {
+      commonconf.software.tui_tools.enable = true;
       services.openssh = {
         enable = true;
         passwordAuthentication = false;
