@@ -1,5 +1,6 @@
 { config, lib, pkgs, ... }:
 let 
+  data_lib = import ../lib/manage_data.nix {inherit config lib pkgs;};
   build_lib = import ../lib/build.nix {inherit config lib pkgs;};
   import_if = cond: pkgs: if cond then pkgs else [];
 in
@@ -36,6 +37,9 @@ in
     name = "music_production";
     enable_flags = [ "electro" "guitar" "score" ];
     cfg = {
+      environment.interactiveShellInit = data_lib.load_aliases [
+        "music"
+      ];
       # Base
       environment.systemPackages = with pkgs; [
       ] ++
@@ -78,6 +82,15 @@ in
 
         # Custom TUI tools
         litchipi.pomodoro
+      ];
+
+      environment.interactiveShellInit = data_lib.load_aliases [
+        "filesystem"
+        "git"
+        "music"
+        "network"
+        "nix"
+        "software_wrap"
       ];
     };
   }
