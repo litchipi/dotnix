@@ -8,9 +8,14 @@
       url = "github:nix-community/nixos-generators";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, nixosgen }: 
+  outputs = { self, nixpkgs, nixosgen, home-manager }:
   let
     find_all_files = dir: nixpkgs.lib.lists.flatten (
       (builtins.map find_all_files (list_elements dir "directory"))
@@ -27,6 +32,7 @@
 
     # Additionnal modules
     base_modules = (find_all_files ./base) ++ [
+      home-manager.nixosModules.home-manager
     ];
 
     # Common configuration added to scope, and enabled with a flag

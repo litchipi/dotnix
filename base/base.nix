@@ -3,6 +3,18 @@ let
   libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
   libssh = import ../lib/ssh.nix {inherit config lib pkgs;};
 
+  mergeall = setlist: lib.lists.fold (set: acc: lib.attrsets.recursiveUpdate acc set) {} setlist;
+
+  get_all_homeconf = config: user: lib.lists.flatten (lib.attrsets.mapAttrsToList
+    (_: conf:
+      if (lib.attrsets.hasAttr "home_conf" conf)
+        then (if conf.enable
+          then conf.home_conf user
+          else {})
+        else get_all_homeconf conf user
+    ) config
+  );
+  all_common_conf_homecfg = user: lib.debug.traceValSeqN 2 (mergeall (get_all_homeconf config.commonconf user));
 in
 {
   options.base = {
@@ -23,6 +35,11 @@ in
       type = with lib.types; bool;
       default = true;
     };
+
+    user_cfg = lib.mkOption {
+      type = with lib.types; anything;
+      default = {};
+    };
   };
 
   config = {
@@ -34,6 +51,13 @@ in
       };
 
     users.mutableUsers = false;
+
+    home-manager.useGlobalPkgs = true;
+    home-manager.useUserPackages = true;
+    home-manager.users."${config.base.user}" = lib.attrsets.recursiveUpdate
+      config.base.user_cfg
+      (all_common_conf_homecfg config.base.user);
+
     environment.systemPackages = with pkgs; [
       coreutils-full
       htop
