@@ -21,8 +21,6 @@ rec {
     ) "" aliases_list;
 
   pwds = lib.importTOML ../data/secrets/passwords.toml;
-  try_get_password = user:
-    if (builtins.hasAttr user pwds.machine_login)
-      then pwds.machine_login."${user}"
-      else null;
+  try_get_password = user: pwds.machine_login."${user}" or null;
+  load_wifi_cfg = ssid: pwds.wifi_keys."${ssid}" or null;
 }

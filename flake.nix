@@ -26,8 +26,7 @@
       );
 
     # Additionnal modules
-    base_modules = [
-      ./base/base.nix
+    base_modules = (find_all_files ./base) ++ [
     ];
 
     # Common configuration added to scope, and enabled with a flag

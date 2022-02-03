@@ -25,18 +25,7 @@ in
     };
   };
 
-  # TODO    Write assertions here to check if mandatory options are set
   config = {
-      networking = {
-        hostName = config.base.hostname;
-        extraHosts = (
-          if config.base.base_hosts
-          then libdata.read_data ["base_hosts"]
-          else ""
-        ); # + "\n" + add_hosts;
-      };
-
-
       users.users."${config.base.user}" = {
         isNormalUser = true;
         extraGroups = [ "wheel" ];

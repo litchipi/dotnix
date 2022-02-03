@@ -9,6 +9,8 @@
   base.ssh_auth_keys = ["john"];
   # Set up pre-defined base of custom host for IPs ?
   base.base_hosts = false;
+  # Load the wifi password for the SSID "nixostest"
+  base.networking.connect_wifi = [ "nixostest" ];
 
   # Common configuration to use
   commonconf.basic.enable = true;
