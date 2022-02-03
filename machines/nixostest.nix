@@ -24,6 +24,8 @@
   commonconf.software.musicprod.enable = true;
   commonconf.software.musicprod.electro.enable = true;
 
+  commonconf.river.enable = true;
+
   # Custom configuration for this system
   users.mutableUsers = false;
 
