@@ -12,21 +12,23 @@
   # Load the wifi password for the SSID "nixostest"
   base.networking.connect_wifi = [ "nixostest" ];
 
+  # The desktop software to use
+  commonconf.gnome.enable = true;
+
   # Common configuration to use
   commonconf.basic.enable = true;
   commonconf.server.enable = true;
-
   commonconf.infosec.enable = true;
+
+  # Some software sets to use
   commonconf.software.musicprod.enable = true;
   commonconf.software.musicprod.electro.enable = true;
-
-  commonconf.gnome.enable = true;
 
   # Custom configuration for this system
   users.mutableUsers = false;
 
   # Additionnal packages to install
   environment.systemPackages = with pkgs; [
-    cowsay #litchipi.pomodoro
+    cowsay
   ];
 }
