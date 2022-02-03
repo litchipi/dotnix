@@ -14,7 +14,9 @@ rec {
     then builtins.readFile path
     else "";
 
+  # FIXME   Load aliases only once, even if specified several times
   load_aliases = aliases_list: lib.lists.fold
-    (name: acc: acc + "\n" + (read_data [ "aliases" (name + ".sh") ])) ""
-    aliases_list;
+    (name: acc: acc + "\n" + (
+      read_data [ "aliases" (name + ".sh") ])
+    ) "" aliases_list;
 }

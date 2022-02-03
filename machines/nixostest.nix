@@ -11,20 +11,20 @@
   base.base_hosts = false;
 
   # Common configuration to use
-  commonconf.usage.basic.enable = true;
-  commonconf.usage.server.enable = true;
+  commonconf.basic.enable = true;
+  commonconf.server.enable = true;
 
-  commonconf.software.infosec.enable = true;
-  commonconf.software.music_production.enable = true;
-  commonconf.software.music_production.electro.enable = true;
+  commonconf.infosec.enable = true;
+  commonconf.software.musicprod.enable = true;
+  commonconf.software.musicprod.electro.enable = true;
 
-  commonconf.wm.gnome.enable = true;
+  commonconf.gnome.enable = true;
 
-  # Custom configuration for this machine
+  # Custom configuration for this system
   users.mutableUsers = false;
 
   # Additionnal packages to install
   environment.systemPackages = with pkgs; [
-    litchipi.pomodoro
+    cowsay #litchipi.pomodoro
   ];
 }

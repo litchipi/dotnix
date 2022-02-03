@@ -1,10 +1,8 @@
 { config, lib, pkgs, ... }:
 let 
-  build_lib = import ../lib/build.nix {inherit config lib pkgs;};
+  conf_lib = import ../../lib/commonconf.nix {inherit config lib pkgs;};
 in
-  build_lib.create_common_confs "wm" [
-
-  # Gnome
+conf_lib.create_common_confs [
   {
     name = "gnome";
     cfg = {

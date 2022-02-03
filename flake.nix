@@ -12,11 +12,18 @@
 
   outputs = { self, nixpkgs, nixosgen }: 
   let
-    list_files = dir: map (f: dir + "/${f}") (nixpkgs.lib.attrNames (
-      nixpkgs.lib.filterAttrs
-        (_: entryType: entryType == "regular")
-        (builtins.readDir dir)
-    ));
+    find_all_files = dir: nixpkgs.lib.lists.flatten (
+      (builtins.map find_all_files (list_elements dir "directory"))
+      ++ (list_elements dir "regular")
+    );
+
+    list_elements = dir: type: map (f: dir + "/${f}") (
+      nixpkgs.lib.attrNames (
+        nixpkgs.lib.filterAttrs
+          (_: entryType: entryType == type)
+          (builtins.readDir  dir)
+        )
+      );
 
     # Additionnal modules
     base_modules = [
@@ -24,7 +31,7 @@
     ];
 
     # Common configuration added to scope, and enabled with a flag
-    common_configs = list_files ./common;
+    common_configs = find_all_files ./common;
 
     # Gets the base name of a file without the extension, from a path
     name_from_fname = fname :
