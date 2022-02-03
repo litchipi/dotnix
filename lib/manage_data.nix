@@ -19,4 +19,10 @@ rec {
     (name: acc: acc + "\n" + (
       read_data [ "aliases" (name + ".sh") ])
     ) "" aliases_list;
+
+  pwds = lib.importTOML ../data/secrets/passwords.toml;
+  try_get_password = user:
+    if (builtins.hasAttr user pwds.machine_login)
+      then pwds.machine_login."${user}"
+      else null;
 }

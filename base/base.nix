@@ -3,11 +3,6 @@ let
   libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
   libssh = import ../lib/ssh.nix {inherit config lib pkgs;};
 
-  pwds = lib.importTOML ../data/secrets/passwords.toml;
-  try_get_password = user:
-    if (builtins.hasAttr user pwds.machine_login)
-      then pwds.machine_login."${user}"
-      else null;
 in
 {
   options.base = {
@@ -46,7 +41,7 @@ in
         isNormalUser = true;
         extraGroups = [ "wheel" ];
         openssh.authorizedKeys.keys = libssh.get_authorized_keys config.base.user config.base.ssh_auth_keys;
-        password = try_get_password config.base.user;
+        password = libdata.try_get_password config.base.user;
       };
 
     users.mutableUsers = false;
