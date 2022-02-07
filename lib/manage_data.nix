@@ -1,14 +1,12 @@
 { config, lib, pkgs, ... }:
-let
-  path_from_list = pathlist:
-    builtins.foldl' (p: d: p + "/${d}") ../data pathlist;
-in
 rec {
-  read_data = pathlist: builtins.readFile (path_from_list pathlist);
+  get_data_path = pathlist:
+    builtins.foldl' (p: d: p + "/${d}") ../data pathlist;
+  read_data = pathlist: builtins.readFile (get_data_path pathlist);
 
   read_data_else_empty = pathlist:
   let
-    path = path_from_list pathlist;
+    path = get_data_path pathlist;
   in
     if builtins.pathExists path
     then builtins.readFile path
@@ -23,4 +21,6 @@ rec {
   pwds = lib.importTOML ../data/secrets/passwords.toml;
   try_get_password = user: pwds.machine_login."${user}" or null;
   load_wifi_cfg = ssid: pwds.wifi_keys."${ssid}" or null;
+
+  get_asset_path = ident: get_data_path [ "asset" ident ];
 }

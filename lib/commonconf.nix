@@ -9,18 +9,30 @@ let
 
   commoncfg = user_cfg:
     let
-      arg_config = { parents = []; add_opts = {}; home_conf = {};} // user_cfg;
+      # Default arguments
+      arg_config = {
+        parents = [];
+        add_opts = {};
+        home_cfg = user: hconfig: {};
+        activation_script = '''';
+      } // user_cfg;
+
       name = arg_config.name;
       cfg = arg_config.cfg;
       parents = arg_config.parents;
-      home_conf = arg_config.home_conf;
+      home_cfg = arg_config.home_cfg;
       add_opts = arg_config.add_opts;
       opt_path = ["commonconf"] ++ parents ++ [ name ];
     in
     {
-      options = lib.attrsets.setAttrByPath opt_path {
+      options = lib.attrsets.setAttrByPath opt_path ({
           enable = lib.mkEnableOption "'${builtins.toString opt_path}' common behavior";
-        };
+          home_conf = lib.mkOption {
+            type = with lib.types; functionTo (functionTo (either (attrsOf anything) lines));
+            default = home_cfg;
+            description = "Additional configuration to add to home-manager.";
+          };
+        } // add_opts);
       config = lib.mkIf (lib.attrsets.getAttrFromPath (opt_path ++ [ "enable" ]) config) cfg;
     };
 in

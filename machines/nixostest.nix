@@ -27,6 +27,11 @@
   # Custom configuration for this system
   users.mutableUsers = false;
 
+  # Custom configuration for the user "nx" of the system
+  base.user_cfg = {config}: {
+    home.keyboard.layout = "fr";
+  };
+
   # Additionnal packages to install
   environment.systemPackages = with pkgs; [
     cowsay
