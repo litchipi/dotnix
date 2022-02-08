@@ -1,5 +1,6 @@
 { config, lib, pkgs, ... }:
 let
+  cfg = config.base;
   libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
   libssh = import ../lib/ssh.nix {inherit config lib pkgs;};
 
@@ -43,21 +44,21 @@ in
   };
 
   config = {
-      users.users."${config.base.user}" = {
+      users.users."${cfg.user}" = {
         isNormalUser = true;
         extraGroups = [ "wheel" ];
-        openssh.authorizedKeys.keys = libssh.get_authorized_keys config.base.user config.base.ssh_auth_keys;
-        password = libdata.try_get_password config.base.user;
+        openssh.authorizedKeys.keys = libssh.get_authorized_keys cfg.user cfg.ssh_auth_keys;
+        password = libdata.try_get_password cfg.user;
       };
 
     users.mutableUsers = false;
 
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = true;
-    home-manager.users."${config.base.user}" = hmcfg: #{config, ...}:
+    home-manager.users."${cfg.user}" = hmcfg:
       lib.attrsets.recursiveUpdate
-        (config.base.user_cfg {config=hmcfg.config;})
-      (all_common_conf_homecfg config.base.user hmcfg.config);
+        (cfg.user_cfg {config=hmcfg.config;})
+      (all_common_conf_homecfg cfg.user hmcfg.config);
 
     environment.systemPackages = with pkgs; [
       coreutils-full
