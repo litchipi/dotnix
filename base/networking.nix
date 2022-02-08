@@ -23,8 +23,10 @@ in
     };
 
     users.users."${config.base.user}".extraGroups = [ "networkmanager" ];
+    services.avahi.enable = true;
     
     environment.systemPackages = with pkgs; [
+      networkmanager
     ];
 
     networking.wireless.networks = builtins.listToAttrs (
