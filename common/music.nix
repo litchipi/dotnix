@@ -10,43 +10,37 @@ conf_lib.create_common_confs [
       environment.interactiveShellInit = data_lib.load_aliases [
         "music"
       ];
-      environment.systemPackages = with pkgs; [
-        youtube-dl
-        audacity
-      ];
     };
+    add_pkgs = with pkgs; [
+      youtube-dl
+      audacity
+    ];
     parents = [ "software" ];
   }
 
   {
     name = "electro";
-    cfg = {
-      environment.systemPackages = with pkgs; [
-        lmms
-        mixxx
-      ];
-    };
+    add_pkgs = with pkgs; [
+      lmms
+      mixxx
+    ];
     parents = [ "software" "musicprod" ];
   }
-  
+
   {
     name = "guitar";
-    cfg = {
-      environment.systemPackages = with pkgs; [
-        guitarix
-        gxplugins-lv2
-      ];
-    };
+    add_pkgs = with pkgs; [
+      guitarix
+      gxplugins-lv2
+    ];
     parents = [ "software" "musicprod" ];
   }
 
   {
     name = "score";
-    cfg = {
-      environment.systemPackages = with pkgs; [
-        musescore
-      ];
-    };
+    add_pkgs = with pkgs; [
+      musescore
+    ];
     parents = [ "software" "musicprod" ];
   }
 ]

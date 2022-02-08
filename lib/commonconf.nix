@@ -15,15 +15,16 @@ let
         add_opts = {};
         home_cfg = user: hconfig: {};
         activation_script = '''';
+        add_pkgs = [];
+        cfg = {};
       } // user_cfg;
 
-      name = arg_config.name;
-      cfg = arg_config.cfg;
-      parents = arg_config.parents;
-      home_cfg = arg_config.home_cfg;
-      add_opts = arg_config.add_opts;
-      opt_path = ["commonconf"] ++ parents ++ [ name ];
+      cfg = lib.attrsets.recursiveUpdate arg_config.cfg {
+        environment.systemPackages = arg_config.add_pkgs;
+      };
+      opt_path = ["commonconf"] ++ arg_config.parents ++ [ arg_config.name ];
     in
+    with arg_config;
     {
       options = lib.attrsets.setAttrByPath opt_path ({
           enable = lib.mkEnableOption "'${builtins.toString opt_path}' common behavior";

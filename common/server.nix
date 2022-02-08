@@ -18,24 +18,23 @@ conf_lib.create_common_confs [
   }
   {
     name = "tui_tools";
+    add_pkgs = with pkgs; [
+      neovim
+      tmux
+      tmuxp
+      fzf
+      ripgrep
+      autojump
+      htop
+      irssi
+      jrnl
+      wkhtmltopdf
+      youtube-dl
+
+      # Custom TUI tools
+      litchipi.pomodoro
+    ];
     cfg = {
-      environment.systemPackages = with pkgs; [
-        neovim
-        tmux
-        tmuxp
-        fzf
-        ripgrep
-        autojump
-        htop
-        irssi
-        jrnl
-        wkhtmltopdf
-        youtube-dl
-
-        # Custom TUI tools
-        litchipi.pomodoro
-      ];
-
       environment.interactiveShellInit = data_lib.load_aliases [
         "filesystem"
         "git"

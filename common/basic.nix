@@ -14,37 +14,31 @@ conf_lib.create_common_confs [
   }
   {
     name = "basic";
-    cfg = {
-      environment.systemPackages = with pkgs; [
-        evince                      # PDF viewer
-        gnome.nautilus              # File manager
-        gnome.eog                   # Image viewer
-        gnome.gedit                 # Notepad
-        alacritty                   # Terminal
-        firefox                     # Internet browser
-        deluge                      # Torrent client
-      ];
-    };
+    add_pkgs = with pkgs; [
+      evince                      # PDF viewer
+      gnome.nautilus              # File manager
+      gnome.eog                   # Image viewer
+      gnome.gedit                 # Notepad
+      alacritty                   # Terminal
+      firefox                     # Internet browser
+      deluge                      # Torrent client
+    ];
     parents = [ "software" ];
   }
   {
     name = "multimedia";
-    cfg = {
-      environment.systemPackages = with pkgs; [
-        vlc                         # Video player
-      ];
-    };
+    add_pkgs = with pkgs; [
+      vlc                         # Video player
+    ];
     parents = [ "software" ];
   }
   {
     name = "systools";
-    cfg = {
-      environment.systemPackages = with pkgs; [
-        gnome.gnome-disk-utility    # Manage disks
-        gnome-usage                 # Ressources monitor
-        baobab                      # Disk space monitor
-      ];
-    };
+    add_pkgs = with pkgs; [
+      gnome.gnome-disk-utility    # Manage disks
+      gnome-usage                 # Ressources monitor
+      baobab                      # Disk space monitor
+    ];
     parents = [ "software" ];
   }
 ]
