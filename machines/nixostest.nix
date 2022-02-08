@@ -13,7 +13,7 @@
   base.networking.connect_wifi = [ "nixostest" ];
 
   # The desktop software to use
-  commonconf.gnome.enable = true;
+  commonconf.wm.custom.hackerline.enable = true;
 
   # Common configuration to use
   commonconf.basic.enable = true;
