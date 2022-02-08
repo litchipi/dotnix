@@ -2,23 +2,33 @@
 { stdenv, lib, pkgs, ... }:
 
 let
-  myScript = pkgs.writeTextFile {
+  myScript = text: pkgs.writeTextFile {
     name = "pomodoro";
     executable = true;
     destination = "/bin/pomodoro.sh";
-    text = builtins.readFile ./pomodoro.sh;
+    inherit text;
+  };
+
+  src = pkgs.fetchFromGitHub {
+    owner  = "litchipi";
+    repo   = "pomodoro.sh";
+    rev    = "744133c890ba8447309fbc9c6de1c4e30f2ce9b9";
+    sha256 = "B7XcdhUY3Iw9BUutSwlCCEbzdST/4t7TQaXTfz+gfso=";
   };
 in stdenv.mkDerivation rec {
   pname = "litchipi.pomodoro";
   version = "0.0.1";
 
-  buildInputs = [ myScript ];
-  builder = pkgs.writeTextFile {
-    name = "builder.sh";
-    text = ''
-      . $stdenv/setup
-      mkdir -p $out/bin
-      ln -sf ${myScript}/bin/pomodoro.sh $out/bin/pomodoro.sh
-    '';
-  };
+  inherit src;
+
+  buildInputs = [
+    pkgs.gnome.zenity
+    pkgs.mpv
+  ];
+
+  installPhase = ''
+    . $stdenv/setup
+    mkdir -p $out/bin
+    ln -sf ${src}/pomodoro.sh $out/bin/pomodoro.sh
+  '';
 }
