@@ -60,6 +60,8 @@ in
         (cfg.user_cfg {config=hmcfg.config;})
       (all_common_conf_homecfg cfg.user hmcfg.config);
 
+    services.xserver.desktopManager.wallpaper.mode = lib.mkIf config.services.xserver.enable "fill";
+
     environment.systemPackages = with pkgs; [
       coreutils-full
       htop
