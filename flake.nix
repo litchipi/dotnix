@@ -3,6 +3,9 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-wayland.url = "github:nix-community/nixpkgs-wayland";
+    nixpkgs-wayland.inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgs-wayland.inputs.master.follows = "master";
 
     nixosgen = {
       url = "github:nix-community/nixos-generators";
@@ -15,7 +18,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixosgen, home-manager }:
+  outputs = { self, nixpkgs, nixosgen, home-manager, nixpkgs-wayland }:
   let
     find_all_files = dir: nixpkgs.lib.lists.flatten (
       (builtins.map find_all_files (list_elements dir "directory"))
@@ -38,6 +41,11 @@
     # Common configuration added to scope, and enabled with a flag
     common_configs = find_all_files ./common;
 
+    # Modules that require to be imported in this scope to work
+    imported_modules = system: builtins.map (path: import path system {inherit nixpkgs home-manager nixpkgs-wayland;}) [
+        ./modules/nixpkgs-wayland.nix
+    ];
+
     # Gets the base name of a file without the extension, from a path
     name_from_fname = fname :
       nixpkgs.lib.removeSuffix ".nix"
@@ -51,7 +59,7 @@
     build_deriv_output = { machine, system, add_modules, format}: nixosgen.nixosGenerate {
       pkgs = nixpkgs.legacyPackages."${system}" //
         (import ./overlays/overlays.nix nixpkgs.legacyPackages."${system}");
-      modules = [ machine ] ++ common_configs ++ base_modules ++ add_modules;
+        modules = [ machine ] ++ common_configs ++ base_modules ++ add_modules ++ (imported_modules system);
       inherit format;
     };
 
@@ -60,7 +68,7 @@
       # Target when updating a live NixOS system
       nixos_upt = nixpkgs.lib.nixosSystem {
         inherit system;
-        modules = [ machine ] ++ common_configs ++ base_modules ++ add_modules;
+        modules = [ machine ] ++ common_configs ++ base_modules ++ add_modules ++ (imported_modules system);
       };
 
       # All outputs format using nixos-generators
