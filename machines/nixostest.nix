@@ -23,6 +23,7 @@
 
   # The desktop software to use
   commonconf.wm.custom.hackerline.enable = true;
+  commonconf.wm.bck-img = "we-must-conquer-mars.jpg";
 
   # Common configuration to use
   commonconf.basic.enable = true;
