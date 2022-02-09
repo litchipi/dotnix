@@ -11,30 +11,41 @@ let
     let
       # Default arguments
       arg_config = {
+        default_enabled = false;
         parents = [];
         add_opts = {};
-        home_cfg = user: hconfig: {};
+        home_cfg = {};
         activation_script = '''';
         add_pkgs = [];
         cfg = {};
       } // user_cfg;
 
-      cfg = lib.attrsets.recursiveUpdate arg_config.cfg {
-        environment.systemPackages = arg_config.add_pkgs;
-      };
       opt_path = ["commonconf"] ++ arg_config.parents ++ [ arg_config.name ];
+      enable_condition = lib.attrsets.getAttrFromPath (opt_path ++ [ "enable" ]) config;
+
+      cfg = utils.mergeall [
+        arg_config.cfg
+        { environment.systemPackages = arg_config.add_pkgs; }
+      ];
     in
     with arg_config;
     {
       options = lib.attrsets.setAttrByPath opt_path ({
-          enable = lib.mkEnableOption "'${builtins.toString opt_path}' common behavior";
-          home_conf = lib.mkOption {
-            type = with lib.types; functionTo (functionTo (either (attrsOf anything) lines));
-            default = home_cfg;
-            description = "Additional configuration to add to home-manager.";
-          };
-        } // add_opts);
-      config = lib.mkIf (lib.attrsets.getAttrFromPath (opt_path ++ [ "enable" ]) config) cfg;
+
+        enable = lib.mkOption {
+          default = default_enabled;
+          description = "${builtins.toString opt_path}' common behavior";
+          type = lib.types.bool;
+        };
+
+        home_conf = lib.mkOption {
+          type = with lib.types; anything;
+          default = lib.mkIf enable_condition arg_config.home_cfg;
+          description = "Additional configuration to add to home-manager.";
+        };
+      } // add_opts);
+
+      config = lib.mkIf enable_condition cfg;
     };
 in
 {
