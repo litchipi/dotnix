@@ -38,11 +38,11 @@ All the output formats added (from `nixos-generators`) for now are:
 - iso-install: ISO image with the NixOS installer
 
 ## Adding the data
+### OUTDATED, HAVE TO WRITE THIS PART AGAIN
 In the file `data.toml`, you can write all the "static" data such as SSH public keys.
 The ident given will then be used to set them in the configuration.
 
 ## TODO
-- Home manager for users
 - Cross compiling for Raspberry Pi
 - Scripts for easy usage
   - `deploy.sh <IP addr>`
