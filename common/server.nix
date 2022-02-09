@@ -6,6 +6,13 @@ in
 conf_lib.create_common_confs [
   {
     name = "server";
+    add_opts = {
+      headless = lib.mkOption {
+        default = true;
+        type = with lib.types; bool;
+        description = "Wether to activate desktop environment or not";
+      };
+    };
     cfg = {
       commonconf.software.tui_tools.enable = true;
       services.openssh = {
@@ -14,7 +21,7 @@ conf_lib.create_common_confs [
         permitRootLogin = "no";
         kbdInteractiveAuthentication = false;
       };
-    };
+    } // lib.mkIf config.commonconf.server.headless { commonconf.wm.enable = false; };
   }
   {
     name = "tui_tools";
@@ -30,6 +37,7 @@ conf_lib.create_common_confs [
       jrnl
       wkhtmltopdf
       youtube-dl
+      git
 
       # Custom TUI tools
       litchipi.pomodoro

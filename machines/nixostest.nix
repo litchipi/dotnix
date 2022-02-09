@@ -18,6 +18,7 @@
   # Common configuration to use
   commonconf.basic.enable = true;
   commonconf.server.enable = true;
+  commonconf.server.headless = false;
   commonconf.infosec.enable = true;
 
   # Some software sets to use
