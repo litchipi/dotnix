@@ -16,6 +16,11 @@
   # Load the wifi password for the SSID "nixostest"
   base.networking.connect_wifi = [ "nixostest" ];
 
+  # Additionnal packages to install
+  base.add_pkgs = with pkgs; [
+    cowsay
+  ];
+
   # The desktop software to use
   commonconf.wm.custom.hackerline.enable = true;
 
@@ -33,9 +38,4 @@
   base.user_cfg = {
     home.keyboard.layout = "fr";
   };
-
-  # Additionnal packages to install
-  environment.systemPackages = with pkgs; [
-    cowsay
-  ];
 }

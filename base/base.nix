@@ -59,6 +59,10 @@ in
       description = "Additionnal home-manager configurations for this machine";
     };
 
+    add_pkgs = lib.mkOption {
+      type = with lib.types; anything;
+      default = [];
+      description = "Additionnal packages to set for this machine";
     };
   };
 
@@ -83,6 +87,6 @@ in
       coreutils-full
       htop
       vim
-    ];
+    ] ++ cfg.add_pkgs;
   };
 }
