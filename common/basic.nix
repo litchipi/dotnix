@@ -4,6 +4,26 @@ let
 in
 conf_lib.create_common_confs [
   {
+    name = "software";
+    default_enabled = true;
+    add_opts = {
+      default_terminal_app = lib.mkOption {
+        type = with lib.types; package;
+        default = pkgs.alacritty;
+        description = "Terminal application to use";
+      };
+
+      # TODO assert that the name of the default_terminal_app is contained in the command
+      terminal_cmd = lib.mkOption {
+        type = with lib.types; str;
+        default = "alacritty -e";
+        description = "Command used to spawn a terminal running an application";
+      };
+    };
+    add_pkgs = [ config.commonconf.software.default_terminal_app ];
+  }
+
+  {
     name = "basic";
     cfg = {
       commonconf.software.basic.enable = true;
