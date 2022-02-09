@@ -1,9 +1,9 @@
 { config, lib, pkgs, ... }:
-let 
-  mergeall = setlist: lib.lists.fold (set: acc: lib.attrsets.recursiveUpdate acc set) {} setlist;
+let
+  utils = import ./utils.nix {inherit config lib pkgs;};
   merge_all_configs = configs:
     {
-      options = mergeall (builtins.map (conf: conf.options) configs);
+      options = utils.mergeall (builtins.map (conf: conf.options) configs);
       config = lib.mkMerge (builtins.map (conf: conf.config) configs);
     };
 

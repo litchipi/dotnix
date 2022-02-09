@@ -3,8 +3,8 @@ let
   cfg = config.base;
   libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
   libssh = import ../lib/ssh.nix {inherit config lib pkgs;};
+  libutils = import ../lib/utils.nix {inherit config lib pkgs;};
 
-  mergeall = setlist: lib.lists.fold (set: acc: lib.attrsets.recursiveUpdate acc set) {} setlist;
 
   get_all_homeconf = config: user: homecfg: lib.lists.flatten (lib.attrsets.mapAttrsToList
     (_: conf:

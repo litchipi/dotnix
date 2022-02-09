@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  mergeall = setlist: lib.lists.fold (set: acc: lib.attrsets.recursiveUpdate acc set) {} setlist;
+  utils = import ./utils.nix {inherit config lib pkgs;};
   list_elements = dir: type: map (f: dir + "/${f}") (
     lib.attrNames (
       lib.filterAttrs
@@ -64,7 +64,7 @@ rec {
     );
 
   copy_dirs_to_home = dirs:
-    mergeall (lib.lists.flatten (
+    utils.mergeall (lib.lists.flatten (
       builtins.map (d: copy_dir_to_home d.home_path_dir d.asset_path_dir) dirs
     ));
 }

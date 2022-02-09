@@ -1,5 +1,6 @@
 { config, lib, pkgs, ... }:
-let 
+let
+  utils_lib = import ../../lib/utils.nix {inherit config lib pkgs;};
   conf_lib = import ../../lib/commonconf.nix {inherit config lib pkgs;};
 in
 conf_lib.create_common_confs [
