@@ -12,8 +12,10 @@ conf_lib.create_common_confs [
       services.printing.enable = true;
     };
   }
+
   {
     name = "basic";
+    parents = [ "software" ];
     add_pkgs = with pkgs; [
       evince                      # PDF viewer
       gnome.nautilus              # File manager
@@ -23,22 +25,23 @@ conf_lib.create_common_confs [
       firefox                     # Internet browser
       deluge                      # Torrent client
     ];
-    parents = [ "software" ];
   }
+
   {
     name = "multimedia";
+    parents = [ "software" ];
     add_pkgs = with pkgs; [
       vlc                         # Video player
     ];
-    parents = [ "software" ];
   }
+
   {
     name = "systools";
+    parents = [ "software" ];
     add_pkgs = with pkgs; [
       gnome.gnome-disk-utility    # Manage disks
       gnome-usage                 # Ressources monitor
       baobab                      # Disk space monitor
     ];
-    parents = [ "software" ];
   }
 ]

@@ -38,15 +38,19 @@ in
 
     hostname = lib.mkOption {
       type = with lib.types; str;
+      description = "Hostname for this machine";
     };
 
     ssh_auth_keys = lib.mkOption {
       type = with lib.types; listOf str;
+      default = [];
+      description = "SSH authorizedKeys to add for this machine";
     };
 
     base_hosts = lib.mkOption {
       type = with lib.types; bool;
       default = true;
+      description = "Add the defined hosts in /etc/hosts file ?";
     };
 
     user_cfg = lib.mkOption {

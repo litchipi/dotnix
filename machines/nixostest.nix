@@ -2,13 +2,17 @@
 {
   # The name of the main user of the system
   base.user = "nx";
+
   # The system hostname
   base.hostname = "nixostest";
+
   # What SSH key to allow for remote login
   #   (has to be a file in data/ssh/pubkeys/<name>.pub)
   base.ssh_auth_keys = ["john"];
+
   # Set up pre-defined base of custom host for IPs ?
   base.base_hosts = false;
+
   # Load the wifi password for the SSID "nixostest"
   base.networking.connect_wifi = [ "nixostest" ];
 
@@ -24,9 +28,6 @@
   # Some software sets to use
   commonconf.software.musicprod.enable = true;
   commonconf.software.musicprod.electro.enable = true;
-
-  # Custom configuration for this system
-  users.mutableUsers = false;
 
   # Custom configuration for the user "nx" of the system
   base.user_cfg = {
