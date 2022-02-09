@@ -36,6 +36,9 @@
     # Additionnal modules
     base_modules = (find_all_files ./base) ++ [
       home-manager.nixosModules.home-manager
+      {
+        _module.args = {hmlib=home-manager.lib.hm;};
+      }
     ];
 
     # Common configuration added to scope, and enabled with a flag

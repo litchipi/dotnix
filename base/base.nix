@@ -5,17 +5,29 @@ let
   libssh = import ../lib/ssh.nix {inherit config lib pkgs;};
   libutils = import ../lib/utils.nix {inherit config lib pkgs;};
 
+  extract_home_conf = conf: if (lib.attrsets.hasAttr "home_conf" conf)
+    then conf.home_conf
+    else {};
 
-  get_all_homeconf = config: user: homecfg: lib.lists.flatten (lib.attrsets.mapAttrsToList
-    (_: conf:
-      if (lib.attrsets.hasAttr "home_conf" conf)
-        then (if conf.enable
-          then conf.home_conf user homecfg
-          else {})
-        else get_all_homeconf conf user homecfg
+  check_extract = name: conf: lib.lists.foldr (x: y: x && y) true [
+    (!(lib.attrsets.isDerivation conf))
+    (!(lib.options.isOption conf))
+    ((builtins.typeOf conf) == "set")
+    (name != "home_conf")
+  ];
+
+  get_all_homeconf = config: lib.lists.flatten (lib.attrsets.mapAttrsToList
+    (name: conf:
+    if (check_extract name conf)
+      then (
+        lib.attrsets.recursiveUpdate
+          (extract_home_conf conf)
+          (libutils.mergeall (get_all_homeconf conf))
+      )
+      else {}
     ) config
   );
-  all_common_conf_homecfg = user: homecfg: mergeall (get_all_homeconf config.commonconf user homecfg);
+  all_common_conf_homecfg = libutils.mergeall (get_all_homeconf config.commonconf);
 in
 {
   options.base = {
@@ -38,8 +50,11 @@ in
     };
 
     user_cfg = lib.mkOption {
-      type = with lib.types; functionTo anything;
-      default = {config}: {};
+      type = with lib.types; anything;
+      default = {};
+      description = "Additionnal home-manager configurations for this machine";
+    };
+
     };
   };
 
@@ -55,10 +70,8 @@ in
 
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = true;
-    home-manager.users."${cfg.user}" = hmcfg:
-      lib.attrsets.recursiveUpdate
-        (cfg.user_cfg {config=hmcfg.config;})
-      (all_common_conf_homecfg cfg.user hmcfg.config);
+    home-manager.users."${cfg.user}" =
+      lib.attrsets.recursiveUpdate cfg.user_cfg all_common_conf_homecfg;
 
     services.xserver.desktopManager.wallpaper.mode = lib.mkIf config.services.xserver.enable "fill";
 

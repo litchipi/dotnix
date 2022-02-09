@@ -29,7 +29,7 @@
   users.mutableUsers = false;
 
   # Custom configuration for the user "nx" of the system
-  base.user_cfg = {config}: {
+  base.user_cfg = {
     home.keyboard.layout = "fr";
   };
 

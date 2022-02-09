@@ -14,19 +14,18 @@ let
         default_enabled = false;
         parents = [];
         add_opts = {};
-        home_cfg = {};
+        home_cfg = user: hconfig: {};
         activation_script = '''';
         add_pkgs = [];
         cfg = {};
       } // user_cfg;
 
       opt_path = ["commonconf"] ++ arg_config.parents ++ [ arg_config.name ];
-      enable_condition = lib.attrsets.getAttrFromPath (opt_path ++ [ "enable" ]) config;
-
       cfg = utils.mergeall [
         arg_config.cfg
         { environment.systemPackages = arg_config.add_pkgs; }
       ];
+      enable_condition = lib.attrsets.getAttrFromPath (opt_path ++ [ "enable" ]) config;
     in
     with arg_config;
     {
