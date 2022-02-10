@@ -175,6 +175,20 @@ conf_lib.create_common_confs [
         };
 
         "org/gnome/shell" = {
+          enabled-extensions = [
+            "caffeine@patapon.info"
+            "bluetooth-quick-connect@bjarosze.gmail.com"
+            "freon@UshakovVasilii_Github.yahoo.com"
+            "disconnect-wifi@kgshank.net"
+            "runcat@kolesnikov.se"
+            "BringOutSubmenuOfPowerOffLogoutButton@pratap.fastmail.fm"
+            "Hide_Activities@shay.shayel.org"
+            "night-light-slider.timur@linux.com"
+            "trayIconsReloaded@selfmade.pl"
+            "unite@hardpixel.eu"
+            "user-theme@gnome-shell-extensions.gcampax.github.com"
+            "gnome-ui-tune@itstime.tech"
+          ];
           had-bluetooth-devices-setup = true;
           remember-mount-password = true;
           welcome-dialog-last-shown-version = "40.5";
