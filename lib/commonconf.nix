@@ -14,7 +14,7 @@ let
         default_enabled = false;
         parents = [];
         add_opts = {};
-        home_cfg = user: hconfig: {};
+        home_cfg = {};
         activation_script = '''';
         add_pkgs = [];
         cfg = {};
