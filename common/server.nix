@@ -42,6 +42,7 @@ conf_lib.create_common_confs [
 
       # Custom TUI tools
       litchipi.pomodoro
+      litchipi.memory
     ];
     cfg = {
       environment.interactiveShellInit = data_lib.load_aliases [
