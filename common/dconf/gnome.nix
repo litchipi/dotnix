@@ -4,6 +4,9 @@ with hmlib.gvariant;
 
 let
   conf_lib = import ../../lib/commonconf.nix {inherit config lib pkgs;};
+  data_lib = import ../../lib/manage_data.nix {inherit config lib pkgs;};
+
+  bckimg_path = data_lib.get_data_path ["assets" "wallpapers" config.commonconf.wm.bck-img];
 in
 conf_lib.create_common_confs [
   {
@@ -12,7 +15,7 @@ conf_lib.create_common_confs [
     home_cfg = {
       dconf.settings = {
         "org/gnome/desktop/background" = {
-          picture-uri="file://${config.commonconf.wm.bck-img}";
+          picture-uri="file://${bckimg_path}";
           picture-options="zoom";
         };
 
@@ -38,7 +41,7 @@ conf_lib.create_common_confs [
         };
 
         "org/gnome/desktop/screensaver" = {
-          picture-uri="file://${config.commonconf.wm.bck-img}";
+          picture-uri="file://${bckimg_path}";
           lock-delay = mkUint32 0;
           picture-options = "zoom";
         };

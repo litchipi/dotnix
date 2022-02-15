@@ -49,10 +49,6 @@ conf_lib.create_common_confs [
         };
       };
 
-      home.file = data_lib.copy_files_in_home [
-        { home_path=".background-image"; asset_path = [ "assets" "wallpapers" cfg.bck-img ];}
-      ];
-
       dconf.settings = cfg.add_dconf;
     };
   }
