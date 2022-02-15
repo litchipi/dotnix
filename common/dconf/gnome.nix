@@ -191,6 +191,7 @@ conf_lib.create_common_confs [
             "unite@hardpixel.eu"
             "user-theme@gnome-shell-extensions.gcampax.github.com"
             "gnome-ui-tune@itstime.tech"
+            "dash-to-dock@micxgx.gmail.com"
           ];
           had-bluetooth-devices-setup = true;
           remember-mount-password = true;
