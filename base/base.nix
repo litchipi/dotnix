@@ -72,8 +72,8 @@ in
 
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = true;
-    home-manager.users."${cfg.user}" =
-      lib.attrsets.recursiveUpdate cfg.user_cfg all_common_conf_homecfg;
+    home-manager.users."${cfg.user}" = lib.attrsets.recursiveUpdate
+      cfg.user_cfg all_common_conf_homecfg;
 
     services.xserver.desktopManager.wallpaper.mode = lib.mkIf config.services.xserver.enable "fill";
 

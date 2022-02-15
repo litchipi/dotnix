@@ -24,7 +24,7 @@ in
   };
 
   options = {
-    dirs = {
+    xdg.dirs = {
       download = make_dir_opt "download" "dl";
       documents = make_dir_opt "documents" "docs";
       music = make_dir_opt "music" "music";
