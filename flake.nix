@@ -4,6 +4,9 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    envfs.url = "github:Mic92/envfs";
+    envfs.inputs.nixpkgs.follows = "nixpkgs";
+
     nixosgen = {
       url = "github:nix-community/nixos-generators";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -15,7 +18,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixosgen, home-manager }:
+  outputs = { self, nixpkgs, nixosgen, home-manager, envfs }:
   let
     find_all_files = dir: nixpkgs.lib.lists.flatten (
       (builtins.map find_all_files (list_elements dir "directory"))
@@ -36,6 +39,7 @@
       {
         _module.args = {hmlib=home-manager.lib.hm;};
       }
+      envfs.nixosModules.envfs
     ];
 
     # Common configuration added to scope, and enabled with a flag
