@@ -45,7 +45,6 @@
     # Common configuration added to scope, and enabled with a flag
     common_configs = find_all_files ./common;
 
-
     # Gets the base name of a file without the extension, from a path
     name_from_fname = fname :
       nixpkgs.lib.removeSuffix ".nix"
@@ -76,6 +75,12 @@
         add_modules=add_modules ++ [ ./format_cfg/virtualbox.nix ];
         format="virtualbox";
       };
+
+      clivm = build_deriv_output { inherit machine system;
+        add_modules=add_modules ++ [ ./format_cfg/virtualisation.nix ];
+        format="vm-nogui";
+      };
+
       iso = build_deriv_output { inherit machine system add_modules; format="iso"; };
       sdraspi = build_deriv_output { inherit machine system add_modules; format="sd-aarch64"; };
       kvmcli = build_deriv_output { inherit machine system add_modules; format="kvmcli"; };
