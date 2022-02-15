@@ -14,6 +14,7 @@ conf_lib.create_common_confs [
       };
     };
     cfg = {
+      commonconf.wm = lib.mkIf config.commonconf.server.headless { enable = false;};
       commonconf.software.tui_tools.enable = true;
       services.openssh = {
         enable = true;
@@ -21,7 +22,7 @@ conf_lib.create_common_confs [
         permitRootLogin = "no";
         kbdInteractiveAuthentication = false;
       };
-    } // lib.mkIf config.commonconf.server.headless { commonconf.wm.enable = false; };
+    };
   }
   {
     name = "tui_tools";
