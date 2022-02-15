@@ -1,13 +1,8 @@
 # https://discourse.nixos.org/t/adding-folders-and-scripts/5114/3
 { stdenv, lib, pkgs, ... }:
-
-let
-  myScript = text: pkgs.writeTextFile {
-    name = "pomodoro";
-    executable = true;
-    destination = "/bin/pomodoro.sh";
-    inherit text;
-  };
+stdenv.mkDerivation rec {
+  pname = "litchipi.pomodoro";
+  version = "0.0.1";
 
   src = pkgs.fetchFromGitHub {
     owner  = "litchipi";
@@ -15,11 +10,6 @@ let
     rev    = "744133c890ba8447309fbc9c6de1c4e30f2ce9b9";
     sha256 = "B7XcdhUY3Iw9BUutSwlCCEbzdST/4t7TQaXTfz+gfso=";
   };
-in stdenv.mkDerivation rec {
-  pname = "litchipi.pomodoro";
-  version = "0.0.1";
-
-  inherit src;
 
   buildInputs = [
     pkgs.gnome.zenity
