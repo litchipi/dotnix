@@ -14,6 +14,7 @@ let
         default_enabled = false;
         parents = [];
         add_opts = {};
+        assertions = [];
         home_cfg = {};
         activation_script = '''';
         add_pkgs = [];
@@ -24,6 +25,7 @@ let
       cfg = utils.mergeall [
         arg_config.cfg
         { environment.systemPackages = arg_config.add_pkgs; }
+        { assertions = arg_config.assertions; }
       ];
       enable_condition = lib.attrsets.getAttrFromPath (opt_path ++ [ "enable" ]) config;
     in
