@@ -31,6 +31,10 @@ rec {
   try_get_password = user: pwds.machine_login."${user}" or null;
   load_wifi_cfg = ssid: pwds.wifi_keys."${ssid}" or null;
 
+  load_token = type: indent: lib.attrsets.getAttrFromPath [ type indent ] (
+    lib.importTOML ../data/secrets/tokens.toml
+  );
+
   get_asset_path = ident: get_data_path [ "asset" ident ];
 
   copy_files_in_home = assets:
