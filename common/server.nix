@@ -45,14 +45,15 @@ conf_lib.create_common_confs [
       litchipi.memory
     ];
     cfg = {
-      environment.interactiveShellInit = data_lib.load_aliases [
-        "filesystem"
-        "git"
-        "music"
-        "network"
-        "nix"
-        "software_wrap"
-      ];
+      commonconf.shell.aliases = {
+        filesystem.enable = true;
+        git.enable = true;
+        music.enable = true;
+        network.enable = true;
+        nix.enable = true;
+        jrnl.enable = true;
+        memory.enable = true;
+      };
     };
     parents = [ "software" ];
   }

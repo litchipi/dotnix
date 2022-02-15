@@ -27,12 +27,6 @@ rec {
     then builtins.readFile path
     else "";
 
-  # FIXME   Load aliases only once, even if specified several times
-  load_aliases = aliases_list: lib.lists.fold
-    (name: acc: acc + "\n" + (
-      read_data [ "aliases" (name + ".sh") ])
-    ) "" aliases_list;
-
   pwds = lib.importTOML ../data/secrets/passwords.toml;
   try_get_password = user: pwds.machine_login."${user}" or null;
   load_wifi_cfg = ssid: pwds.wifi_keys."${ssid}" or null;
