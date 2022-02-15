@@ -47,12 +47,6 @@ in
       description = "SSH authorizedKeys to add for this machine";
     };
 
-    base_hosts = lib.mkOption {
-      type = with lib.types; bool;
-      default = true;
-      description = "Add the defined hosts in /etc/hosts file ?";
-    };
-
     user_cfg = lib.mkOption {
       type = with lib.types; anything;
       default = {};

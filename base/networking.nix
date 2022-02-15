@@ -13,11 +13,6 @@ in
   config = {
       networking = {
         hostName = config.base.hostname;
-        extraHosts = (
-          if config.base.base_hosts
-          then libdata.read_data ["base_hosts"]
-          else ""
-        ); # + "\n" + add_hosts;
         networkmanager.enable = true;
         enableIPv6 = false;
     };
