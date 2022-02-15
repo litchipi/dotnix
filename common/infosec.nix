@@ -10,5 +10,34 @@ conf_lib.create_common_confs [
       commonconf.software.basic.enable = true;
       commonconf.software.tui_tools.enable = true;
     };
+    add_pkgs = with pkgs; [
+      # Scripting
+      python39Full
+      python39Packages.scapy
+
+      # Scanning
+      nmap
+      tcpdump
+      ngrep
+
+      # Enumeration
+      gobuster
+
+      # Password cracking
+      john
+      hashcat
+      hashcat-utils
+      hcxtools
+
+      # Wordlist generation
+      crunch
+
+      # Malware creation
+      snowcrash
+      metasploit
+
+      # Database attacks
+      sqlmap
+    ];
   }
 ]
