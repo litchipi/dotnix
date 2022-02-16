@@ -34,6 +34,7 @@ conf_lib.create_common_confs [
     cfg = {
       services.xserver.enable = true;
       commonconf.dconf.apps.enable = true;
+      commonconf.infosec = lib.mkIf config.commonconf.infosec.enable { gui.enable = true; };
     };
 
     home_cfg = {
