@@ -44,7 +44,7 @@
       envfs.nixosModules.envfs
       {
         options = {
-          flake_repo_url = lib.mkOption {
+          flake_repo_url = nixpkgs.lib.mkOption {
             type = nixpkgs.lib.types.str;
             default = "https://github.com/litchipi/dotnix";
             description = "Remote git repository where to get the machine configuration from";
@@ -93,7 +93,9 @@
       };
 
       iso-install = build_deriv_output { inherit machine system;
-        add_modules = add_modules ++ [ ./format_cfg/iso-install-diskfmt.nix ];
+        add_modules = add_modules ++ [
+          ./format_cfg/iso-install-diskfmt.nix
+        ];
         format="install-iso";
       };
     };

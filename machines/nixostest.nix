@@ -19,7 +19,6 @@
   ];
 
   # Configure the disk setup
-  base.disks.disk_uuid = "Virtualbox";
   base.disks.swapsize = 4;
   base.disks.add_partition = [
     { label = "part0"; size.Gib = 4; fstype = "ntfs"; }

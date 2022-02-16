@@ -1,21 +1,15 @@
 { config, lib, pkgs, ... }:
 {
   options.base.disks = {
-    disk_uuid = lib.mkOption {
+    root_part_label = lib.mkOption {
       type = lib.types.str;
-      description = "UUID of the disk where to install the system";
-      default = "";
+      description = "Label for the root partition where the system is installed";
+      default = "nixos";
     };
 
-    root_encryption = lib.mkOption {
+    disk_encryption = lib.mkOption {
       type = lib.types.bool;
-      description = "Wether to encrypt the root disk or not (passwd will be derived from data/secrets)";
-      default = true;
-    };
-
-    swap_encryption = lib.mkOption {
-      type = lib.types.bool;
-      description = "Wether to encrypt the swap as well (passwd will be derived from data/secrets)";
+      description = "Wether to encrypt the disk or not (passwd will be derived from data/secrets)";
       default = true;
     };
 
@@ -29,6 +23,12 @@
       type = lib.types.int;
       default = 2;
       description = "Size of swap partition to create (in Gib)";
+    };
+
+    use_uefi = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Wether to enable UEFI or keep the Legacy boot";
     };
   };
 }
