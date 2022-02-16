@@ -25,6 +25,8 @@
     { label = "part1"; size.Mib = 500; fstype = "ext4"; }
   ];
 
+  installscript.nixos_config_branch = "dev";
+
   # The desktop software to use
   commonconf.wm.gnome.enable = true;
   commonconf.wm.bck-img = "we-must-conquer-mars.jpg";

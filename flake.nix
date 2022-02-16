@@ -42,15 +42,6 @@
         _module.args = {hmlib=home-manager.lib.hm;};
       }
       envfs.nixosModules.envfs
-      {
-        options = {
-          flake_repo_url = nixpkgs.lib.mkOption {
-            type = nixpkgs.lib.types.str;
-            default = "https://github.com/litchipi/dotnix";
-            description = "Remote git repository where to get the machine configuration from";
-          };
-        };
-      }
     ];
 
     # Common configuration added to scope, and enabled with a flag
@@ -95,16 +86,34 @@
       iso-install = build_deriv_output { inherit machine system;
         add_modules = add_modules ++ [
           ./format_cfg/iso-install-diskfmt.nix
+          ./format_cfg/iso-install-installscript.nix
         ];
         format="install-iso";
       };
     };
 
+    # Target used by the installed NixOS system to rebuild the system
+    generate_nixos_configuration = machines: {
+      nixosConfigurations = builtins.listToAttrs (
+        (builtins.map (machine: {
+          name = name_from_fname machine.fname;
+          value = nixpkgs.lib.nixosSystem {
+            system = machine.system;
+            modules = base_modules ++ common_configs ++ machine.add_modules ++ [
+              machine.fname
+              ./configuration.nix
+            ];
+          };
+        })
+        machines)
+        );
+      };
+
     # Build the derivation for each machine declared
     #   as a set in the form: { fname = ; system = ;}
     declare_machines = machines :
-      builtins.listToAttrs (
-        builtins.map (machine: {
+      (builtins.listToAttrs (
+        (builtins.map (machine: {
           name = name_from_fname machine.fname;
           value = build_machine_deriv {
             machine = machine.fname;
@@ -112,7 +121,7 @@
             add_modules = machine.add_modules or [];
           };
         }) machines
-      );
+      ))) // (generate_nixos_configuration machines);
   in
   declare_machines [
     { fname=./machines/nixostest.nix; system="x86_64-linux"; }
