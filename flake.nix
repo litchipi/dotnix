@@ -84,7 +84,10 @@
       iso = build_deriv_output { inherit machine system add_modules; format="iso"; };
       sdraspi = build_deriv_output { inherit machine system add_modules; format="sd-aarch64"; };
       kvmcli = build_deriv_output { inherit machine system add_modules; format="kvmcli"; };
-      iso-install = build_deriv_output { inherit machine system add_modules; format="install-iso"; };
+      iso-install = build_deriv_output { inherit machine system;
+        add_modules = add_modules ++ [ ./format_cfg/iso-install-diskfmt.nix ];
+        format="install-iso";
+      };
     };
 
     # Build the derivation for each machine declared
