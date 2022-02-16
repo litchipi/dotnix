@@ -76,7 +76,7 @@
     # Create entire NixOS derivation for a machine
     build_machine_deriv = { machine, system, add_modules }: {
       # Target when updating a live NixOS system
-      nixos_upt = nixpkgs.lib.nixosSystem {
+      nixos = nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [ machine ] ++ common_configs ++ base_modules ++ add_modules;
       };
