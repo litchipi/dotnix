@@ -13,16 +13,17 @@ in
   config = {
       networking = {
         hostName = config.base.hostname;
-        networkmanager.enable = true;
+        networkmanager = {
+          enable = true;
+          unmanaged = [
+            "*" "except:type:wwan" "except:type:gsm"
+          ];
+        };
         enableIPv6 = false;
     };
 
     users.users."${config.base.user}".extraGroups = [ "networkmanager" ];
     services.avahi.enable = true;
-
-    environment.systemPackages = with pkgs; [
-      networkmanager
-    ];
 
     networking.wireless.networks = builtins.listToAttrs (
       builtins.map (cfg: { name=cfg.ssid; value={ pskRaw = cfg.passwd; }; })
