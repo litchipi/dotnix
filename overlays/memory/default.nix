@@ -12,9 +12,9 @@ stdenv.mkDerivation rec {
   };
 
   buildInputs = with pkgs; [
-    pkgs.python39Full
-    pkgs.restic
-    pkgs.python39Packages.toml
+    python39Full
+    restic
+    python39Packages.toml
   ];
 
   installPhase = ''

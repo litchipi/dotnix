@@ -5,7 +5,7 @@ let
     lib.attrNames (
       lib.filterAttrs
         (_: entryType: entryType == type)
-        (builtins.readDir  dir)
+        (builtins.readDir dir)
       )
     );
 
