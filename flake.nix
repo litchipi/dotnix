@@ -16,9 +16,11 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
   };
 
-  outputs = { self, nixpkgs, nixosgen, home-manager, envfs }:
+  outputs = { self, nixpkgs, nixosgen, home-manager, envfs, nixos-hardware }:
   let
     find_all_files = dir: nixpkgs.lib.lists.flatten (
       (builtins.map find_all_files (list_elements dir "directory"))
@@ -106,5 +108,9 @@
   in
   declare_machines [
     { fname=./machines/nixostest.nix; system="x86_64-linux"; }
+    # {
+    #   fname=./machines/diamond.nix; system="x86_64-linux";
+    #   add_modules = [ nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen ];
+    # }
   ];
 }
