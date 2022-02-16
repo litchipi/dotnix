@@ -212,8 +212,8 @@ conf_lib.create_common_confs [
       enable = true;
       shellAliases = {
         pingt=''ping -c 1 ${config.commonconf.shell.aliases.network.pingtest_website}'' +
-          '' 1> /dev/null 2> /dev/null && echo -e "'${colors.great}'Connected'${colors.reset}'"'' +
-          '' || echo -e "'${colors.bad}'No connection'${colors.reset}'"'';
+          '' 1> /dev/null 2> /dev/null && echo -e "${colors.great}Connected${colors.reset}"'' +
+          '' || echo -e "${colors.bad}No connection${colors.reset}"'';
       };
     };
   }

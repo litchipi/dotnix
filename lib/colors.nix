@@ -1,6 +1,6 @@
 { config, lib, pkgs, ...}:
 let
-  escape_code = "\033[";
+  escape_code = ''\033['';
 in
 rec {
   fg_rgb_color = {r, g, b}: escape_code + "38;2;${builtins.toString r};${builtins.toString g};${builtins.toString b}m";
