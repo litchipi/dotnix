@@ -42,6 +42,15 @@
         _module.args = {hmlib=home-manager.lib.hm;};
       }
       envfs.nixosModules.envfs
+      {
+        options = {
+          flake_repo_url = lib.mkOption {
+            type = nixpkgs.lib.types.str;
+            default = "https://github.com/litchipi/dotnix";
+            description = "Remote git repository where to get the machine configuration from";
+          };
+        };
+      }
     ];
 
     # Common configuration added to scope, and enabled with a flag
