@@ -19,7 +19,7 @@ conf_lib.create_common_confs [
       services.openssh = {
         enable = true;
         passwordAuthentication = false;
-        permitRootLogin = "no";
+        permitRootLogin = lib.mkForce "no";
         kbdInteractiveAuthentication = false;
       };
     };
