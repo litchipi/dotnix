@@ -8,7 +8,7 @@ stdenv.mkDerivation rec {
     owner  = "litchipi";
     repo   = "Memory";
     rev    = "9290e21b70c7fc48322eb6baa6edc0ffb4f10ace";
-    sha256 = "B7XcdhUY3Iw9BUutSwlCCEbzdST/4t7TQaXTfz+gfso=";
+    sha256 = "sha256-jZ/oZiwCSj9OhJSm20dHejiYHA9rOesC+08BwMIzQYg=";
   };
 
   buildInputs = with pkgs; [
