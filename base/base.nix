@@ -26,8 +26,12 @@ let
       )
       else {}
     ) config
-  );
-  all_common_conf_homecfg = libutils.mergeall (get_all_homeconf config.commonconf);
+    );
+
+  all_common_conf_homecfg = libutils.mkmergeall (get_all_homeconf config.commonconf);
+
+  base_home_config = {
+  };
 in
 {
   options.base = {
@@ -47,8 +51,8 @@ in
       description = "SSH authorizedKeys to add for this machine";
     };
 
-    user_cfg = lib.mkOption {
-      type = with lib.types; anything;
+    home_cfg = lib.mkOption {
+      type = lib.types.anything;
       default = {};
       description = "Additionnal home-manager configurations for this machine";
     };
@@ -72,8 +76,11 @@ in
 
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = true;
-    home-manager.users."${cfg.user}" = lib.attrsets.recursiveUpdate
-      cfg.user_cfg all_common_conf_homecfg;
+    home-manager.users."${cfg.user}" = lib.mkMerge [
+      (lib.attrsets.mapAttrsRecursive (_: value: lib.mkForce value) cfg.home_cfg)
+      base_home_config
+      all_common_conf_homecfg
+    ];
 
     services.xserver.desktopManager.wallpaper.mode = lib.mkIf config.services.xserver.enable "fill";
 

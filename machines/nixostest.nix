@@ -42,7 +42,7 @@
   commonconf.software.musicprod.electro.enable = true;
 
   # Custom configuration for the user "nx" of the system
-  base.user_cfg = {
+  base.home_cfg = {
     home.keyboard.layout = "fr";
   };
 }
