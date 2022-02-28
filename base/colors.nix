@@ -12,28 +12,27 @@ in
 
     primary_color = colors.mk_color_option {
       description = "Primary color to use in the system";
-      default = {r=0; g=128; b=255;}; # TODO default primary color
+      default = {r=154; g=36; b=98;};
     };
 
     secondary_color = colors.mk_color_option {
       description = "Secondary color to use in the system";
-      default = {r=0; g=128; b=255;}; # TODO default secondary color
+      default = {r=217; g=155; b=98;};
     };
 
     tertiary_color = colors.mk_color_option {
       description = "Tertiary color to use in the system";
-      default = {r=0; g=128; b=255;}; # TODO default tertiary color
+      default = {r=98; g=160; b=217;};
     };
 
     ok_color = colors.mk_color_option {
       description = "Color to use when everything goes well";
-      default = {r=0; g=255; b=0;};
+      default = {r=36; g=154; b=92;};
     };
     
     bad_color = colors.mk_color_option {
       description = "Color to use when everything goes shit";
-      default = {r=255; g=0; b=0;};
+      default = {r=173; g=61; b=61;};
     };
   };
 }
-
