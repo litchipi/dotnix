@@ -13,13 +13,21 @@ conf_lib.create_common_confs [
         description = "Terminal application to use";
       };
 
-      # TODO assert that the name of the default_terminal_app is contained in the command
       terminal_cmd = lib.mkOption {
         type = with lib.types; str;
         default = "alacritty -e";
         description = "Command used to spawn a terminal running an application";
       };
     };
+    assertions = let 
+      cfg = config.commonconf.software;
+    in
+    [
+      {
+        assertion = lib.strings.hasInfix (lib.strings.getName cfg.default_terminal_app) cfg.terminal_cmd;
+        message = "Terminal execution command does not contain the name of the default terminal application";
+      }
+    ];
     add_pkgs = [ config.commonconf.software.default_terminal_app ];
   }
 
