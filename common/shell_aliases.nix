@@ -49,22 +49,22 @@ conf_lib.create_common_confs [
         __git_complete gdf _git_branch
         __git_complete grh  _git_reset
         __git_complete gpsh _git_push
-        __git_complete gpsh _git_push
+        __git_complete gpshu _git_push
         __git_complete gcp  _git_cherry_pick
         __git_complete grm  _git_reset
         
-        function __gpsh_u() {
+        function gpshu() {
             git push -u $1 $(git branch --show-current)
         }
         function __get_current_branch() {
                 git branch |grep "*"| cut -d " " -f 2
         }
-        function __gkeep() {
+        function gkeep() {
             name="$(__get_current_branch).$(git rev-parse --short HEAD)"
             git branch "$name" 2>/dev/null
             echo "$name"
         }
-        function __gsave() {
+        function gsave() {
                 if [ $# -ne 1 ] ; then
                         echo "Usage: $0 <branch name>. Will create a temporary commit and checkout to the given branch"
                         exit 1;
@@ -72,7 +72,7 @@ conf_lib.create_common_confs [
                 git add . && git commit -m "TMP COMMIT" && git checkout $1
         }
         __git_complete gsave _git_checkout
-        function __gload() {
+        function gload() {
                 if [ $# -ne 1 ] ; then
                         echo "Usage: $0 <branch name>. Will create a temporary commit and checkout to the given branch"
                         exit 1;
@@ -85,7 +85,7 @@ conf_lib.create_common_confs [
                 echo -e "${colors.primary_color} $1:   ${colors.reset} $2"
         }
 
-        function __ghelp() {
+        function ghelp() {
                 echo "Aliases defined for git:"
                 echo ""
                 __gh "ga" "Add everything to repo"
@@ -147,19 +147,12 @@ conf_lib.create_common_confs [
         gcp="git cherry-pick";
 
         gpsh="git push";
-        gpshu="__gpsh_u $@";
         gpsh_allremote=''for remote in $(git remote); do echo -e "\033[96;1mPushing to $remote\033[0m"; git push "$remote"; echo -e "\n"; done'';
-
-        gkeep="__gkeep";
 
         gg="git gui &";
         gitka="gitk --all --max-count=5000";
         ggk="git gui & gitk &";
         ggka="git gui & gitka &";
-
-        gsave="__gsave";
-        gload="__gload";
-        ghelp="__ghelp";
       };
     };
   }
