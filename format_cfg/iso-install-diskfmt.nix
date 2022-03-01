@@ -98,14 +98,22 @@ in
     '';
 
     #TODO Encryption
-    create_encrypted_lvm_partition = parts:
-      ''
-      echo -e "${colors.secondary_color}Encrypted LVM partitions${colors.reset}"
-      echo -e "${colors.tertiary_color}===========================${colors.reset}"
-    '' + (lib.strings.concatStringsSep "\n" (builtins.map (part:
-      create_partition part.label part.start part.end part.fstype
-    ) parts)) + ''
-      echo -e "${colors.tertiary_color}===========================${colors.reset}"
+    create_encrypted_lvm_partition = { start, end }: ''
+      echo -e "${colors.fg.secondary_color}Encrypted LVM partitions${colors.reset}"
+      echo -e "${colors.fg.tertiary_color}======================================================${colors.reset}"
+
+      NB_PART=$((NB_PART+1))
+      parted $target$NB_PART -- mkpart primary ${builtins.toString start} ${builtins.toString end}
+      cryptsetup luksFormat $target$NB_PART
+      cryptsetup luksOpen $target$NB_PART encpart
+
+      pvcreate /dev/mapper/encpart
+      vgcreate vg /dev/mapper/encpart
+      lvcreate -L ${builtins.toString cfg.swapsize}G -n swap vg
+      lvcreate -l '100%FREE' -n '${cfg.root_part_label}' vg
+      mkfs.ext4 -L ${cfg.root_part_label} /dev/vg/${cfg.root_part_label}
+      mkswap -L swap /dev/vg/swap
+      echo -e "${colors.fg.tertiary_color}======================================================${colors.reset}"
     '';
     
     create_add_parts = start: (builtins.foldl' (state: part: let
@@ -129,6 +137,7 @@ in
     '';
     environment.systemPackages = [
       pkgs.cryptsetup
+      pkgs.lvm2
       pkgs.parted
       build_script
     ];
