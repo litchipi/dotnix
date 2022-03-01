@@ -31,6 +31,11 @@ let
   all_common_conf_homecfg = libutils.mkmergeall (get_all_homeconf config.commonconf);
 
   base_home_config = {
+    programs.git = {
+      enable = true;
+      userName = libutils.email_to_name cfg.email;
+      userEmail = cfg.email;
+    };
   };
 in
 {
@@ -43,6 +48,12 @@ in
     hostname = lib.mkOption {
       type = with lib.types; str;
       description = "Hostname for this machine";
+    };
+
+    email = lib.mkOption {
+      type = lib.types.str;
+      description = "Email to use for this system";
+      default = "${cfg.user}@${cfg.hostname}.nix";
     };
 
     ssh_auth_keys = lib.mkOption {
