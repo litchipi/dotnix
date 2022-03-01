@@ -41,7 +41,8 @@ conf_lib.create_common_confs [
     ];
     home_cfg.programs.bash = {
       enable = true;
-      initExtra = (data_lib.read_data [ "shell" "git-completion" ]) + ''
+      initExtra = ''
+        source ${data_lib.get_data_path [ "shell" "git-completion" ]}
         __git_complete gbc _git_branch
         __git_complete gbd _git_branch
         __git_complete gck _git_checkout
