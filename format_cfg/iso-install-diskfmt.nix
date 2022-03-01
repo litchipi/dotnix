@@ -13,20 +13,20 @@ in
     add_parts_sz = builtins.foldl' (acc: sz: acc + sz) 0 (builtins.map get_addpart_size cfg.add_partition);
 
     disp_disks = ''lsblk|grep disk --color=none|'' +
-      ''awk '{print "\tDevice ${colors.primary_color}"$1"${colors.reset} '' +
-      ''of size ${colors.secondary_color}"$4"${colors.reset}"}' '';
+      ''awk '{print "\tDevice ${colors.fg.primary}"$1"${colors.reset} '' +
+      ''of size ${colors.fg.secondary_color}"$4"${colors.reset}"}' '';
 
     build_script = pkgs.writeShellScriptBin "diskfmt" (''
       set -e
       while true; do
-        echo -e "${colors.primary_color}Disks:${colors.reset}"
+        echo -e "${colors.fg.primary}Disks:${colors.reset}"
         ${disp_disks}
-        echo -e -n "${colors.secondary_color}Choose on what disk to install NixOS${colors.reset}: "
+        echo -e -n "${colors.fg.secondary_color}Choose on what disk to install NixOS${colors.reset}: "
         read target
         if lsblk|grep disk|grep -w $target 1>/dev/null; then
           break;
         else
-          echo -e "${colors.tertiary_color}$target${colors.reset} is ${colors.bad}not a valid${colors.reset} disk"
+          echo -e "${colors.fg.tertiary_color}$target${colors.reset} is ${colors.bad}not a valid${colors.reset} disk"
         fi
       done
       
@@ -44,10 +44,7 @@ in
       create_table "gpt" +
       (
         if cfg.disk_encryption then
-        (create_encrypted_lvm_partition [
-          {label = cfg.root_part_label; start=512; end=root_end; fstype="ext4";}
-          {label = "swap"; start=root_end; end=-add_parts_sz; fstype="linux-swap";}
-        ])
+          (create_encrypted_lvm_partition { start=512; end=-add_parts_sz; })
         else (
           create_partition cfg.root_part_label 512 root_end "ext4"
           create_partition "swap" root_end (-(add_parts_sz+1)) "linux-swap"
@@ -64,10 +61,7 @@ in
       create_table "msdos" +
       (
         if cfg.disk_encryption then
-        (create_encrypted_lvm_partition [
-          {label = cfg.root_part_label; start=1; end=root_end; fstype="ext4";}
-          {label = "swap"; start=root_end; end=-add_parts_sz; fstype="linux-swap";}
-        ])
+          (create_encrypted_lvm_partition { start=1; end=-add_parts_sz; })
         else (
           create_partition cfg.root_part_label 1 root_end "ext4"
           create_partition "swap" root_end (-(add_parts_sz+1)) "linux-swap"
@@ -76,9 +70,9 @@ in
     );
 
     create_table = type: ''
-      echo -e -n "${colors.secondary_color}Creating table${colors.reset} "
-      echo -e -n "of type ${colors.primary_color}${type}${colors.reset} "
-      echo -e "on disk ${colors.primary_color}$target${colors.reset}"
+      echo -e -n "${colors.fg.secondary_color}Creating table${colors.reset} "
+      echo -e -n "of type ${colors.fg.primary}${type}${colors.reset} "
+      echo -e "on disk ${colors.fg.primary}$target${colors.reset}"
       parted $target -- mklabel ${type}
     '';
 
@@ -88,9 +82,9 @@ in
     in
       ''
       NB_PART=$((NB_PART+1))
-      echo -e -n "${colors.secondary_color}$NB_PART - ${label}|   \t${colors.reset}"
-      echo -e -n "partition of type ${colors.tertiary_color}${fstype}${colors.reset},"
-      echo -e "from ${colors.tertiary_color}${start}${colors.reset} to ${colors.tertiary_color}${end}${colors.reset}"
+      echo -e -n "${colors.fg.secondary_color}$NB_PART - ${label}|   \t${colors.reset}"
+      echo -e -n "partition of type ${colors.fg.tertiary_color}${fstype}${colors.reset},"
+      echo -e "from ${colors.fg.tertiary_color}${start}${colors.reset} to ${colors.fg.tertiary_color}${end}${colors.reset}"
 
       parted $target -- mkpart primary ${fstype} ${start} ${end}
       if [[ "$UNIX_MKFS" == *"${fstype}"* ]]; then
