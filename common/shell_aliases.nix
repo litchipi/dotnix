@@ -224,9 +224,10 @@ conf_lib.create_common_confs [
     };
     home_cfg.programs.bash = {
       enable = true;
-      initExtra = ''
-        NIX_SHELLS_DIR="$HOME/${config.commonconf.shell.aliases.nix.nix_shells_dir}"
-      '' + (data_lib.read_data [ "shell" "nix-shells" ]);
+      sessionVariables = {
+        NIX_SHELLS_DIR="$HOME/${cfg.nix.nix_shells_dir}";
+      };
+      initExtra = data_lib.read_data [ "shell" "nix-shells" ];
     };
   }
   

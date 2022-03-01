@@ -41,8 +41,10 @@ conf_lib.create_common_confs [
     home_cfg.home.file.".gogs_token".text = ''${builtins.toString (data_lib.load_token "gogs" config.networking.hostName)}'';
     home_cfg.programs.bash = {
       enable = true;
+      sessionVariables = {
+        GOGS_SSH = "gogs@${cfg.name}";
+      };
       initExtra = ''
-        GOGS_SSH="gogs@${cfg.name}"
         new_gogs_repo(){
             REPO=$1
             TOK=$(cat $HOME/gogs_token)
