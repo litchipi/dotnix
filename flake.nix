@@ -78,6 +78,11 @@
         format="virtualbox";
       };
 
+      vm = build_deriv_output { inherit machine system;
+        add_modules=add_modules ++ [ ./format_cfg/virtualisation.nix ];
+        format="vm";
+      };
+
       clivm = build_deriv_output { inherit machine system;
         add_modules=add_modules ++ [ ./format_cfg/virtualisation.nix ];
         format="vm-nogui";
