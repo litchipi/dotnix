@@ -5,7 +5,8 @@ let
 
   colors = import ../lib/colors.nix {inherit config lib pkgs;};
 
-  cfg_memory = config.commonconf.shell.aliases.memory;
+  cfg = config.commonconf.shell.aliases;
+  cfg_memory = cfg.memory;
 in
 conf_lib.create_common_confs [
   {
@@ -197,16 +198,19 @@ conf_lib.create_common_confs [
     add_opts = {
       pingtest_website = lib.mkOption {
         type = lib.types.str;
-        default = "www.google.fr"; # TODO find better
+        default = "8.8.8.8";
         description = "Website to ping for internet connection test";
       };
     };
     home_cfg.programs.bash = {
       enable = true;
       shellAliases = {
-        pingt=''ping -c 1 ${config.commonconf.shell.aliases.network.pingtest_website}'' +
-          '' 1> /dev/null 2> /dev/null && echo -e "${colors.great}Connected${colors.reset}"'' +
-          '' || echo -e "${colors.bad}No connection${colors.reset}"'';
+        pingt=''ping -c 1 ${cfg.network.pingtest_website} '' +
+          ''1> /dev/null 2> /dev/null && echo -e "${colors.great}Connected${colors.reset}" '' +
+          ''|| echo -e "${colors.bad}No connection${colors.reset}" '';
+      };
+    };
+  }
       };
     };
   }
