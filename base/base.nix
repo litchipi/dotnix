@@ -41,12 +41,12 @@ in
 {
   options.base = {
     user = lib.mkOption {
-      type = with lib.types; str;
+      type = lib.types.str;
       description = "Username of the main user of the system";
     };
 
     hostname = lib.mkOption {
-      type = with lib.types; str;
+      type = lib.types.str;
       description = "Hostname for this machine";
     };
 
@@ -69,7 +69,7 @@ in
     };
 
     add_pkgs = lib.mkOption {
-      type = with lib.types; anything;
+      type = lib.types.anything;
       default = [];
       description = "Additionnal packages to set for this machine";
     };
