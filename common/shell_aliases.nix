@@ -228,7 +228,127 @@ conf_lib.create_common_confs [
       sessionVariables = {
         NIX_SHELLS_DIR="$HOME/${cfg.nix.nix_shells_dir}";
       };
-      initExtra = data_lib.read_data [ "shell" "nix-shells" ];
+
+      initExtra = '' 
+        NIX_SHELL_TEMPLATE='{
+          description = "DESCRIPTION_HERE";
+          inputs.flake-utils.url = "github:numtide/flake-utils";
+          nixConfig.bash-prompt = "${colors.fg.ps1.username}\\u ${colors.fg.ps1.wdir}\\w ${colors.fg.ps1.gitps1}\`__git_ps1 \<%s\>\` ${colors.fg.ps1.dollarsign}\$ ${colors.reset}";
+          outputs = { self, nixpkgs, flake-utils }:
+            flake-utils.lib.eachDefaultSystem
+              (system:
+              let
+                pkgs = nixpkgs.legacyPackages.\''\${system};
+                project_root = START_DIRECTORY;
+              in
+                {
+                  devShell = pkgs.mkShell {
+                    shellHook = ''\''cd \"\''\${toString project_root }\"''\'';
+                    buildInputs = with pkgs; [ PACKAGE_LIST ];
+                  };
+                }
+              );
+        }'
+
+        mkdir -p $NIX_SHELLS_DIR
+        if [ ! -d $NIX_SHELLS_DIR/.git ]; then
+            cd $NIX_SHELLS_DIR
+            git init 1>/dev/null 2>/dev/null
+            cd - 1>/dev/null 2>/dev/null
+        fi
+
+        function _nixfiles() {
+            COMPREPLY=($(compgen -W "$(ls *.nix)" -- "$${COMP_WORDS[COMP_CWORD]}"))
+        }
+
+        complete -F _nixfiles nix_refbuild
+        function nix_refbuild() {
+                nix-store -q --references $(nix-instantiate $1)
+        }
+
+        complete -F _nixfiles nix_refrun
+        function nix_refrun() {
+                drvfile=$(nix-instantiate $1)
+                nix-store -q --references $(nix-store -r $drvfile)
+        }
+
+        function nxnewshell() {
+            if [ $# -lt 3 ]; then
+                echo "Missing parameter: <name> <start directory> <description> [<package> <package> ...]"
+                return;
+            fi
+            if [ ! -d $2 ]; then
+                echo "Directory $2 does not exist"
+                return;
+            fi
+            name=$1
+            start_dir=$(realpath $2)
+            descr=$3
+            shift 3
+            mkdir -p $NIX_SHELLS_DIR/$name
+            cd $NIX_SHELLS_DIR
+            if [ ! -d $NIX_SHELLS_DIR/.git ]; then
+                git init 1>/dev/null 2>/dev/null
+                git add . 1>/dev/null 2>/dev/null
+                git commit -m "Initial commit" 1>/dev/null 2>/dev/null
+            fi
+
+            template=$NIX_SHELL_TEMPLATE
+            template=$${template//PROJECT_NAME/$name}
+            template=$${template//DESCRIPTION_HERE/$descr}
+            template=$${template//START_DIRECTORY/$start_dir}
+            template=$${template//PACKAGE_LIST/$( echo $@ | tr ' ' '\n')}
+            if [ -z $(which nixpkgs-fmt) ]; then
+                echo "Installing \"nixpkgs-fmt\"..."
+                nix-env -i nixpkgs-fmt
+            fi
+            echo "$template" | nixpkgs-fmt > $NIX_SHELLS_DIR/$name/flake.nix
+            git add $name/ 1>/dev/null 2>/dev/null
+            git commit -m "Modify $name shell" 1>/dev/null 2>/dev/null
+            cd - 1>/dev/null 2>/dev/null
+            echo "Written to $NIX_SHELLS_DIR/$name/flake.nix"
+            echo "Use \"nxshell $name\" to start shell"
+        }
+
+        function nxshell() {
+            if [ $# -lt 1 ]; then
+                echo "Usage: nxshell <shell name>"
+                return;
+            fi
+            if [ ! -d $NIX_SHELLS_DIR/$1 ]; then
+                echo "Shell $1 not set, set it up in $NIX_SHELLS_DIR/$1 dir"
+                return;
+            fi
+            d=$(pwd)
+            cd $NIX_SHELLS_DIR/$1
+            shift 1;
+            clear
+            nix develop $@
+            cd - 1>/dev/null 2>/dev/null
+        }
+
+        complete -F _nxshell_autocomplete nxshell
+        function _nxshell_autocomplete {
+            if [ $COMP_CWORD -gt 1 ]; then
+                return;
+            fi
+            # Ensure that the directory exist before trying to autocomplete
+            COMPREPLY=($(compgen -W "$(for d in $(ls $NIX_SHELLS_DIR/); do if [ -f $NIX_SHELLS_DIR/$d/flake.nix ]; then echo "$d"; fi; done)" -- "$${COMP_WORDS[COMP_CWORD]}"))
+        }
+
+        function nxedit() {
+            if [ $# -lt 1 ]; then
+                echo "Usage: nxedit <shell name>"
+                return
+            fi
+            nvim $NIX_SHELLS_DIR/$1/flake.nix
+            cd $NIX_SHELLS_DIR
+            git add $1/ 1>/dev/null 2>/dev/null
+            git commit -m "Manually edited $name shell" 1>/dev/null 2>/dev/null
+            cd - 1>/dev/null 2>/dev/null
+        }
+        complete -F _nxshell_autocomplete nxedit
+      '';
     };
   }
   
