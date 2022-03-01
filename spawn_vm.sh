@@ -10,7 +10,7 @@ fi
 MACHINE=$1
 shift 1;
 
-OPTS=""
+OPTS="-smp $(nproc) -m 8G -device virtio-net,netdev=vmnic -netdev user,id=vmnic"
 
 nix build .#$MACHINE.clivm
 
