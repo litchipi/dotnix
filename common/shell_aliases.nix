@@ -211,9 +211,6 @@ conf_lib.create_common_confs [
       };
     };
   }
-      };
-    };
-  }
 
   {
     name = "nix";
