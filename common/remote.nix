@@ -2,6 +2,7 @@
 let
   conf_lib = import ../lib/commonconf.nix {inherit config lib pkgs;};
   data_lib = import ../lib/manage_data.nix {inherit config lib pkgs;};
+  netw_lib = import ../lib/networking.nix {inherit config lib pkgs;};
 
   cfg = config.commonconf.remote.gogs;
 in
@@ -24,9 +25,11 @@ conf_lib.create_common_confs [
       };
     };
 
-    # TODO Check is the correct IP format
     assertions = [
-      { assertion = cfg.ipaddr != ""; message = "You have to set the IP address";}
+      {
+        assertion = (builtins.tryEval (netw_lib.IpFromString cfg.ipaddr)).success;
+        message = "IP address not valid, please check commonconf.remote.gogs.ipaddr config";
+      }
     ];
 
     cfg = {

@@ -41,6 +41,9 @@
   commonconf.software.musicprod.enable = true;
   commonconf.software.musicprod.electro.enable = true;
 
+  commonconf.remote.gogs.enable = true;
+  commonconf.remote.gogs.ipaddr = "185.167.99.178";
+
   # Custom configuration for the user "nx" of the system
   base.home_cfg = {
     home.keyboard.layout = "fr";
