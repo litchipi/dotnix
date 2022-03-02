@@ -51,6 +51,7 @@ conf_lib.create_common_confs [
         __git_complete gdf _git_branch
         __git_complete grh  _git_reset
         __git_complete gpsh _git_push
+        __git_complete gpl _git_pull
         __git_complete gpshu _git_push
         __git_complete gcp  _git_cherry_pick
         __git_complete grm  _git_reset
@@ -93,6 +94,7 @@ conf_lib.create_common_confs [
                 __gh "ga" "Add everything to repo"
                 __gh "gcm" "Commit signed with a message (arg: message)"
                 __gh "gts" "Get status of repository"
+                __gh "gpl" "Pull changes from the remote repository"
                 __gh "gpsh" "Push the repository to remote"
                 __gh "gpsh_allremote" "Push the repository to all known remote in the repository"
                 __gh "gitclean" "Clean the repository, garbage collect, prune"
@@ -149,6 +151,7 @@ conf_lib.create_common_confs [
         gcp="git cherry-pick";
 
         gpsh="git push";
+        gpl="git pull";
         gpsh_allremote=''for remote in $(git remote); do echo -e "\033[96;1mPushing to $remote\033[0m"; git push "$remote"; echo -e "\n"; done'';
 
         gg="git gui &";
