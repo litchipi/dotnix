@@ -60,6 +60,7 @@ conf_lib.create_common_confs [
     parents = [ "software" ];
     add_pkgs = with pkgs; [
       vlc                         # Video player
+      rhythmbox                   # Music player
     ];
   }
 

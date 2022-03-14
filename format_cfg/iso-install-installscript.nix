@@ -85,6 +85,7 @@ in
   in
   {
     environment.systemPackages = [
+      pkgs.git
       pkgs.gnupg
       pkgs.pinentry
       pkgs.srm
