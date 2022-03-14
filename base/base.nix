@@ -2,7 +2,6 @@
 let
   cfg = config.base;
   libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
-  libssh = import ../lib/ssh.nix {inherit config lib pkgs;};
   libutils = import ../lib/utils.nix {inherit config lib pkgs;};
   colors = import ../lib/colors.nix {inherit config lib pkgs;};
 
@@ -61,12 +60,6 @@ in
       default = "${cfg.user}@${cfg.hostname}.nix";
     };
 
-    ssh_auth_keys = lib.mkOption {
-      type = with lib.types; listOf str;
-      default = [];
-      description = "SSH authorizedKeys to add for this machine";
-    };
-
     home_cfg = lib.mkOption {
       type = lib.types.anything;
       default = {};
@@ -84,7 +77,6 @@ in
       users.users."${cfg.user}" = {
         isNormalUser = true;
         extraGroups = [ "wheel" ];
-        openssh.authorizedKeys.keys = libssh.get_authorized_keys cfg.user cfg.ssh_auth_keys;
         password = libdata.try_get_password cfg.user;
       };
 
