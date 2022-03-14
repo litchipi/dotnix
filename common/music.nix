@@ -7,7 +7,7 @@ conf_lib.create_common_confs [
   {
     name = "musicprod";
     cfg = {
-      commonconf.shell.aliases.music.enable = true;
+      cmn.shell.aliases.music.enable = true;
     };
     add_pkgs = with pkgs; [
       youtube-dl

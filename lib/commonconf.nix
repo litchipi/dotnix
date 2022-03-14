@@ -21,7 +21,7 @@ let
         cfg = {};
       } // user_cfg;
 
-      opt_path = ["commonconf"] ++ arg_config.parents ++ [ arg_config.name ];
+      opt_path = ["cmn"] ++ arg_config.parents ++ [ arg_config.name ];
       cfg = utils.mergeall [
         arg_config.cfg
         { environment.systemPackages = arg_config.add_pkgs; }

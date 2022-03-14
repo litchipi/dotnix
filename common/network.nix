@@ -3,7 +3,7 @@ let
   conf_lib = import ../lib/commonconf.nix {inherit config lib pkgs;};
   data_lib = import ../lib/manage_data.nix {inherit config lib pkgs;};
 
-  vpncfg = config.commonconf.software.proton_vpn;
+  vpncfg = config.cmn.software.proton_vpn;
   vpncreds = data_lib.get_data_path [ "secrets" "proton_vpn_creds" ];
 in
 conf_lib.create_common_confs [

@@ -6,7 +6,7 @@ let
   conf_lib = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   data_lib = import ../../lib/manage_data.nix {inherit config lib pkgs;};
 
-  bckimg_path = data_lib.get_data_path ["assets" "wallpapers" config.commonconf.wm.bck-img];
+  bckimg_path = data_lib.get_data_path ["assets" "wallpapers" config.cmn.wm.bck-img];
 in
 conf_lib.create_common_confs [
   {
@@ -221,7 +221,7 @@ conf_lib.create_common_confs [
         };
 
         "org/gnome/desktop/applications/terminal" = {
-          exec="${lib.strings.getName config.commonconf.software.default_terminal_app}";
+          exec="${lib.strings.getName config.cmn.software.default_terminal_app}";
         };
       };
     };
@@ -241,19 +241,19 @@ conf_lib.create_common_confs [
 
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
         binding = "<Primary><Alt>Return";
-        command = "${config.commonconf.software.terminal_cmd} \"bash\"";
+        command = "${config.cmn.software.terminal_cmd} \"bash\"";
         name = "terminal";
       };
 
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
         binding = "<Super>m";
-        command = "${config.commonconf.software.terminal_cmd} \"mocp\"";
+        command = "${config.cmn.software.terminal_cmd} \"mocp\"";
         name = "mocp";
       };
 
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2" = {
         binding = "<Primary><Shift><Alt>Return";
-        command = "${config.commonconf.software.terminal_cmd} \"tmux\"";
+        command = "${config.cmn.software.terminal_cmd} \"tmux\"";
         name = "tmux";
       };
     };

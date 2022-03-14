@@ -28,21 +28,20 @@
   installscript.nixos_config_branch = "dev";
 
   # The desktop software to use
-  commonconf.wm.gnome.enable = true;
-  commonconf.wm.bck-img = "we-must-conquer-mars.jpg";
+  cmn.wm.gnome.enable = true;
+  cmn.wm.bck-img = "we-must-conquer-mars.jpg";
 
   # Common configuration to use
-  commonconf.basic.enable = true;
-  commonconf.server.enable = true;
-  commonconf.server.headless = false;
-  commonconf.infosec.enable = true;
+  cmn.basic.enable = true;
+  cmn.server.enable = true;
+
 
   # Some software sets to use
-  commonconf.software.musicprod.enable = true;
-  commonconf.software.musicprod.electro.enable = true;
+  cmn.software.musicprod.enable = true;
+  cmn.software.musicprod.electro.enable = true;
 
-  commonconf.remote.gogs.enable = true;
-  commonconf.remote.gogs.ipaddr = "185.167.99.178";
+  cmn.remote.gogs.enable = true;
+  cmn.remote.gogs.ipaddr = "185.167.99.178";
 
   # Custom configuration for the user "nx" of the system
   base.home_cfg = {

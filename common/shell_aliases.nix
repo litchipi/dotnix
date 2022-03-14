@@ -5,7 +5,7 @@ let
 
   colors = import ../lib/colors.nix {inherit config lib pkgs;};
 
-  cfg = config.commonconf.shell.aliases;
+  cfg = config.cmn.shell.aliases;
   cfg_memory = cfg.memory;
 in
 conf_lib.create_common_confs [

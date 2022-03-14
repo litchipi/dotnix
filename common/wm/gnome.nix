@@ -4,7 +4,7 @@ let
   conf_lib = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   data_lib = import ../../lib/manage_data.nix {inherit config lib pkgs;};
 
-  cfg = config.commonconf.wm.gnome;
+  cfg = config.cmn.wm.gnome;
   gsettings_path = [ "wm" "gsettings" ];
   basic_gsettings = ''
   '';
@@ -28,8 +28,8 @@ conf_lib.create_common_confs [
     };
 
     cfg = {
-      commonconf.dconf.gnome.enable = true;
-      commonconf.dconf.gnome_keyboard_shortcuts.enable = true;
+      cmn.dconf.gnome.enable = true;
+      cmn.dconf.gnome_keyboard_shortcuts.enable = true;
       services.xserver.desktopManager.gnome.enable = true;
     };
 

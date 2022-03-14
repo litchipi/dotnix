@@ -3,7 +3,7 @@ let
   conf_lib = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   data_lib = import ../../lib/manage_data.nix {inherit config lib pkgs;};
   utils_lib = import ../../lib/utils.nix {inherit config lib pkgs;};
-  cfg = config.commonconf.wm;
+  cfg = config.cmn.wm;
 in
 conf_lib.create_common_confs [
   {
@@ -33,8 +33,8 @@ conf_lib.create_common_confs [
 
     cfg = {
       services.xserver.enable = true;
-      commonconf.dconf.apps.enable = true;
-      commonconf.infosec = lib.mkIf config.commonconf.infosec.enable { gui.enable = true; };
+      cmn.dconf.apps.enable = true;
+      cmn.software.infosec = lib.mkIf config.cmn.software.infosec.enable { gui.enable = true; };
     };
 
     home_cfg = {

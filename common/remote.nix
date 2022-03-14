@@ -4,7 +4,7 @@ let
   data_lib = import ../lib/manage_data.nix {inherit config lib pkgs;};
   netw_lib = import ../lib/networking.nix {inherit config lib pkgs;};
 
-  cfg = config.commonconf.remote.gogs;
+  cfg = config.cmn.remote.gogs;
 in
 conf_lib.create_common_confs [
   {
@@ -28,7 +28,7 @@ conf_lib.create_common_confs [
     assertions = [
       {
         assertion = (builtins.tryEval (netw_lib.IpFromString cfg.ipaddr)).success;
-        message = "IP address not valid, please check commonconf.remote.gogs.ipaddr config";
+        message = "IP address not valid, please check cmn.remote.gogs.ipaddr config";
       }
     ];
 

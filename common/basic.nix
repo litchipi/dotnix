@@ -20,7 +20,7 @@ conf_lib.create_common_confs [
       };
     };
     assertions = let 
-      cfg = config.commonconf.software;
+      cfg = config.cmn.software;
     in
     [
       {
@@ -28,15 +28,15 @@ conf_lib.create_common_confs [
         message = "Terminal execution command does not contain the name of the default terminal application";
       }
     ];
-    add_pkgs = [ config.commonconf.software.default_terminal_app ];
+    add_pkgs = [ config.cmn.software.default_terminal_app ];
   }
 
   {
     name = "basic";
     cfg = {
-      commonconf.software.basic.enable = true;
-      commonconf.software.multimedia.enable = true;
-      commonconf.software.systools.enable = true;
+      cmn.software.basic.enable = true;
+      cmn.software.multimedia.enable = true;
+      cmn.software.systools.enable = true;
       services.printing.enable = true;
     };
   }
