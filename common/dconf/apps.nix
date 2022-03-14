@@ -1,6 +1,6 @@
-{config, lib, pkgs, hmlib, ...}:
+{config, lib, pkgs, inputs, ...}:
 
-with hmlib.gvariant;
+with inputs.home-manager.lib.hm.gvariant;
 
 let
   conf_lib = import ../../lib/commonconf.nix {inherit config lib pkgs;};

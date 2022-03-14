@@ -20,7 +20,7 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
   };
 
-  outputs = { self, nixpkgs, nixosgen, home-manager, envfs, nixos-hardware }:
+  outputs = { self, nixpkgs, nixosgen, home-manager, envfs, nixos-hardware, ...}@inputs:
   let
     find_all_files = dir: nixpkgs.lib.lists.flatten (
       (builtins.map find_all_files (list_elements dir "directory"))
@@ -39,7 +39,7 @@
     base_modules = (find_all_files ./base) ++ [
       home-manager.nixosModules.home-manager
       {
-        _module.args = {hmlib=home-manager.lib.hm;};
+        _module.args = {inherit inputs;};
       }
       envfs.nixosModules.envfs
     ];
