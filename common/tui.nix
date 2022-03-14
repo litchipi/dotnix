@@ -68,6 +68,8 @@ libconf.create_common_confs [
       };
     };
     home_cfg = {
+      home.file.".local/share/nvim/site/autoload/plug.vim".source = libdata.get_data_path ["config" "nvim" "plug.vim"];
+
       programs.bash.sessionVariables = {
         EDITOR = "nvim";
       };
@@ -117,7 +119,7 @@ libconf.create_common_confs [
 
         extraConfig = builtins.concatStringsSep "\n" ([
           "call plug#begin()"
-          (builtins.concatStringsSep "\n" (builtins.map (plug: "  Plug '${plug}'")
+          (builtins.concatStringsSep "\n\n" (builtins.map (plug: "  Plug '${plug}'")
             (config.cmn.software.tui.neovim.add_plugins ++ [
               "markstory/vim-zoomwin"
               # "reedes/vim-colors-pencil"
