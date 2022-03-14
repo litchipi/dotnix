@@ -44,13 +44,17 @@ let
       } // user_cfg;
 
       opt_path = ["cmn"] ++ arg_config.parents ++ [ arg_config.name ];
+
+      enable_condition = lib.attrsets.getAttrFromPath (opt_path ++ [ "enable" ]) config;
       cfg = lib.mkMerge [
         arg_config.cfg
-        { environment.systemPackages = arg_config.add_pkgs; }
-        { assertions = arg_config.assertions; }
+        {
+          environment.systemPackages = arg_config.add_pkgs;
+          assertions = arg_config.assertions;
+          home-manager.users."${config.base.user}" = lib.mkIf enable_condition arg_config.home_cfg;
+        }
         (generate_enable_chains_cfgs opt_path arg_config.chain_enable_opts)
       ];
-      enable_condition = lib.attrsets.getAttrFromPath (opt_path ++ [ "enable" ]) config;
     in
     with arg_config;
     {
@@ -60,12 +64,6 @@ let
             type = lib.types.bool;
             default = default_enabled;
             description = "${builtins.toString opt_path}' common behavior";
-          };
-
-          home_conf = lib.mkOption {
-            type = with lib.types; anything;
-            default = lib.mkIf enable_condition arg_config.home_cfg;
-            description = "Additional configuration to add to home-manager.";
           };
         }
         (generate_enable_chains_opts chain_enable_opts)

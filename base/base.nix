@@ -5,31 +5,6 @@ let
   libutils = import ../lib/utils.nix {inherit config lib pkgs;};
   colors = import ../lib/colors.nix {inherit config lib pkgs;};
 
-  extract_home_conf = conf: if (lib.attrsets.hasAttr "home_conf" conf)
-    then conf.home_conf
-    else {};
-
-  check_extract = name: conf: lib.lists.foldr (x: y: x && y) true [
-    (!(lib.attrsets.isDerivation conf))
-    (!(lib.options.isOption conf))
-    (builtins.isAttrs conf)
-    (name != "home_conf")
-  ];
-
-  get_all_homeconf = config: lib.lists.flatten (lib.attrsets.mapAttrsToList
-    (name: conf:
-    if (check_extract name conf)
-      then (
-        lib.attrsets.recursiveUpdate
-          (extract_home_conf conf)
-          (libutils.mergeall (get_all_homeconf conf))
-      )
-      else {}
-    ) config
-    );
-
-  all_common_conf_homecfg = lib.mkMerge (get_all_homeconf config.cmn);
-
   base_home_config = {
     programs.bash.initExtra = ''
       source ${libdata.get_data_path [ "shell" "git-prompt.sh" ]}
@@ -92,7 +67,6 @@ in
     home-manager.users."${cfg.user}" = lib.mkMerge [
       (lib.attrsets.mapAttrsRecursive (_: value: lib.mkForce value) cfg.home_cfg)
       base_home_config
-      all_common_conf_homecfg
     ];
 
     services.xserver.desktopManager.wallpaper.mode = lib.mkIf config.services.xserver.enable "fill";
