@@ -20,6 +20,9 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     StevenBlackHosts.url = "github:StevenBlack/hosts";
+
+    # Overlays
+    rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
   outputs = { self, nixpkgs, nixosgen, home-manager, envfs, nixos-hardware, ...}@inputs:
@@ -36,6 +39,15 @@
           (builtins.readDir  dir)
         )
       );
+
+
+    pkgsForSystem = system: import nixpkgs {
+      overlays = [
+        inputs.rust-overlay.overlay
+        (prev: final: (import ./overlays/overlays.nix final))
+      ];
+      inherit system;
+    };
 
     # Additionnal modules
     base_modules = (find_all_files ./base) ++ [
@@ -61,8 +73,7 @@
 
     # Create output format derivation using nixos-generators
     build_deriv_output = { machine, system, add_modules, format}: nixosgen.nixosGenerate {
-      pkgs = nixpkgs.legacyPackages."${system}" //
-        (import ./overlays/overlays.nix nixpkgs.legacyPackages."${system}");
+        pkgs = pkgsForSystem system;
         modules = [ machine ] ++ common_configs ++ base_modules ++ add_modules;
       inherit format;
     };

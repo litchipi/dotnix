@@ -31,9 +31,8 @@ libconf.create_common_confs [
   (lang_profile {
     name = "rust";
     add_pkgs = with pkgs; [
-      cargo
-      rustup
-      rust-analyzer
+      rust-bin.stable.latest.default
+      gcc
     ];
     vimplugs = with pkgs.vimPlugins; [
       coc-rust-analyzer
