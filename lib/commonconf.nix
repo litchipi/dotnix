@@ -7,11 +7,33 @@ let
       config = lib.mkMerge (builtins.map (conf: conf.config) configs);
     };
 
+  generate_enable_chains_opts = chains: lib.attrsets.mapAttrs (name: _:
+    lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable the chained config \"${name}\"";
+    }
+    ) chains;
+
+  generate_tag_cfg = basepath: tag: lib.mkIf
+    (lib.attrsets.getAttrFromPath (basepath ++ [tag]) config)
+    { enable = true;};
+
+
+  generate_chain_cfg = basepath: tag: opts: lib.lists.foldl (acc: opt:
+    lib.attrsets.recursiveUpdate acc (lib.setAttrByPath (basepath ++ [opt]) (generate_tag_cfg basepath tag))
+  ) {} opts;
+
+  generate_enable_chains_cfgs = basepath: chains: lib.mkMerge (
+    lib.attrsets.mapAttrsToList (generate_chain_cfg basepath) chains
+  );
+
   commoncfg = user_cfg:
     let
       # Default arguments
       arg_config = {
         default_enabled = false;
+        chain_enable_opts = {};
         parents = [];
         add_opts = {};
         assertions = [];
@@ -26,25 +48,29 @@ let
         arg_config.cfg
         { environment.systemPackages = arg_config.add_pkgs; }
         { assertions = arg_config.assertions; }
+        (generate_enable_chains_cfgs opt_path arg_config.chain_enable_opts)
       ];
       enable_condition = lib.attrsets.getAttrFromPath (opt_path ++ [ "enable" ]) config;
     in
     with arg_config;
     {
-      options = lib.attrsets.setAttrByPath opt_path ({
+      options = lib.attrsets.setAttrByPath opt_path (libutils.mergeall [
+        {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = default_enabled;
+            description = "${builtins.toString opt_path}' common behavior";
+          };
 
-        enable = lib.mkOption {
-          default = default_enabled;
-          description = "${builtins.toString opt_path}' common behavior";
-          type = lib.types.bool;
-        };
-
-        home_conf = lib.mkOption {
-          type = with lib.types; anything;
-          default = lib.mkIf enable_condition arg_config.home_cfg;
-          description = "Additional configuration to add to home-manager.";
-        };
-      } // add_opts);
+          home_conf = lib.mkOption {
+            type = with lib.types; anything;
+            default = lib.mkIf enable_condition arg_config.home_cfg;
+            description = "Additional configuration to add to home-manager.";
+          };
+        }
+        (generate_enable_chains_opts chain_enable_opts)
+        add_opts
+      ]);
 
       config = lib.mkIf enable_condition cfg;
     };
