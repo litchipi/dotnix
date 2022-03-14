@@ -6,6 +6,8 @@ let
   colors = import ../lib/colors.nix {inherit config lib pkgs;};
 
   base_home_config = {
+    home.homeDirectory = "/home/${cfg.user}";
+    home.username = cfg.user;
     programs.bash.initExtra = ''
       source ${libdata.get_data_path [ "shell" "git-prompt.sh" ]}
       export PS1="${colors.fg.ps1.username}\\u ${colors.fg.ps1.wdir}\\w '' +
