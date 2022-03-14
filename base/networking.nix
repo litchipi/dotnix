@@ -50,6 +50,15 @@ in
       )
     );
 
+    # Block unwanted internet data
+    networking.stevenBlackHosts = {
+      blockFakenews = true;
+      blockGambling = true;
+      blockPorn = true;
+      blockSocial = true;
+      enable = true;
+    };
+
     services.openssh = lib.mkIf config.base.networking.ssh {
       enable = true;
       passwordAuthentication = false;

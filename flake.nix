@@ -18,6 +18,8 @@
     };
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
+    StevenBlackHosts.url = "github:StevenBlack/hosts";
   };
 
   outputs = { self, nixpkgs, nixosgen, home-manager, envfs, nixos-hardware, ...}@inputs:
@@ -41,6 +43,7 @@
       {
         _module.args = {inherit inputs;};
       }
+      inputs.StevenBlackHosts.nixosModule
       envfs.nixosModules.envfs
     ];
 
