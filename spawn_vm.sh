@@ -10,11 +10,13 @@ fi
 MACHINE=$1
 shift 1;
 
-OPTS="-smp $(nproc) -m 8G -device virtio-net,netdev=vmnic -netdev user,id=vmnic"
+OPTS="-cpu host -smp $(nproc) -m 8G -machine accel=kvm"
 
 nix build .#$MACHINE.clivm
 
-cd ./result
+mkdir -p ./vm_disk/$MACHINE
+cd ./vm_disk/$MACHINE
+
 set +e
-sudo ./bin/run-nixostest-vm $OPTS $@
+sudo ../../result/bin/run-nixostest-vm $OPTS $@
 cd ..

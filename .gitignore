@@ -1,3 +1,4 @@
 result
 configuration.nix
 hardware-configuration.nix
+vm_disk
