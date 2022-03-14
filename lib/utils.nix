@@ -1,7 +1,6 @@
 { config, lib, pkgs, ... }:
 rec {
   mergeall = setlist: lib.lists.fold (set: acc: lib.attrsets.recursiveUpdate acc set) {} setlist;
-  mkmergeall = setlist: lib.mkMerge setlist;
 
   capitalizeWord = word: let
     letters = lib.strings.stringToCharacters word;

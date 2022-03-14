@@ -44,7 +44,7 @@ let
       } // user_cfg;
 
       opt_path = ["cmn"] ++ arg_config.parents ++ [ arg_config.name ];
-      cfg = utils.mergeall [
+      cfg = lib.mkMerge [
         arg_config.cfg
         { environment.systemPackages = arg_config.add_pkgs; }
         { assertions = arg_config.assertions; }

@@ -28,7 +28,7 @@ let
     ) config
     );
 
-  all_common_conf_homecfg = libutils.mkmergeall (get_all_homeconf config.commonconf);
+  all_common_conf_homecfg = lib.mkMerge (get_all_homeconf config.cmn);
 
   base_home_config = {
     programs.bash.initExtra = ''
