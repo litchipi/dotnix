@@ -194,6 +194,9 @@ libconf.create_common_confs [
         enable = true;
         userName = libutils.email_to_name config.base.email;
         userEmail = config.base.email;
+        extraConfig = {
+          init.defaultBranch = "main";
+        };
       };
 
       neovim.plugins = with pkgs.vimPlugins; [
