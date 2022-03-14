@@ -28,6 +28,7 @@ conf_lib.create_common_confs [
     };
 
     cfg = {
+      cmn.wm.enable = true;
       cmn.dconf.gnome.enable = true;
       cmn.dconf.gnome_keyboard_shortcuts.enable = true;
       services.xserver.desktopManager.gnome.enable = true;

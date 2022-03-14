@@ -8,7 +8,6 @@ in
 conf_lib.create_common_confs [
   {
     name = "wm";
-    default_enabled = true;
     add_opts = {
       bck-img = lib.mkOption {
         type = with lib.types; str;
