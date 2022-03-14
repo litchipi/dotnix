@@ -45,6 +45,8 @@
   cmn.remote.gogs.enable = true;
   cmn.remote.gogs.ipaddr = "185.167.99.178";
 
+  cmn.software.dev.enable = true;
+  cmn.software.dev.all = true;
   # Custom configuration for the user "nx" of the system
   base.home_cfg = {
     home.keyboard.layout = "fr";
