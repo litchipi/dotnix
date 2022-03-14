@@ -1,5 +1,6 @@
 # Dotnix
 
+TODO    Refaire le README
 My dotfiles for the NixOS setup.
 
 ## Usage

@@ -13,11 +13,6 @@
   # Load the wifi password for the SSID "nixostest"
   base.networking.connect_wifi = [ "nixostest" ];
 
-  # Additionnal packages to install
-  base.add_pkgs = with pkgs; [
-    cowsay
-  ];
-
   # Configure the disk setup
   base.disks.swapsize = 4;
   base.disks.add_partition = [
@@ -47,8 +42,15 @@
 
   cmn.software.dev.enable = true;
   cmn.software.dev.all = true;
+
   # Custom configuration for the user "nx" of the system
   base.home_cfg = {
     home.keyboard.layout = "fr";
   };
+
+  # Additionnal packages to install
+  base.add_pkgs = with pkgs; [
+    cowsay
+  ];
+
 }

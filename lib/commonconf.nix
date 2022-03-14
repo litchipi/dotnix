@@ -1,9 +1,9 @@
 { config, lib, pkgs, ... }:
 let
-  utils = import ./utils.nix {inherit config lib pkgs;};
+  libutils = import ./utils.nix {inherit config lib pkgs;};
   merge_all_configs = configs:
     {
-      options = utils.mergeall (builtins.map (conf: conf.options) configs);
+      options = libutils.mergeall (builtins.map (conf: conf.options) configs);
       config = lib.mkMerge (builtins.map (conf: conf.config) configs);
     };
 

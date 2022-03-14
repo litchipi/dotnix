@@ -12,7 +12,7 @@ let
   check_extract = name: conf: lib.lists.foldr (x: y: x && y) true [
     (!(lib.attrsets.isDerivation conf))
     (!(lib.options.isOption conf))
-    ((builtins.typeOf conf) == "set")
+    (builtins.isAttrs conf)
     (name != "home_conf")
   ];
 

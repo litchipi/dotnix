@@ -97,7 +97,7 @@ in
       fi
     '';
 
-    #TODO Encryption
+    #TODO Test Encryption
     create_encrypted_lvm_partition = { start, end }: ''
       echo -e "${colors.fg.secondary_color}Encrypted LVM partitions${colors.reset}"
       echo -e "${colors.fg.tertiary_color}======================================================${colors.reset}"
