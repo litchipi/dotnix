@@ -8,10 +8,19 @@ in
 conf_lib.create_common_confs [
   {
     name = "infosec";
+    parents = ["software"];
+
+    chain_enable_opts = {
+      internet = ["web" "pwd_crack" "network" "malware"];
+      software = ["forensics" "malware"];
+      hardware = [];
+      wireless = ["rtl" "wifi" "pwd_crack"];
+      all = ["web" "pwd_crack" "network" "forensics" "malware" "rtl" "wifi"];
+    };
 
     cfg = {
       cmn.software.basic.enable = true;
-      commonconf.software.tui_tools.enable = true;
+      cmn.software.tui.enable = true;
     };
 
     add_pkgs = with pkgs; [
@@ -27,7 +36,8 @@ conf_lib.create_common_confs [
   ## GUI
   {
     name = "gui";
-    parents = [ "infosec" ];
+    parents = ["software" "infosec" ];
+    default_enable = config.cmn.wm.enable;
     add_pkgs = with pkgs; [
       # Note taking
       cherrytree
@@ -37,8 +47,7 @@ conf_lib.create_common_confs [
   ## WEB
   {
     name = "web";
-    parents = [ "infosec" ];
-    default_enabled = if infosec_cfg.enable then true else false;
+    parents = ["software" "infosec" ];
     add_pkgs = with pkgs; [
       # Enumeration
       gobuster
@@ -51,8 +60,7 @@ conf_lib.create_common_confs [
   ## PWD CRACK
   {
     name = "pwd_crack";
-    parents = [ "infosec" ];
-    default_enabled = if infosec_cfg.enable then true else false;
+    parents = ["software" "infosec" ];
     add_pkgs = with pkgs; [
       # Password cracking
       john
@@ -69,8 +77,7 @@ conf_lib.create_common_confs [
   ## NETWORK
   {
     name = "network";
-    parents = [ "infosec" ];
-    default_enabled = if infosec_cfg.enable then true else false;
+    parents = ["software" "infosec" ];
     add_pkgs = with pkgs; [
       # Scanning
       nmap
@@ -84,8 +91,7 @@ conf_lib.create_common_confs [
   ## FORENSICS
   {
     name = "forensics";
-    parents = [ "infosec" ];
-    default_enabled = if infosec_cfg.enable then true else false;
+    parents = ["software" "infosec" ];
     add_pkgs = with pkgs; [
       # Binary analysis
       binwalk
@@ -96,8 +102,7 @@ conf_lib.create_common_confs [
   ## MALWARE
   {
     name = "malware";
-    parents = [ "infosec" ];
-    default_enabled = if infosec_cfg.enable then true else false;
+    parents = ["software" "infosec" ];
     add_pkgs = with pkgs; [
       # Malware creation
       snowcrash
@@ -108,8 +113,7 @@ conf_lib.create_common_confs [
   ## RTL
   {
     name = "rtl";
-    parents = [ "infosec" ];
-    default_enabled = if infosec_cfg.enable then true else false;
+    parents = ["software" "infosec" ];
     add_pkgs = with pkgs; [
       gnuradio
     ];
@@ -118,8 +122,7 @@ conf_lib.create_common_confs [
   ## WIFI
   {
     name = "wifi";
-    parents = [ "infosec" ];
-    default_enabled = if infosec_cfg.enable then true else false;
+    parents = ["software" "infosec" ];
     add_pkgs = with pkgs; [
       # Wifi cracking
       wifite2

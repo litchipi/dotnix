@@ -35,6 +35,8 @@
   cmn.basic.enable = true;
   cmn.server.enable = true;
 
+  cmn.software.infosec.enable = true;
+  cmn.software.infosec.internet = true;
 
   # Some software sets to use
   cmn.software.musicprod.enable = true;
