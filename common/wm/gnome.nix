@@ -2,7 +2,6 @@
 let
   utils_lib = import ../../lib/utils.nix {inherit config lib pkgs;};
   conf_lib = import ../../lib/commonconf.nix {inherit config lib pkgs;};
-  data_lib = import ../../lib/manage_data.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.wm.gnome;
   gsettings_path = [ "wm" "gsettings" ];

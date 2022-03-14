@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   conf_lib = import ../lib/commonconf.nix {inherit config lib pkgs;};
-  data_lib = import ../lib/manage_data.nix {inherit config lib pkgs;};
+  libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
   netw_lib = import ../lib/networking.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.remote.gogs;
@@ -41,7 +41,7 @@ conf_lib.create_common_confs [
       git
       curl
     ];
-    home_cfg.home.file.".gogs_token".text = ''${builtins.toString (data_lib.load_token "gogs" config.networking.hostName)}'';
+    home_cfg.home.file.".gogs_token".text = ''${builtins.toString (libdata.load_token "gogs" config.networking.hostName)}'';
     home_cfg.programs.bash = {
       enable = true;
       sessionVariables = {

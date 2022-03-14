@@ -4,9 +4,9 @@ with inputs.home-manager.lib.hm.gvariant;
 
 let
   conf_lib = import ../../lib/commonconf.nix {inherit config lib pkgs;};
-  data_lib = import ../../lib/manage_data.nix {inherit config lib pkgs;};
+  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
 
-  bckimg_path = data_lib.get_data_path ["assets" "wallpapers" config.cmn.wm.bck-img];
+  bckimg_path = libdata.get_data_path ["assets" "wallpapers" config.cmn.wm.bck-img];
 in
 conf_lib.create_common_confs [
   {

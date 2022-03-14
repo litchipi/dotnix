@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   conf_lib = import ../lib/commonconf.nix {inherit config lib pkgs;};
-  data_lib = import ../lib/manage_data.nix {inherit config lib pkgs;};
+  libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
 
   colors = import ../lib/colors.nix {inherit config lib pkgs;};
 
@@ -42,7 +42,7 @@ conf_lib.create_common_confs [
     home_cfg.programs.bash = {
       enable = true;
       initExtra = ''
-        source ${data_lib.get_data_path [ "shell" "git-completion" ]}
+        source ${libdata.get_data_path [ "shell" "git-completion" ]}
         __git_complete gbc _git_branch
         __git_complete gbd _git_branch
         __git_complete gck _git_checkout
@@ -419,7 +419,7 @@ conf_lib.create_common_confs [
       '' + (lib.strings.concatStringsSep "\n" (builtins.map (media:
         "SAVE_MEDIA += \"${media}\""
         ) cfg_memory.backup_medias));
-    } // (data_lib.copy_files_in_home [
+    } // (libdata.copy_files_in_home [
       { home_path = "${cfg_memory.bck_dir}/Makefile"; asset_path = [ "shell" "memory_makefile" ]; }
     ]);
     home_cfg.programs.bash = {
