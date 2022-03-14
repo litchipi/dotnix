@@ -6,55 +6,9 @@ in
 conf_lib.create_common_confs [
   {
     name = "server";
-    add_opts = {
-      headless = lib.mkOption {
-        default = true;
-        type = with lib.types; bool;
-        description = "Wether to activate desktop environment or not";
-      };
-    };
     cfg = {
-      commonconf.wm = lib.mkIf config.commonconf.server.headless { enable = false;};
-      commonconf.software.tui_tools.enable = true;
-      services.openssh = {
-        enable = true;
-        passwordAuthentication = false;
-        permitRootLogin = lib.mkForce "no";
-        kbdInteractiveAuthentication = false;
-      };
+      cmn.software.tui.enable = true;
+      base.networking.ssh = true;
     };
-  }
-  {
-    name = "tui_tools";
-    add_pkgs = with pkgs; [
-      neovim
-      tmux
-      tmuxp
-      fzf
-      ripgrep
-      autojump
-      htop
-      irssi
-      jrnl
-      wkhtmltopdf
-      youtube-dl
-      git
-
-      # Custom TUI tools
-      litchipi.pomodoro
-      litchipi.memory
-    ];
-    cfg = {
-      commonconf.shell.aliases = {
-        filesystem.enable = true;
-        git.enable = true;
-        music.enable = true;
-        network.enable = true;
-        nix.enable = true;
-        jrnl.enable = true;
-        memory.enable = true;
-      };
-    };
-    parents = [ "software" ];
   }
 ]
