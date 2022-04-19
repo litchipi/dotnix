@@ -16,7 +16,6 @@ in
   cmn.server.enable = true;
   cmn.services.gitlab.enable = true;
   cmn.services.nextcloud.enable = true;
-  cmn.services.nextcloud.maps.enable = true;
 
   # Additionnal packages to install
   base.add_pkgs = with pkgs; [
