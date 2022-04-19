@@ -7,8 +7,6 @@ let
 in
 {
   config = let
-    luks_pwd = libdata.try_get_disk_pwd config.base.hostname;
-
     get_addpart_size = part: ((part.size.Gib or 0) * 1024) + (part.size.Mib or 0);
     add_parts_sz = builtins.foldl' (acc: sz: acc + sz) 0 (builtins.map get_addpart_size cfg.add_partition);
 
@@ -97,7 +95,7 @@ in
       fi
     '';
 
-    #TODO Test Encryption
+    #TODO Encryption
     create_encrypted_lvm_partition = { start, end }: ''
       echo -e "${colors.fg.secondary_color}Encrypted LVM partitions${colors.reset}"
       echo -e "${colors.fg.tertiary_color}======================================================${colors.reset}"
