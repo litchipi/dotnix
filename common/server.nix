@@ -8,6 +8,7 @@ conf_lib.create_common_confs [
     cfg = {
       cmn.software.tui.enable = true;
       base.networking.ssh = true;
+      networking.wireless.enable = false;
     };
   }
 ]
