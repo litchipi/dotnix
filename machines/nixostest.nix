@@ -8,7 +8,7 @@
 
   # What SSH key to allow for remote login
   #   (has to be a file in data/ssh/pubkeys/<name>.pub)
-  base.networking.ssh_auth_keys = ["john"];
+  base.networking.ssh_auth_keys = ["john" "tim"];
 
   # Load the wifi password for the SSID "nixostest"
   base.networking.connect_wifi = [ "nixostest" ];
