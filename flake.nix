@@ -25,13 +25,16 @@
     rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
-  outputs = { self, nixpkgs, nixosgen, home-manager, envfs, nixos-hardware, ...}@inputs:
+  outputs = { self, nixpkgs, ...}@inputs:
   let
+  # General utils
+    # Find all files located in a specific directory
     find_all_files = dir: nixpkgs.lib.lists.flatten (
       (builtins.map find_all_files (list_elements dir "directory"))
       ++ (list_elements dir "regular")
     );
 
+    # List all elements inside the directory that matches a certain type
     list_elements = dir: type: map (f: dir + "/${f}") (
       nixpkgs.lib.attrNames (
         nixpkgs.lib.filterAttrs
@@ -40,7 +43,7 @@
         )
       );
 
-
+    # Prepare the nixpkgs for a specific system;
     pkgsForSystem = system: import nixpkgs {
       overlays = [
         inputs.rust-overlay.overlay
@@ -49,14 +52,15 @@
       inherit system;
     };
 
-    # Additionnal modules
+  # Building
+    # Additionnal modules for any nixos configuration
     base_modules = (find_all_files ./base) ++ [
-      home-manager.nixosModules.home-manager
+      inputs.home-manager.nixosModules.home-manager
       {
         _module.args = {inherit inputs;};
       }
       inputs.StevenBlackHosts.nixosModule
-      envfs.nixosModules.envfs
+      inputs.envfs.nixosModules.envfs
     ];
 
     # Common configuration added to scope, and enabled with a flag
@@ -72,7 +76,7 @@
       );
 
     # Create output format derivation using nixos-generators
-    build_deriv_output = { machine, system, add_modules, format}: nixosgen.nixosGenerate {
+    build_deriv_output = { machine, system, add_modules, format}: inputs.nixosgen.nixosGenerate {
         pkgs = pkgsForSystem system;
         modules = [ machine ] ++ common_configs ++ base_modules ++ add_modules;
       inherit format;
