@@ -23,6 +23,12 @@ in
       default = false;
       description = "Wether to setup OpenSSH or not";
     };
+
+    domain = lib.mkOption {
+      type = lib.types.str;
+      description = "Domain name resolving to the IP of this machine";
+      default = "localhost";
+    };
   };
 
   config = {
@@ -64,6 +70,14 @@ in
       passwordAuthentication = false;
       permitRootLogin = lib.mkForce "no";
       kbdInteractiveAuthentication = false;
+    };
+
+    # Set up  recommended settings for nginx if used
+    services.nginx = {
+      recommendedGzipSettings = true;
+      recommendedOptimisation = true;
+      recommendedProxySettings = true;
+      recommendedTlsSettings = true;
     };
   };
 }
