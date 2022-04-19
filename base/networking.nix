@@ -34,13 +34,14 @@ in
   config = {
       networking = {
         hostName = config.base.hostname;
-        networkmanager = {
-          enable = true;
-          unmanaged = [
-            "*" "except:type:wwan" "except:type:gsm"
-          ];
-        };
-        enableIPv6 = false;
+        # TODO  FIXME Breaks networking in VM
+        # networkmanager = {
+        #   enable = true;
+        #   unmanaged = [
+        #     "*" "except:type:wwan" "except:type:gsm"
+        #   ];
+        # };
+        # enableIPv6 = false;
     };
 
     users.users."${config.base.user}" = {
