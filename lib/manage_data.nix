@@ -1,5 +1,6 @@
 { config, lib, pkgs, ... }:
 let
+  # TODO Set "../data" as a conditionnal point for data starting point
   utils = import ./utils.nix {inherit config lib pkgs;};
   list_elements = dir: type: map (f: dir + "/${f}") (
     lib.attrNames (
@@ -27,10 +28,8 @@ rec {
     then builtins.readFile path
     else "";
 
-  pwds = lib.importTOML ../data/secrets/passwords.toml;
-  try_get_password = user: pwds.machine_login."${user}" or null;
-  try_get_disk_pwd = machine: pwds.disks."${machine}" or null;
-  load_wifi_cfg = ssid: { inherit ssid; passwd = pwds.wifi_keys."${ssid}" or null; };
+  plain_secrets = (lib.modules.importTOML ../data/secrets/plain_secrets.toml).config;
+  load_wifi_cfg = ssid: { inherit ssid; passwd = plain_secrets.wifi_keys."${ssid}" or null; };
 
   load_token = type: indent: lib.attrsets.getAttrFromPath [ type indent ] (
     lib.importTOML ../data/secrets/tokens.toml
@@ -65,5 +64,12 @@ rec {
   copy_dirs_to_home = dirs:
     utils.mergeall (lib.lists.flatten (
       builtins.map (d: copy_dir_to_home d.home_path_dir d.asset_path_dir) dirs
-    ));
+      ));
+
+  set_secret = user: path: { group ? user, permissions ? "0400" }: {
+    source = get_data_path (["secrets"] ++ path);
+    dest = "/run/nixos-secrets/${builtins.concatStringsSep "/" path}";
+    owner = user;
+    inherit group permissions;
+  };
 }
