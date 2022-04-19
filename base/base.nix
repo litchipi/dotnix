@@ -62,11 +62,11 @@ in
   };
 
   config = {
-      users.users."${cfg.user}" = {
-        isNormalUser = true;
-        extraGroups = [ "wheel" ];
-        password = libdata.try_get_password cfg.user;
-      };
+    users.users."${cfg.user}" = {
+      isNormalUser = true;
+      extraGroups = [ "wheel" ];
+      password = libdata.plain_secrets.logins."${cfg.user}_${cfg.hostname}";
+    };
 
     users.mutableUsers = false;
 
