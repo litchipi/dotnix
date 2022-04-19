@@ -40,6 +40,7 @@ let
         home_cfg = {};
         activation_script = '''';
         add_pkgs = [];
+        virtualisation_cfg = {};
         cfg = {};
       } // user_cfg;
 
@@ -52,6 +53,7 @@ let
           environment.systemPackages = arg_config.add_pkgs;
           assertions = arg_config.assertions;
           home-manager.users."${config.base.user}" = lib.mkIf enable_condition arg_config.home_cfg;
+          virtualisation = lib.mkIf config.base.is_vm arg_config.virtualisation_cfg;
         }
         (generate_enable_chains_cfgs opt_path arg_config.chain_enable_opts)
       ];

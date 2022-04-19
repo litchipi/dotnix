@@ -53,6 +53,12 @@ in
       default = [];
       description = "Additionnal packages to set for this machine";
     };
+
+    is_vm = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Wether to enable virtualisation config or not";
+    };
   };
 
   config = {
