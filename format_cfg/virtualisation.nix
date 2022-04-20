@@ -6,8 +6,8 @@
       "-cpu host"
       "-machine accel=kvm"
     ];
-    cores = 4;
-    memorySize = 2048;
+    cores = 8;
+    memorySize = 1024*4;
     diskSize = 1024*10;
   };
 }
