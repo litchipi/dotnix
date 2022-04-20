@@ -237,4 +237,10 @@ libconf.create_common_confs ([
     # Enabled in the configuration of the rocketchat service
     enable = false;
   };
+
+  collectives = {
+    sha256 = "sha256-RO8iMzAMMa4aWMcKZ6U7datN+QP0wUolR+zB5COliXw=";
+    url = "https://gitlab.com/collectivecloud/collectives/uploads/564c569f8832f344d44111aa0707ccc0/collectives-1.0.0.tar.gz";
+    version = "1.0.0";
+  };
 }))
