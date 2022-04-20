@@ -32,10 +32,12 @@ libconf.create_common_confs [
     name = "rust";
     add_pkgs = with pkgs; [
       rust-bin.stable.latest.default
+      rust-analyzer
       gcc
     ];
     vimplugs = with pkgs.vimPlugins; [
-      coc-rust-analyzer
+      #coc-rust-analyzer
+      pkgs.nodePackages.coc-rust-analyzer
     ];
     coc-settings.rust-analyzer = {
       inlayHints.typeHintsSeparator = "      => ";
