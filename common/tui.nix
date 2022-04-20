@@ -47,6 +47,10 @@ libconf.create_common_confs [
     parents = [ "software" "tui" ];
     add_pkgs = with pkgs; [
       neovim
+
+      # Coc-nvim
+      nodejs
+      yarn
     ];
     add_opts = {
       add_plugins = lib.mkOption {
@@ -108,12 +112,11 @@ libconf.create_common_confs [
           vim-airline
 
           # Coc
-          coc-vimtex
           coc-fzf
           coc-nvim
-          # coc-toml
           coc-json
           coc-lists
+          coc-vimtex
           coc-markdownlint
         ];
 
