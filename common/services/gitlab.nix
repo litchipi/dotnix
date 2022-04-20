@@ -20,11 +20,12 @@ libconf.create_common_confs [
     add_pkgs = [
       pkgs.nginx
     ];
-    virtualisation_cfg.forwardPorts = [
-      { from = "host"; host.port = 40000 + cfg.port; guest.port = cfg.port; }
-    ];
     cfg = {
-      networking.firewall.enable = false; #allowedTCPPorts = [ cfg.port ];
+      base.networking.vm_forward_ports = {
+        http = { from = "host"; host.port = 40080; guest.port = 80; };
+        https= { from = "host"; host.port = 40443; guest.port = 443; };
+      };
+      networking.firewall.allowedTCPPorts = [ 80 443 ];
 
       base.secrets = {
         gitlab_secretFile = gitlab_secret "secretfile";

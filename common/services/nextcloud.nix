@@ -46,11 +46,12 @@ libconf.create_common_confs ([
     add_pkgs = with pkgs; [
       nextcloud23
     ];
-    virtualisation_cfg.forwardPorts = [
-      { from = "host"; host.port = 40080; guest.port = 80; }
-      { from = "host"; host.port = 40443; guest.port = 443; }
-    ];
     cfg = {
+      base.networking.vm_forward_ports = {
+        http = { from = "host"; host.port = 40080; guest.port = 80; };
+        https= { from = "host"; host.port = 40443; guest.port = 443; };
+      };
+
       base.secrets = {
         nextcloud_dbpass = nextcloud_secret "dbpass";
         nextcloud_adminpass = nextcloud_secret "adminpass";

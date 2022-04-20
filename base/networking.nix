@@ -4,6 +4,11 @@ let
   libssh = import ../lib/ssh.nix {inherit config lib pkgs;};
 
   cfg = config.base.networking;
+
+  vm_config = {
+    virtualisation.forwardPorts = lib.mkIf config.base.is_vm
+      (lib.attrsets.mapAttrsToList (_: value: value) cfg.vm_forward_ports);
+  };
 in
 {
   options.base.networking = {
@@ -28,6 +33,12 @@ in
       type = lib.types.str;
       description = "Domain name resolving to the IP of this machine";
       default = "localhost";
+    };
+
+    vm_forward_ports = lib.mkOption {
+      type = lib.types.attrs;
+      description = "Ports to forward if running config on VM";
+      default = {};
     };
   };
 
@@ -80,5 +91,5 @@ in
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
     };
-  };
+  } // (lib.mkIf config.base.is_vm vm_config);
 }
