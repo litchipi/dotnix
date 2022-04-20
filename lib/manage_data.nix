@@ -16,9 +16,8 @@ let
   );
 in
   rec {
-  # TODO Throws an error when parenthesis are taken off ?
   get_data_path = pathlist:
-    (builtins.foldl' (p: d: p + "/${d}") ../data pathlist);
+    builtins.foldl' (p: d: p + "/${d}") ../data pathlist;
   read_data = pathlist: builtins.readFile (get_data_path pathlist);
 
   read_data_else_empty = pathlist:
