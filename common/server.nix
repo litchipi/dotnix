@@ -5,10 +5,24 @@ in
 conf_lib.create_common_confs [
   {
     name = "server";
+    add_pkgs = with pkgs; [
+      fzf
+      ripgrep
+      autojump
+      htop
+      neofetch
+    ];
     cfg = {
-      cmn.software.tui.enable = true;
       base.networking.ssh = true;
       networking.wireless.enable = false;
+
+      cmn.software.tui.neovim.enable = true;
+      cmn.software.tui.tmux.enable = true;
+      cmn.shell.aliases = {
+        filesystem.enable = true;
+        network.enable = true;
+        nix.enable = true;
+      };
     };
   }
 ]
