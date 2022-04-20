@@ -47,7 +47,7 @@ let
   '';
 
   generate_config = ''
-    echo -e "${colors.primary_color}Generating base NixOS configuration${colors.reset}"
+    echo -e "${colors.fg.primary}Generating base NixOS configuration${colors.reset}"
 
     mkdir -p /mnt/etc/
 
@@ -72,13 +72,13 @@ in
   config = let
     install_script = pkgs.writeShellScriptBin "install_nixos" (''
       set -e
-      echo -e "${colors.primary_color}Mounting the disk${colors.reset}"
+      echo -e "${colors.fg.primary}Mounting the disk${colors.reset}"
       mount /dev/disk/by-label/${cfg.root_part_label} /mnt
     '' + (if cfg.use_uefi then ''
       mkdir -p /mnt/boot
       mount /dev/disk/by-label/boot /mnt/boot
     '' else "") + generate_config + ''
-      echo -e "${colors.primary_color}Installing NixOS${colors.reset}"
+      echo -e "${colors.fg.primary}Installing NixOS${colors.reset}"
       nbcores=$(cat /proc/cpuinfo |grep cores|tail -n 1|awk -F ': ' '{print $2}')
       nixos-install -j $nbcores
     '');
