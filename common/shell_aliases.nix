@@ -209,7 +209,7 @@ conf_lib.create_common_confs [
     home_cfg.programs.bash = {
       enable = true;
       shellAliases = {
-        pingt=''ping -c 1 ${cfg.network.pingtest_website} '' +
+        pingt=''ping -c 1 -W 1 ${cfg.network.pingtest_website} '' +
           ''1> /dev/null 2> /dev/null && echo -e "${colors.fg.ok}Connected${colors.reset}" '' +
           ''|| echo -e "${colors.fg.bad}No connection${colors.reset}" '';
       };
