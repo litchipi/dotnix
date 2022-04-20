@@ -43,8 +43,8 @@ in
   };
 
   config = {
-      networking = {
-        hostName = config.base.hostname;
+    networking = {
+      hostName = config.base.hostname;
         # TODO  FIXME Breaks networking in VM
         # networkmanager = {
         #   enable = true;
