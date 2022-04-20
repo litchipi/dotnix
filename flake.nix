@@ -49,6 +49,7 @@
         inputs.rust-overlay.overlay
         (prev: final: (import ./overlays/overlays.nix final))
       ];
+      config.allowUnfree = true;
       inherit system;
     };
 

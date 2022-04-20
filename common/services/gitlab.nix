@@ -48,6 +48,7 @@ libconf.create_common_confs [
       #"http://unix:/run/gitlab/gitlab-workhorse.socket";
       services.gitlab = {
         enable = true;
+        packages.gitlab = pkgs.gitlab-ee;
         host = "git.${config.base.networking.domain}";
         databasePasswordFile = config.base.secrets.gitlab_dbpwd.dest;
         initialRootPasswordFile = config.base.secrets.gitlab_initialrootpwd.dest;
