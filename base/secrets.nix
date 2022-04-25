@@ -6,6 +6,7 @@ with lib;
 let
   libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
   cfg = config.base.secrets;
+  machine_secret_key_fname = "/etc/secrets_key";
 
   secret = types.submodule {
     options = {
@@ -39,7 +40,8 @@ let
     };
   };
 
-  ssh_pubkey = libdata.get_data_path ["secrets" "provision_key" "${config.base.hostname}.pub"];
+  provision_privk = libdata.get_data_path ["secrets" "provision_key" "${config.base.hostname}.gpg"];
+  provision_pubk = libdata.get_data_path ["secrets" "provision_key" "${config.base.hostname}.pub"];
 
   mkSecretOnDisk = name:
     { source, ... }:
@@ -48,7 +50,7 @@ let
       phases = "installPhase";
       buildInputs = [ pkgs.rage ];
       installPhase = ''
-          rage -a -R '${ssh_pubkey}' -o "$out" '${source}'
+          rage -a -R '${provision_pubk}' -o "$out" '${source}'
         '';
     };
 
@@ -62,7 +64,7 @@ let
       script = with pkgs; ''
         rm -rf ${dest}
         mkdir -p $(dirname ${dest})
-        "${rage}"/bin/rage -d -i /etc/secrets_key -o '${dest}' '${
+        "${rage}"/bin/rage -d -i ${machine_secret_key_fname} -o '${dest}' '${
           mkSecretOnDisk name { inherit source; }
         }'
 
@@ -77,18 +79,39 @@ in {
     default = { };
   };
 
-  config.systemd.services = let
-    units = mapAttrs' (name: info: {
-      name = "${name}-key";
-      value = (mkService name info);
-    }) cfg;
-  in units;
+  config = {
+    systemd.services = let
+      units = mapAttrs' (name: info: {
+        name = "${name}-key";
+        value = (mkService name info);
+      }) cfg;
+    in units;
 
-  config.environment.etc."secrets_key" = {
-    source = libdata.get_data_path ["secrets" "provision_key" "${config.base.hostname}"];
-    mode = "0400";
-    uid = 0;
-    gid = 0;
-    user = "root";
+    boot.postBootCommands = if config.base.is_vm then ''
+      function decrypt_key() {
+        echo "Decrypting provision key..."
+
+        read -p "Enter password: " -s password
+        export PATH=$PATH:${pkgs.gnupg}/bin/
+        gpg -q --batch --passphrase "$password" --output ${machine_secret_key_fname} -d ${provision_privk}
+      }
+
+      while [ ! -f ${machine_secret_key_fname} ]; do
+        if ! decrypt_key; then
+          echo "Failed to decrypt key"
+          continue;
+        fi
+
+        chmod 0400 ${machine_secret_key_fname}
+        chown root:root ${machine_secret_key_fname}
+        echo "Success"
+      done
+    '' else ''
+      if [ ! -f ${machine_secret_key_fname} ]; do
+        echo "ERROR: ${machine_secret_key_fname} is not provided"
+        echo "Please populate key to ${machine_secret_key_fname} in order to decrypt machine secrets"
+        exit 1;
+      fi
+    '';
   };
 }
