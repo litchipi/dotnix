@@ -1,5 +1,6 @@
 { config, lib, pkgs, ... }:
 let
+  lib_nc = import ../../lib/services/nextcloud.nix {inherit config lib pkgs;};
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
   libutils = import ../../lib/utils.nix {inherit config lib pkgs;};
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
@@ -42,12 +43,27 @@ libconf.create_common_confs ([
         description = "Host of the Nextcloud database";
         default = "localhost";
       };
-      configuration_script = lib.mkOption {
+      extra_config_script = lib.mkOption {
         type = lib.types.str;
         description = "Configuration script for the Nextcloud instance";
         default = "";
       };
+      theme = lib.mkOption {
+        type = lib.types.attrs;
+        description = "Theme to set for the website";
+        default = {
+          name = null;
+          logo = null;
+          slogan = null;
+          color = null;
+          background = null;
+          favicon = null;
+        };
+      };
     };
+    add_pkgs = with pkgs; [
+      pkgs.php
+    ];
     cfg = {
       base.networking.vm_forward_ports = {
         http = { from = "host"; host.port = 40080; guest.port = 80; };
@@ -97,7 +113,10 @@ libconf.create_common_confs ([
         wantedBy = [ "multi-user.target" ];
         after = ["nextcloud-setup.service"];
         serviceConfig.Type = "oneshot";
-        script = cfg.configuration_script;
+        script = lib.strings.concatStringsSep "\n" [
+          (lib_nc.set_theme cfg.theme)
+          cfg.extra_config_script
+        ];
       };
 
       networking.firewall.allowedTCPPorts = [ 80 443 ];

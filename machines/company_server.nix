@@ -16,15 +16,19 @@ in
   cmn.server.enable = true;
   # TODO  Investigate 502 timeout error
   # cmn.services.gitlab.enable = true;
-  cmn.services.nextcloud = let
-    occ = "${config.services.nextcloud.occ}/bin/nextcloud-occ";
-  in {
+
+  cmn.services.nextcloud = {
     enable = true;
+
     # TODO Pimp theming from here
-    # https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/theming.html?highlight=logo
-    configuration_script = ''
-      ${occ} theming:config logo ${../data/assets/tyf/logo.jpg}
-    '';
+    theme = {
+      name = company_name;
+      logo = ../data/assets/tyf/logo.png;
+      slogan = "Where beer really matters";
+      color = "#9A2462";
+      background = ../data/assets/tyf/background.jpg;
+      favicon = ../data/assets/tyf/favicon.png;
+    };
   };
 
   # Additionnal packages to install
