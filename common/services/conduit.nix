@@ -32,20 +32,22 @@ libconf.create_common_confs [
 
       services.matrix-conduit = {
         enable = true;
-        settings = {
-          global.server_name = "${fqdn}";
-          global.port = cfg.port;
+        settings.global = {
+          address = "0.0.0.0";
+          server_name = "${fqdn}";
+          port = cfg.port;
         };
       };
       
-      services.nginx = {
+      services.nginx = let
+        proxy = "http://0.0.0.0:${builtins.toString cfg.port}";
+      in {
         enable = true;
 
         virtualHosts = {
           ${fqdn} = {
-            locations."/_matrix" = {
-              proxyPass = "http://[::1]:${builtins.toString cfg.port}"; # without a trailing /
-            };
+            locations."/".proxyPass = proxy;
+            locations."/_matrix".proxyPass = proxy;
 
             locations."= /.well-known/matrix/server".extraConfig =
               let

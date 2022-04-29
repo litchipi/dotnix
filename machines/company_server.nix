@@ -11,7 +11,7 @@ in
   # TODO  Investigate 502 timeout error
   cmn.services.gitlab.enable = true;
 
-  cmn.services.conduit.enable = false;
+  cmn.services.conduit.enable = true;
 
   cmn.services.nextcloud = {
     enable = true;
