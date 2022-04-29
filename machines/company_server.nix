@@ -31,13 +31,13 @@ in
     ];
   };
 
-  # TODO  Serve company website
-  # cmn.services.website = {
-  #   enable = true;
-  #   derivation = pkgs.litchipi.website;
-  # };
-
-  base.add_pkgs = with pkgs; [
-    cowsay
-  ];
+  cmn.services.web_hosting = {
+    enable = true;
+    websites."www".package = pkgs.litchipi.tyf_website;
+    applications."app" = rec {
+      add_pkgs = [ pkgs.litchipi.webapp ];
+      command = "app -p ${builtins.toString port}";
+      port = 8189;
+    };
+  };
 }
