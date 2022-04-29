@@ -59,12 +59,21 @@ in
       default = false;
       description = "Wether to enable virtualisation config or not";
     };
+
+    extraGroups = lib.mkOption {
+      type = with lib.types; listOf str;
+      default = [];
+      description = "Extra groups to add the base user into";
+    };
   };
 
   config = {
+    users.groups = lib.mkMerge (builtins.map (group:
+      lib.attrsets.setAttrByPath [ group ] {}
+    ) cfg.extraGroups);
     users.users."${cfg.user}" = {
       isNormalUser = true;
-      extraGroups = [ "wheel" ];
+      extraGroups = [ "wheel" ] ++ cfg.extraGroups;
       password = libdata.plain_secrets.logins."${cfg.user}_${cfg.hostname}";
     };
 
