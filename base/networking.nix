@@ -76,7 +76,7 @@ in
       blockGambling = true;
       blockPorn = true;
       blockSocial = true;
-      enable = true;
+      enable = lib.mkDefault true;
     };
 
     services.openssh = lib.mkIf config.base.networking.ssh {
@@ -88,6 +88,7 @@ in
 
     # Set up  recommended settings for nginx if used
     services.nginx = {
+      enable = lib.mkDefault false;
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
       recommendedProxySettings = true;
