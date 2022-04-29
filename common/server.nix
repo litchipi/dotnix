@@ -6,16 +6,12 @@ conf_lib.create_common_confs [
   {
     name = "server";
     add_pkgs = with pkgs; [
-      fzf
-      ripgrep
-      autojump
-      htop
-      neofetch
     ];
     cfg = {
       base.networking.ssh = true;
       networking.wireless.enable = false;
 
+      cmn.software.tui.minimal.enable = true;
       cmn.software.tui.neovim.enable = true;
       cmn.software.tui.tmux.enable = true;
       cmn.shell.aliases = {

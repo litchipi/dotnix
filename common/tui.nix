@@ -11,15 +11,9 @@ libconf.create_common_confs [
     parents = [ "software" ];
     add_pkgs = with pkgs; [
       du-dust
-      fzf
-      ripgrep
-      autojump
       irssi
       wkhtmltopdf
       youtube-dl
-
-      # TODO Configure / replace with other software
-      htop
 
       # TODO Replace with other ?
       neofetch
@@ -29,9 +23,13 @@ libconf.create_common_confs [
       litchipi.memory
     ];
     cfg = {
-      cmn.software.tui.neovim.enable = true;
-      cmn.software.tui.tmux.enable = true;
-      cmn.software.tui.jrnl.enable = true;
+      cmn.software.tui = {
+        minimal.enable = true;
+        neovim.enable = true;
+        tmux.enable = true;
+        jrnl.enable = true;
+      };
+
       cmn.shell.aliases = {
         filesystem.enable = true;
         music.enable = true;
@@ -40,6 +38,19 @@ libconf.create_common_confs [
         memory.enable = true;
       };
     };
+  }
+
+  {
+    name = "minimal";
+    parents = ["software" "tui"];
+    add_pkgs = with pkgs; [
+      fzf
+      ripgrep
+      autojump
+
+      # TODO Configure / replace with other software
+      htop
+    ];
   }
 
   {
