@@ -27,13 +27,14 @@ libconf.create_common_confs [
       };
       networking.firewall.allowedTCPPorts = [ 80 443 ];
 
+      users.users."${config.base.user}".extraGroups = [ "gitlab" ];
+
       base.secrets = {
         gitlab_secretFile = gitlab_secret "secretfile";
         gitlab_otpFile = gitlab_secret "otp";
         gitlab_jwsFile = gitlab_secret "session";
         gitlab_dbFile = gitlab_secret "db";
         gitlab_dbpwd = gitlab_secret "dbpwd";
-        gitlab_smtp = gitlab_secret "smtp";
         gitlab_initialrootpwd = gitlab_secret "initial_root_pwd";
       };
 
@@ -44,9 +45,6 @@ libconf.create_common_confs [
         };
       };
 
-      # TODO FIXME  Doesn't work yet: Bind the socket file to the port
-      # unix:/tmp/socktest.sock
-      #"http://unix:/run/gitlab/gitlab-workhorse.socket";
       services.gitlab = {
         enable = true;
         packages.gitlab = pkgs.gitlab-ee;
@@ -63,7 +61,6 @@ libconf.create_common_confs [
           address = "smtp.${config.base.networking.domain}";
           port = 25;
         };
-        # TODO Assertions on the password strength
         secrets = {
           dbFile = config.base.secrets.gitlab_dbFile.dest;
           secretFile = config.base.secrets.gitlab_secretFile.dest;

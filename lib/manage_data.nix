@@ -66,6 +66,8 @@ in
       builtins.map (d: copy_dir_to_home d.home_path_dir d.asset_path_dir) dirs
       ));
 
+  # TODO Assertions on the secret strength
+  #   Add a bypass in the options
   set_secret = user: path: { group ? user, permissions ? "0400" }: {
     source = get_data_path (["secrets"] ++ path);
     dest = "/run/nixos-secrets/${builtins.concatStringsSep "/" path}";
