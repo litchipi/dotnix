@@ -90,8 +90,8 @@ in
 
     environment.systemPackages = with pkgs; [
       coreutils-full
-      htop
       vim
+      wget
     ] ++ cfg.add_pkgs;
   };
 }
