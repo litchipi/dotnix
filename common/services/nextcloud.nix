@@ -13,7 +13,9 @@ let
     {
       inherit name;
       parents = ["services" "nextcloud"];
-      default_enabled = value.enable or true;
+      default_enabled = if (builtins.elem name cfg.disable_apps)
+        then false
+        else (value.enable or true);
       cfg.services.nextcloud.extraApps."${name}" = pkgs.fetchNextcloudApp {
         inherit name;
         sha256 = value.sha256;
@@ -33,21 +35,25 @@ libconf.create_common_confs ([
         description = "Port of the Nextcloud server";
         default = 4006;
       };
+
       dbport = lib.mkOption {
         type = lib.types.int;
         description = "Port of the Nextcloud database";
         default = 4007;
       };
+
       dbhost = lib.mkOption {
         type = lib.types.str;
         description = "Host of the Nextcloud database";
         default = "localhost";
       };
+
       extra_config_script = lib.mkOption {
         type = lib.types.str;
         description = "Configuration script for the Nextcloud instance";
         default = "";
       };
+
       theme = lib.mkOption {
         type = lib.types.attrs;
         description = "Theme to set for the website";
@@ -58,7 +64,14 @@ libconf.create_common_confs ([
           color = null;
           background = null;
           favicon = null;
+          logoheader = null;
         };
+      };
+
+      disable_apps = lib.mkOption {
+        type = with lib.types; listOf str;
+        description = "Apps to disable";
+        default = [];
       };
     };
     add_pkgs = with pkgs; [
@@ -70,8 +83,9 @@ libconf.create_common_confs ([
         https= { from = "host"; host.port = 40443; guest.port = 443; };
       };
 
+      users.users."${config.base.user}".extraGroups = [ "nextcloud" "postgres" ];
+
       base.secrets = {
-        nextcloud_dbpass = nextcloud_secret "dbpass";
         nextcloud_adminpass = nextcloud_secret "adminpass";
       };
 
@@ -116,6 +130,9 @@ libconf.create_common_confs ([
         script = lib.strings.concatStringsSep "\n" [
           (lib_nc.set_theme cfg.theme)
           cfg.extra_config_script
+          ''
+            ${lib_nc.occ} app:enable encryption
+          ''
         ];
       };
 
@@ -123,7 +140,7 @@ libconf.create_common_confs ([
     };
   }
 ] ++ (nextcloud_apps {
-  breeze-dark = {
+  breezedark = {
     sha256 = "sha256-id0eZrkXe4PQchEfgT79HJtIuu/xaoTCNlw8XT34zZ8=";
     url = "https://github.com/mwalbeck/nextcloud-breeze-dark/releases/download/v23.2.1/breezedark.tar.gz";
     version = "23.2.1";
@@ -135,7 +152,7 @@ libconf.create_common_confs ([
     version = "1.4.6";
   };
 
-  readme_md = {
+  files_readmemd = {
     sha256 = "sha256-WQpSGdZLUoChfwB48Pe3MfesWtJEvIDM6ADI3IGF704=";
     url = "https://gitlab.univ-nantes.fr/uncloud/files_readmemd/-/wikis/uploads/7cc2ee379111ac18df99d674676dda98/files_readmemd.tar.gz";
     version = "1.2.2";
@@ -159,13 +176,13 @@ libconf.create_common_confs ([
     version = "0.14.4";
   };
 
-  mind-maps = {
+  files_mindmap = {
     sha256 = "sha256-GcJqn90n9+3VDndNuiohLMDx9fmmMyMkNVNb/bB7ksM=";
     url = "https://github.com/ACTom/files_mindmap/releases/download/v0.0.26/files_mindmap-0.0.26.tar.gz";
     version = "0.0.26";
   };
 
-  markdown-editor = {
+  files_markdown = {
     sha256 = "sha256-6vrPNKcPmJ4DuMXN8/oRMr/B/dTlJn2GGi/w4t2wimk=";
     url = "https://github.com/icewind1991/files_markdown/releases/download/v2.3.6/files_markdown.tar.gz";
     version = "2.3.6";
@@ -177,13 +194,14 @@ libconf.create_common_confs ([
     version = "3.2.2";
   };
 
-  totp = {
+  twofactor_totp = {
     sha256 = "sha256-r6WuXAvGXIEn6SViBxyMp98JBTWL6fR8MJDcdba1gA8=";
     url = "https://github.com/nextcloud-releases/twofactor_totp/releases/download/v6.2.0/twofactor_totp.tar.gz";
     version = "6.2.0";
   };
 
-  splash = {
+  unsplash = {
+    enable = false;
     sha256 = "sha256-UHdRoVpZvIDFiNrssuV1E9suzty0Aa1yIrseNh19xZI=";
     url = "https://github.com/nextcloud/unsplash/releases/download/v1.2.4/unsplash.tar.gz";
     version = "1.2.4";
@@ -201,7 +219,7 @@ libconf.create_common_confs ([
     version = "0.15.0";
   };
 
-  shared-files-activities = {
+  files_downloadactivity = {
     sha256 = "sha256-JMJM0GL5zpaNUHIGl1J37JdZlhrdL0TBXD9++bB6nvM=";
     url = "https://github.com/nextcloud-releases/files_downloadactivity/releases/download/v1.13.0/files_downloadactivity-v1.13.0.tar.gz";
     version = "1.13.0";
@@ -213,24 +231,24 @@ libconf.create_common_confs ([
     version = "1.4.7";
   };
 
-  gitlab-integration = {
+  integration_gitlab = {
     sha256 = "sha256-KSoBZmq/OzEcrKyifARVDR/9iEQwyrJhbqbmav0TOqk=";
     url = "https://github.com/nextcloud/integration_gitlab/releases/download/v1.0.3/integration_gitlab-1.0.3.tar.gz";
     version = "1.0.3";
   };
 
-  jitsi-integration = {
-    sha256 = "sha256-zWJd8HhpmsvY7BgDDxqnWJoqDeq2ANxl/ExjX2voG5w=";
-    url = "https://pubcode.weimann.digital/downloads/projects/nextcloud-jitsi/builds/42/artifacts/nextcloud-jitsi.tar.gz";
-    version = "0.14.0";
+  jitsi = {
+    sha256 = "sha256-aFwYQpb2WrPD00qPtCu5zGu0LlKFYdwZYTAmvX2li4o=";
+    url = "https://pubcode.weimann.digital/downloads/projects/nextcloud-jitsi/builds/48/artifacts/nextcloud-jitsi.tar.gz";
+    version = "0.15.0";
   };
 
-  appointments = {
-    sha256 = "sha256-gnmUGZDYtPh+Z1dCEyEue0Cqzs1dA8teBZi3rIiZmBw=";
-    url = "https://github.com/SergeyMosin/Appointments/raw/95c9fcb8ef495a032ac5f1ea58dfb47fca871e55/build/artifacts/appstore/appointments.tar.gz";
-    version = "1.12.3";
-  };
-
+  # appointments = {
+  #   sha256 = "sha256-gnmUGZDYtPh+Z1dCEyEue0Cqzs1dA8teBZi3rIiZmBw=";
+  #   url = "https://github.com/SergeyMosin/Appointments/raw/95c9fcb8ef495a032ac5f1ea58dfb47fca871e55/build/artifacts/appstore/appointments.tar.gz";
+  #   version = "1.12.3";
+  # };
+  #
   approval = {
     sha256 = "sha256-SkkmWJbCSuJGav5BBP7yzvu1oV3r1UvNQQYyUEoDQXg=";
     url = "https://github.com/nextcloud/approval/releases/download/v1.0.9/approval-1.0.9.tar.gz";
@@ -249,17 +267,17 @@ libconf.create_common_confs ([
     version = "3.5.4";
   };
 
-  rocketchat = {
-    sha256 = "sha256-g8lou8QLltjwavxmtr7Afo+qb8scooVQGH7/rcNEcTw=";
-    url = "https://files.nizu.io/rocketchat/rocketchat_nextcloud.tar.gz";
-    version = "0.9.6";
-    # Enabled in the configuration of the rocketchat service
-    enable = false;
-  };
-
   collectives = {
     sha256 = "sha256-RO8iMzAMMa4aWMcKZ6U7datN+QP0wUolR+zB5COliXw=";
     url = "https://gitlab.com/collectivecloud/collectives/uploads/564c569f8832f344d44111aa0707ccc0/collectives-1.0.0.tar.gz";
     version = "1.0.0";
+  };
+
+  riotchat = {
+  # Enabled in the configuration of the synapse service
+    enable = false;
+    sha256 = "sha256-BgemR0c9oFk2vGm5h17vpqhsHGneHEswBnwOpD98qSc=";
+    url = "https://github.com/gary-kim/riotchat/releases/download/v0.11.3/riotchat.tar.gz";
+    version = "0.11.3";
   };
 }))
