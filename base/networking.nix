@@ -35,6 +35,12 @@ in
       description = "Ports to forward if running config on VM";
       default = {};
     };
+
+    add_dns = lib.mkOption {
+      type = with lib.types; listOf str;
+      description = "Nameservers to add to the configuration";
+      default = [];
+    };
   };
 
   config = {
@@ -48,6 +54,7 @@ in
         #   ];
         # };
         # enableIPv6 = false;
+      nameservers = [ "8.8.8.8" ] ++ cfg.add_dns;
     };
 
     users.users."${config.base.user}" = {
