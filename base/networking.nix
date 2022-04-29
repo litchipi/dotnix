@@ -15,7 +15,7 @@ in
     ssh_auth_keys = lib.mkOption {
       type = with lib.types; listOf str;
       default = [];
-      description = "SSH authorizedKeys to add for this machine";
+      description = "SSH authorizedKeys to add for the base user of this machine";
     };
 
     ssh = lib.mkOption {
@@ -45,7 +45,10 @@ in
 
   config = {
     networking = {
+      firewall.enable = true;
+
       hostName = config.base.hostname;
+
         # TODO  FIXME Breaks networking in VM
         # networkmanager = {
         #   enable = true;
@@ -53,7 +56,7 @@ in
         #     "*" "except:type:wwan" "except:type:gsm"
         #   ];
         # };
-        # enableIPv6 = false;
+      enableIPv6 = false;
       nameservers = [ "8.8.8.8" ] ++ cfg.add_dns;
     };
 
@@ -94,4 +97,10 @@ in
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
     };
+
+    security.acme = {
+      acceptTerms = true;
+      defaults.email = config.base.email;
+    };
+  };
 }
