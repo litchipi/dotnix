@@ -6,9 +6,17 @@ conf_lib.create_common_confs [
   {
     name = "server";
     add_pkgs = with pkgs; [
+      certbot
+      mtr
+      nettools
     ];
     cfg = {
       base.networking.ssh = true;
+
+      base.networking.vm_forward_ports = {
+        ssh = { from = "host"; host.port = 40022; guest.port = 22;};
+      };
+
       networking.wireless.enable = false;
 
       cmn.software.tui.minimal.enable = true;
@@ -28,6 +36,11 @@ conf_lib.create_common_confs [
           factor = "4";
         };
       };
+
+      networking.stevenBlackHosts.enable = false;
+      networking.extraHosts = ''
+        127.0.0.1 ${config.base.networking.domain}
+      '';
     };
   }
 ]
