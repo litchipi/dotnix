@@ -5,7 +5,7 @@ in
 {
   base.user = "op";
   base.hostname = "${company_name}";
-  base.networking.ssh_auth_keys = [ "john" "tim" ];
+  base.networking.ssh_auth_keys = [ "john" "tim" "restic_backup_ssh" ];
 
   cmn.server.enable = true;
   # TODO  Investigate 502 timeout error
