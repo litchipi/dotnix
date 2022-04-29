@@ -149,6 +149,7 @@
   declare_machines [
     { fname=./machines/nixostest.nix; system="x86_64-linux"; }
     { fname=./machines/company_server.nix; system="x86_64-linux"; }
+    { fname=./machines/backup_server.nix; system="x86_64-linux"; }
     # {
     #   fname=./machines/diamond.nix; system="x86_64-linux";
     #   add_modules = [ nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen ];
