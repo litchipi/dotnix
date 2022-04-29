@@ -4,7 +4,7 @@ let
   libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
 
   vpncfg = config.cmn.software.protonvpn;
-  vpncreds = libdata.get_data_path [ "secrets" "proton_vpn_creds" ];
+  vpncreds = libdata.plain_secrets.creds.proton_vpn;
 in
 conf_lib.create_common_confs [
   {
