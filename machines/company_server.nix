@@ -31,13 +31,12 @@ in
     ];
   };
 
-  # TODO Create a Jitsi-meet service and configure Nextcloud to use it
-  # https://search.nixos.org/options?channel=21.11&from=0&size=50&sort=relevance&type=packages&query=jitsi-meet
+  # TODO  Serve company website
+  # cmn.services.website = {
+  #   enable = true;
+  #   derivation = pkgs.litchipi.website;
+  # };
 
-  # TODO  Add protonmail-bridge to server and use it to serve Nextcloud Mail
-
-  # TODO Set up restic backup
-  # Additionnal packages to install
   base.add_pkgs = with pkgs; [
     cowsay
   ];
