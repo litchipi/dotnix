@@ -85,12 +85,6 @@
 
     # Create entire NixOS derivation for a machine
     build_machine_deriv = { machine, system, add_modules }: {
-      # Target when updating a live NixOS system
-      nixos = nixpkgs.lib.nixosSystem {
-        inherit system;
-        modules = [ machine ] ++ common_configs ++ base_modules ++ add_modules;
-      };
-
       # All outputs format using nixos-generators
       vbox = build_deriv_output { inherit machine system;
         add_modules=add_modules ++ [ ./format_cfg/virtualbox.nix ];
@@ -113,6 +107,11 @@
           ./format_cfg/iso-install-installscript.nix
         ];
         format="install-iso";
+      };
+
+      iso = build_deriv_output { inherit machine system;
+        add_modules = add_modules ++ [];
+        format = "iso";
       };
     };
 
