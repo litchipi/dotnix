@@ -23,6 +23,29 @@ let
         version = value.version;
       };
     }));
+
+ # {"1":{"id":1,"name":"Company site","url":"http:\/\/www.localhost","lang":"","type":"link","device":"","icon":"external.svg","groups":[],"redirect":false}}
+  externalSite = lib.submodule {
+    options = {
+      name = lib.mkOption {
+        type = lib.types.str;
+        description = "Name of the website";
+      };
+      url = lib.mkOption {
+        type = lib.types.str;
+        description = "URL of the website";
+      };
+      lang = lib.mkOption {
+        type = lib.types.str;
+        description = "Langage of the website";
+      };
+      icon = lib.mkOption {
+        type = lib.type.str;
+        description = "Icon to use for the website";
+        default = "external.svg";
+      };
+    };
+  };
 in
 libconf.create_common_confs ([
   {
@@ -71,6 +94,12 @@ libconf.create_common_confs ([
       disable_apps = lib.mkOption {
         type = with lib.types; listOf str;
         description = "Apps to disable";
+        default = [];
+      };
+
+      external_sites = lib.mkOption {
+        type = with lib.types; listOf externalSite;
+        description = "List of the external sites to add to the top bar";
         default = [];
       };
     };
@@ -133,6 +162,7 @@ libconf.create_common_confs ([
           ''
             ${lib_nc.occ} app:enable encryption
           ''
+          # TODO  Add external websites
         ];
       };
 
