@@ -55,17 +55,18 @@
 
   # Building
     # Additionnal modules for any nixos configuration
-    base_modules = (find_all_files ./base) ++ [
+    base_modules = (find_all_files ./base) ++ (find_all_files ./common) ++ [
       inputs.home-manager.nixosModules.home-manager
-      {
-        _module.args = {inherit inputs;};
-      }
       inputs.StevenBlackHosts.nixosModule
       inputs.envfs.nixosModules.envfs
-    ];
+      {
+        _module.args = {
+          inherit inputs;
+          extra = {};
+        };
 
-    # Common configuration added to scope, and enabled with a flag
-    common_configs = find_all_files ./common;
+      }
+    ];
 
     # Gets the base name of a file without the extension, from a path
     name_from_fname = fname :
@@ -77,31 +78,17 @@
       );
 
     # Create output format derivation using nixos-generators
-    build_deriv_output = { machine, system, add_modules, format}: inputs.nixosgen.nixosGenerate {
+    build_deriv_output = { fname, system, add_modules, format}: inputs.nixosgen.nixosGenerate {
         pkgs = pkgsForSystem system;
-        modules = [ machine ] ++ common_configs ++ base_modules ++ add_modules;
+        modules = [ fname ] ++ base_modules ++ add_modules;
       inherit format;
     };
 
     # Create entire NixOS derivation for a machine
-    build_machine_deriv = { machine, system, add_modules }: {
-      # All outputs format using nixos-generators
-      vbox = build_deriv_output { inherit machine system;
-        add_modules=add_modules ++ [ ./format_cfg/virtualbox.nix ];
-        format="virtualbox";
-      };
-
-      vm = build_deriv_output { inherit machine system;
-        add_modules=add_modules ++ [ ./format_cfg/virtualisation.nix ];
-        format="vm";
-      };
-
-      clivm = build_deriv_output { inherit machine system;
-        add_modules=add_modules ++ [ ./format_cfg/virtualisation.nix ];
-        format="vm-nogui";
-      };
-
-      iso-install = build_deriv_output { inherit machine system;
+    build_machine_deriv = name: { fname, system, add_modules ? [], ...}: rec {
+      # Installation ISO formats
+      iso-install = build_deriv_output {    # Bootable ISO
+        inherit system fname;
         add_modules = add_modules ++ [
           ./format_cfg/iso-install-diskfmt.nix
           ./format_cfg/iso-install-installscript.nix
@@ -109,23 +96,40 @@
         format="install-iso";
       };
 
-      iso = build_deriv_output { inherit machine system;
+      iso = build_deriv_output {    # Live ISO (can be used for servers)
+        inherit system fname;
         add_modules = add_modules ++ [];
         format = "iso";
+      };
+
+      # Virtual machine options
+      vbox = build_deriv_output {
+        inherit system fname;
+        add_modules=add_modules ++ [ ./format_cfg/virtualbox.nix ];
+        format="virtualbox";
+      };
+
+      vm = build_deriv_output {
+        inherit system fname;
+        add_modules=add_modules ++ [ ./format_cfg/virtualisation.nix ];
+        format="vm";
+      };
+
+      clivm = build_deriv_output {
+        inherit system fname;
+        add_modules=add_modules ++ [ ./format_cfg/virtualisation.nix ];
+        format="vm-nogui";
       };
     };
 
     # Target used by the installed NixOS system to rebuild the system
     generate_nixos_configuration = machines: {
       nixosConfigurations = builtins.listToAttrs (
-        (builtins.map (machine: {
-          name = name_from_fname machine.fname;
+        (builtins.map ({fname, system, add_modules ? [], ...}: {
+          name = name_from_fname fname;
           value = nixpkgs.lib.nixosSystem {
-            system = machine.system;
-            modules = base_modules ++ common_configs ++ machine.add_modules ++ [
-              machine.fname
-              ./configuration.nix
-            ];
+            inherit system;
+            modules = [ fname ./configuration.nix ] ++ base_modules ++ add_modules;
           };
         })
         machines)
@@ -136,23 +140,46 @@
     #   as a set in the form: { fname = ; system = ;}
     declare_machines = machines :
       (builtins.listToAttrs (
-        (builtins.map (machine: {
+        (builtins.map (machine: rec {
           name = name_from_fname machine.fname;
-          value = build_machine_deriv {
-            machine = machine.fname;
-            system = machine.system;
-            add_modules = machine.add_modules or [];
-          };
+          value = build_machine_deriv name machine;
         }) machines
       ))) // (generate_nixos_configuration machines);
+
+    generate_outputs = {machines ? [], extra ? {}, devShell ? {}}:
+    (declare_machines machines)
+      // extra
+      // {
+        inherit devShell;
+      };
   in
-  declare_machines [
-    { fname=./machines/nixostest.nix; system="x86_64-linux"; }
-    { fname=./machines/company_server.nix; system="x86_64-linux"; }
-    { fname=./machines/backup_server.nix; system="x86_64-linux"; }
-    # {
-    #   fname=./machines/diamond.nix; system="x86_64-linux";
-    #   add_modules = [ nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen ];
-    # }
-  ];
+  generate_outputs {
+    machines = [
+      {
+        fname=./machines/nixostest.nix;
+        system="x86_64-linux";
+      }
+
+      {
+        fname=./machines/company_server.nix;
+        system="x86_64-linux";
+      }
+
+      {
+        fname=./machines/backup_server.nix;
+        system="x86_64-linux";
+      }
+      # {
+      #   fname=./machines/diamond.nix;
+      #   system="x86_64-linux";
+      #   add_modules = [ nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen ];
+      # }
+    ];
+    extra = {
+    };
+    devShell = {
+      x86_64-linux = (pkgsForSystem "x86_64-linux").mkShell {
+      };
+    };
+  };
 }
