@@ -146,12 +146,6 @@ libconf.create_common_confs ([
     version = "23.2.1";
   };
 
-  cospend = {
-    sha256 = "sha256-Kjgd5m2fZIExvZ09kq4aVM32CzL6U2PM/wvB6+Dn/e8=";
-    url = "https://github.com/eneiluj/cospend-nc/releases/download/v1.4.6/cospend-1.4.6.tar.gz";
-    version = "1.4.6";
-  };
-
   files_readmemd = {
     sha256 = "sha256-WQpSGdZLUoChfwB48Pe3MfesWtJEvIDM6ADI3IGF704=";
     url = "https://gitlab.univ-nantes.fr/uncloud/files_readmemd/-/wikis/uploads/7cc2ee379111ac18df99d674676dda98/files_readmemd.tar.gz";
@@ -279,5 +273,23 @@ libconf.create_common_confs ([
     sha256 = "sha256-BgemR0c9oFk2vGm5h17vpqhsHGneHEswBnwOpD98qSc=";
     url = "https://github.com/gary-kim/riotchat/releases/download/v0.11.3/riotchat.tar.gz";
     version = "0.11.3";
+  };
+
+  deck = {
+    sha256 = "sha256-Ze20arex7AZhHnSWIPN8DlAtalp+/Rl7qwTA+IBv3vo=";
+    url = "https://github.com/nextcloud-releases/deck/releases/download/v1.6.1/deck-v1.6.1.tar.gz";
+    version = "1.6.1";
+  };
+
+  gestion = {
+    sha256 = "sha256-NpMqRhL/o7RSA+79w38PMd6Ii7xkQGtzLZteTz8FXDQ=";
+    url = "https://github.com/baimard/gestion/releases/download/2.0.11/gestion.tar.gz";
+    version = "2.0.11";
+  };
+
+  news = {
+    sha256 = "sha256-C9iM33RPYmeJZaVeaQc9+xLfFcRHgNBDsztJx7ENVWk=";
+    url = "https://github.com/nextcloud/news/releases/download/18.0.1/news.tar.gz";
+    version = "18.0.1";
   };
 }))
