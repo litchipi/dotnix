@@ -53,6 +53,26 @@
       inherit system;
     };
 
+    declare_script = { name, script, env ? [], add_pkgs ? pkgs: [], system }: {
+      type = "app";
+      program = let
+        pkgs = pkgsForSystem system;
+        add_paths = builtins.map (pkg:
+          "${pkg}/bin:${pkg}/sbin"
+        ) (add_pkgs pkgs);
+        exec = pkgs.writeShellScriptBin name (pkgs.lib.debug.traceValSeq ((
+          pkgs.lib.strings.optionalString ((builtins.length add_paths) > 0)
+          ''
+            # Script ${name} defined in flake ${self}
+            set -e
+            ${builtins.concatStringsSep "\n" env}
+            PATH=${builtins.concatStringsSep ":" add_paths}:$PATH
+          ''
+        ) + script));
+      in
+      "${exec}/bin/${name}";
+    };
+
   # Building
     # Additionnal modules for any nixos configuration
     base_modules = (find_all_files ./base) ++ (find_all_files ./common) ++ [
@@ -119,6 +139,14 @@
         inherit system fname;
         add_modules=add_modules ++ [ ./format_cfg/virtualisation.nix ];
         format="vm-nogui";
+      };
+
+      spawn = declare_script {
+        inherit system;
+        name = "${name}-clivm-spawn";
+        script = ''
+          ${clivm}/bin/run-*-vm
+        '';
       };
     };
 
