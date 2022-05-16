@@ -168,10 +168,10 @@
           name = name_from_fname fname;
           value = nixpkgs.lib.nixosSystem {
             inherit system;
-            modules = [ fname ./configuration.nix ] ++ base_modules ++ add_modules;
+            modules = [ fname ] ++ base_modules ++ add_modules;
           };
         })
-        machines)
+        (builtins.filter (m: if m ? "noconf" then !m.noconf else true) machines))
         );
       };
 
@@ -197,16 +197,19 @@
       {
         fname=./machines/nixostest.nix;
         system="x86_64-linux";
+        noconf = true;
       }
 
       {
         fname=./machines/company_server.nix;
         system="x86_64-linux";
+        noconf = true;
       }
 
       {
         fname=./machines/backup_server.nix;
         system="x86_64-linux";
+        noconf = true;
       }
       # {
       #   fname=./machines/diamond.nix;
