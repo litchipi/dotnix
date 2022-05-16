@@ -203,7 +203,7 @@
       {
         fname=./machines/company_server.nix;
         system="x86_64-linux";
-        noconf = true;
+        add_modules = [ ./hardware_configs/company_server.nix ];
       }
 
       {

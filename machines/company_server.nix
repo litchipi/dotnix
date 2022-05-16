@@ -42,4 +42,13 @@ in
       port = 8189;
     };
   };
+
+  # NixOS configuration
+  boot.loader.grub.enable = true;
+  boot.loader.grub.version = 2;
+  boot.loader.grub.devices = [ "/dev/sda" ];
+
+  networking.useDHCP = false;
+  networking.interfaces.ens18.useDHCP = true;
+  system.stateVersion = "22.05";
 }
