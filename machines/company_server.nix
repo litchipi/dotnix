@@ -1,6 +1,8 @@
 { config, lib, pkgs, ... }:
 let
   company_name="tyf";
+
+  libnc = import ../lib/services/nextcloud.nix { inherit config lib pkgs;};
 in
 {
   base.user = "op";
@@ -18,10 +20,10 @@ in
 
     theme = {
       name = company_name;
-      logo = ../data/assets/nextcloud/${company_name}/logo.svg;
-      favicon = ../data/assets/nextcloud/${company_name}/logo.svg;
-      logoheader = ../data/assets/nextcloud/${company_name}/logo.svg;
-      background = ../data/assets/nextcloud/${company_name}/background.jpg;
+      logo = libnc.theme "logo.svg";
+      favicon = libnc.theme "logo.svg";
+      logoheader = libnc.theme "logo.svg";
+      background = libnc.theme "background.jpg";
       slogan = "Where beer really matters";
       color = "#6E1852";
     };
