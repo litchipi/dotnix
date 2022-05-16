@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, extra, ... }:
 let
   libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
   libssh = import ../lib/ssh.nix {inherit config lib pkgs;};
@@ -27,7 +27,7 @@ in
     domain = lib.mkOption {
       type = lib.types.str;
       description = "Domain name resolving to the IP of this machine";
-      default = "localhost";
+      default = extra.domain or "localhost";
     };
 
     vm_forward_ports = lib.mkOption {
