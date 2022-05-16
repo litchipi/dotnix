@@ -36,6 +36,9 @@ libconf.create_common_confs [
           address = "0.0.0.0";
           server_name = "${fqdn}";
           port = cfg.port;
+
+          # TODO  Remove registration once we find a way to generate users here
+          allow_registration = true;
         };
       };
       
