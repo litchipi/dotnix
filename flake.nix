@@ -1,4 +1,15 @@
 {
+  # TODO  Create flake template from this
+  #     Flake with only the script declaration, formats on nixos-generators,
+  #     deployment with NixOps, and format-specific configuration set.
+  #     No NixOS machine configuration given except one of example, no "library" made
+  #     Fully commented
+
+  # TODO  Create NixOS template from this
+  #     Basic NixOS system (without complicated overlays)
+  #     Having home-manager and secrets management set up
+  #     Fully commented
+
   description = "NixOs config builder";
 
   inputs = {

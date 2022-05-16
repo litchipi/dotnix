@@ -30,6 +30,7 @@ in
       default = extra.domain or "localhost";
     };
 
+    # TODO  Use firewall open ports to automatically generate port forwarding
     vm_forward_ports = lib.mkOption {
       type = lib.types.attrs;
       description = "Ports to forward if running config on VM";
@@ -90,6 +91,7 @@ in
     };
 
     # Set up  recommended settings for nginx if used
+    # TODO  if no subdomain, redirect to service provided in options, or display 404
     services.nginx = {
       enable = lib.mkDefault false;
       recommendedGzipSettings = true;
