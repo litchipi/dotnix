@@ -56,17 +56,19 @@ let
 
   mkService = name:
     { source, dest, owner, group, permissions, ... }: {
+      path = [ pkgs.rage ];
       description = "Decrypt secret for ${name}";
       wantedBy = [ "multi-user.target" ];
+      after = ["local-fs.target"];
 
       serviceConfig.Type = "oneshot";
 
-      script = with pkgs; ''
+      script = let
+        secret = mkSecretOnDisk name { inherit source; };
+      in ''
         rm -rf ${dest}
         mkdir -p $(dirname ${dest})
-        "${rage}"/bin/rage -d -i ${machine_secret_key_fname} -o '${dest}' '${
-          mkSecretOnDisk name { inherit source; }
-        }'
+        rage -d -i ${machine_secret_key_fname} -o '${dest}' '${secret}'
 
         chown '${owner}':'${group}' '${dest}'
         chmod '${permissions}' '${dest}'
