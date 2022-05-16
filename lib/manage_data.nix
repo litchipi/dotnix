@@ -23,6 +23,13 @@ in
     lib.importTOML "${data_dir_root}/secrets/tokens.toml"
   );
 
+  copy_files_in_home = assets:
+    builtins.listToAttrs (
+      builtins.map ({home_path, asset_path}:
+        { name = home_path; value = { source = get_data_path asset_path; }; }
+      ) assets
+    );
+
   # TODO Assertions on the secret strength
   #   Add a bypass in the options
   set_secret = user: path: { group ? user, permissions ? "0400" }: {
