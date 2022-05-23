@@ -41,6 +41,7 @@ let
         activation_script = '''';
         add_pkgs = [];
         virtualisation_cfg = {};
+        imports = [];
         cfg = {};
       } // user_cfg;
 
@@ -73,6 +74,8 @@ let
       ]);
 
       config = lib.mkIf enable_condition cfg;
+
+      inherit imports;
     };
 in
 {
