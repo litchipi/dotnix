@@ -64,10 +64,9 @@
       inherit system;
     };
 
-    declare_script = { name, script, env ? [], add_pkgs ? pkgs: [], system }: {
+    declare_script = { name, script, pkgs, env ? [], add_pkgs ? p: []}: {
       type = "app";
       program = let
-        pkgs = pkgsForSystem system;
         add_paths = builtins.map (pkg:
           "${pkg}/bin:${pkg}/sbin"
         ) (add_pkgs pkgs);
@@ -109,17 +108,21 @@
       );
 
     # Create output format derivation using nixos-generators
-    build_deriv_output = { fname, system, add_modules, format}: inputs.nixosgen.nixosGenerate {
-        pkgs = pkgsForSystem system;
+    build_deriv_output = { fname, pkgs, add_modules, format}: inputs.nixosgen.nixosGenerate {
+        inherit pkgs;
         modules = [ fname ] ++ base_modules ++ add_modules;
       inherit format;
     };
 
     # Create entire NixOS derivation for a machine
-    build_machine_deriv = name: { fname, system, add_modules ? [], ...}: rec {
+    build_machine_deriv = name: { fname, system, add_modules ? [], extra ? {}, ...}:
+    let
+
+      pkgs = pkgsForSystem system;
+    in rec {
       # Installation ISO formats
       iso-install = build_deriv_output {    # Bootable ISO
-        inherit system fname;
+        inherit pkgs fname;
         add_modules = add_modules ++ [
           ./format_cfg/iso-install-diskfmt.nix
           ./format_cfg/iso-install-installscript.nix
@@ -128,35 +131,43 @@
       };
 
       iso = build_deriv_output {    # Live ISO (can be used for servers)
-        inherit system fname;
+        inherit pkgs fname;
         add_modules = add_modules ++ [];
         format = "iso";
       };
 
       # Virtual machine options
       vbox = build_deriv_output {
-        inherit system fname;
+        inherit pkgs fname;
         add_modules=add_modules ++ [ ./format_cfg/virtualbox.nix ];
         format="virtualbox";
       };
 
-      vm = build_deriv_output {
-        inherit system fname;
+      guivm = build_deriv_output {
+        inherit pkgs fname;
         add_modules=add_modules ++ [ ./format_cfg/virtualisation.nix ];
         format="vm";
       };
 
       clivm = build_deriv_output {
-        inherit system fname;
+        inherit pkgs fname;
         add_modules=add_modules ++ [ ./format_cfg/virtualisation.nix ];
         format="vm-nogui";
       };
 
-      spawn = declare_script {
-        inherit system;
+      spawn.cli = declare_script {
+        inherit pkgs;
         name = "${name}-clivm-spawn";
         script = ''
-          ${clivm}/bin/run-*-vm
+          ${clivm}/bin/run-${name}-vm
+        '';
+      };
+ 
+      spawn.gui = declare_script {
+        inherit pkgs;
+        name = "${name}-guivm-spawn";
+        script = ''
+          ${guivm}/bin/run-${name}-vm
         '';
       };
     };
@@ -220,8 +231,6 @@
     extra = {
     };
     devShell = {
-      x86_64-linux = (pkgsForSystem "x86_64-linux").mkShell {
-      };
     };
   };
 }
