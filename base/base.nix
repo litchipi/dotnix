@@ -85,7 +85,6 @@ in
       base_home_config
     ];
 
-    services.xserver.desktopManager.wallpaper.mode = lib.mkIf config.services.xserver.enable "fill";
 
     environment.systemPackages = with pkgs; [
       coreutils-full

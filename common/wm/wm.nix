@@ -3,51 +3,75 @@ let
   conf_lib = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   utils_lib = import ../../lib/utils.nix {inherit config lib pkgs;};
   cfg = config.cmn.wm;
+
+  theme_type = lib.types.submodule {
+    options = {
+      name = lib.mkOption {
+        type = lib.types.str;
+        description = "Name to use when enabling the theme";
+      };
+      package = lib.mkOption {
+        type = lib.types.package;
+        description = "Package to use to install the theme on the system";
+      };
+    };
+  };
 in
 conf_lib.create_common_confs [
   {
     name = "wm";
     add_opts = {
       bck-img = lib.mkOption {
-        type = with lib.types; str;
+        type = lib.types.str;
         description = "The background image to set";
       };
       iconTheme = lib.mkOption {
-        type = with lib.types; anything;
-        default = pkgs.papirus-icon-theme;
+        type = lib.types.nullOr theme_type;
+        default = null;
         description = "Icon theme to use";
       };
       gtkTheme = lib.mkOption {
-        type = with lib.types; anything;
-        default = pkgs.layan-gtk-theme;
+        type = lib.types.nullOr theme_type;
+        default = null;
         description = "The GTK theme to set";
       };
+      font = lib.mkOption {
+        type = lib.types.nullOr theme_type;
+        default = null;
+        description = "The Font to use";
+      };
       add_dconf = lib.mkOption {
-        type = with lib.types; anything;
+        type = lib.types.attrs;
         default = {};
         description = "Additionnal dconf configuration";
+      };
+      autologin = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Wether to enable autologin into the session";
       };
     };
 
     cfg = {
       services.xserver.enable = true;
+      programs.xwayland.enable = true;
+      programs.dconf.enable = true;
       cmn.dconf.apps.enable = true;
       cmn.software.infosec = lib.mkIf config.cmn.software.infosec.enable { gui.enable = true; };
+      services.xserver.displayManager.autoLogin = {
+        enable = true;
+        user = config.base.user;
+      };
+      services.xserver.desktopManager.wallpaper.mode = lib.mkIf config.services.xserver.enable "fill";
     };
 
     home_cfg = {
       gtk = {
         enable = true;
-        theme = {
-          name = "GtkTheme";
-          package = cfg.gtkTheme;
-        };
-        iconTheme = {
-          name = "IconTheme";
-          package = cfg.iconTheme;
-        };
-      };
-
+      }
+      // (if builtins.isNull cfg.gtkTheme then {} else { theme = cfg.gtkTheme; })
+      // (if builtins.isNull cfg.iconTheme then {} else { iconTheme = cfg.iconTheme; })
+      // (if builtins.isNull cfg.font then {} else { font = cfg.font; });
       dconf.settings = cfg.add_dconf;
     };
   }
