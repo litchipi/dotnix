@@ -38,6 +38,7 @@ conf_lib.create_common_confs [
       cmn.software.multimedia.enable = true;
       cmn.software.systools.enable = true;
       services.printing.enable = true;
+      # TODO    Set up default applications for each type of file
     };
   }
 
@@ -45,10 +46,13 @@ conf_lib.create_common_confs [
     name = "basic";
     parents = [ "software" ];
     add_pkgs = with pkgs; [
+      libreoffice                 # Office suite
       evince                      # PDF viewer
       gnome.nautilus              # File manager
       gnome.eog                   # Image viewer
+      # TODO    Set up gedit theme
       gnome.gedit                 # Notepad
+      # TODO  Set up alacritty theme
       alacritty                   # Terminal
       firefox                     # Internet browser
       deluge                      # Torrent client
@@ -61,6 +65,7 @@ conf_lib.create_common_confs [
     add_pkgs = with pkgs; [
       vlc                         # Video player
       rhythmbox                   # Music player
+      drawing                     # Paint replacement tool
     ];
   }
 
