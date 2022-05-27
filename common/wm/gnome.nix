@@ -74,16 +74,6 @@ conf_lib.create_common_confs [
       services.xserver.displayManager.gdm = {
         enable = true;
         wayland = true;
-
-        # TODO  Fixup gdm config
-        # settings = {
-        #   IncludeAll=false;
-        #   DisallowTCP=true;
-        #   AutomaticLoginEnable = if config.cmn.wm.autologin then config.base.user else false;
-        # } // (lib.mkIf config.cmn.wm.autologin {
-        #   AutomaticLoginEnable=config.base.user;
-        # });
-        # };
       };
 
       environment.gnome.excludePackages = with pkgs.gnome; [
@@ -93,6 +83,7 @@ conf_lib.create_common_confs [
         geary
       ];
 
+      # TODO  FIXME User icon not set for gnome session
       boot.postBootCommands = if builtins.isNull cfg.user_icon then "" else let
         gdm_user_conf = ''
           [User]
