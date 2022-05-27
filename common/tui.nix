@@ -210,6 +210,7 @@ libconf.create_common_confs [
         userEmail = config.base.email;
         extraConfig = {
           init.defaultBranch = "main";
+          safe.directory = "/etc/nixos";
         };
       };
 
