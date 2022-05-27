@@ -5,6 +5,9 @@ in
 conf_lib.create_common_confs [
   {
     name = "musicprod";
+    chain_enable_opts  = {
+      all = ["electro" "guitar" "score"];
+    };
     cfg = {
       cmn.shell.aliases.music.enable = true;
     };
@@ -20,6 +23,7 @@ conf_lib.create_common_confs [
     add_pkgs = with pkgs; [
       lmms
       mixxx
+      reaper
     ];
     parents = [ "software" "musicprod" ];
   }
