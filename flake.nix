@@ -219,6 +219,14 @@
         system="x86_64-linux";
         noconf = true;
       }
+      {
+        fname=./machines/sparta.nix;
+        system="x86_64-linux";
+        noconf = true;
+        add_modules = [
+          inputs.nixos-hardware.nixosModules.lenovo-legion-15arh05h
+        ];
+      }
       # {
       #   fname=./machines/diamond.nix;
       #   system="x86_64-linux";
