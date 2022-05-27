@@ -88,7 +88,7 @@
     base_modules = (find_all_files ./base) ++ (find_all_files ./common) ++ [
       inputs.home-manager.nixosModules.home-manager
       inputs.StevenBlackHosts.nixosModule
-      inputs.envfs.nixosModules.envfs
+      # inputs.envfs.nixosModules.envfs
       {
         _module.args = {
           inherit inputs;
