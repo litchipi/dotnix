@@ -8,6 +8,7 @@ let
   base_home_config = {
     home.homeDirectory = "/home/${cfg.user}";
     home.username = cfg.user;
+
     programs.bash.initExtra = ''
       source ${libdata.get_data_path [ "shell" "git-prompt.sh" ]}
       export PS1="${colors.fg.ps1.username}\\u ${colors.fg.ps1.wdir}\\w '' +
@@ -18,9 +19,13 @@ let
 
       clear
     '';
+
     programs.bash.sessionVariables = {
       COLORTERM="truecolor";
     };
+
+    home.keyboard.layout = "fr";
+
   };
 in
 {
@@ -67,24 +72,33 @@ in
   };
 
   config = {
-    users.groups = lib.mkMerge (builtins.map (group:
-      lib.attrsets.setAttrByPath [ group ] {}
-    ) cfg.extraGroups);
-    users.users."${cfg.user}" = {
-      isNormalUser = true;
-      extraGroups = [ "wheel" ] ++ cfg.extraGroups;
-      password = libdata.plain_secrets.logins."${cfg.user}_${cfg.hostname}";
+    system.stateVersion = "22.05";
+
+    i18n.defaultLocale = "fr_FR.UTF-8";
+
+    users = {
+      groups = lib.mkMerge (builtins.map (group:
+        lib.attrsets.setAttrByPath [ group ] {}
+      ) cfg.extraGroups);
+
+      users."${cfg.user}" = {
+        isNormalUser = true;
+        extraGroups = [ "wheel" ] ++ cfg.extraGroups;
+        password = libdata.plain_secrets.logins."${cfg.user}_${cfg.hostname}";
+      };
+      mutableUsers = false;
     };
 
-    users.mutableUsers = false;
+    home-manager = {
+      useGlobalPkgs = true;
+      useUserPackages = true;
+      users."${cfg.user}" = lib.mkMerge [
+        (lib.attrsets.mapAttrsRecursive (_: value: lib.mkForce value) cfg.home_cfg)
+        base_home_config
+      ];
+    };
 
-    home-manager.useGlobalPkgs = true;
-    home-manager.useUserPackages = true;
-    home-manager.users."${cfg.user}" = lib.mkMerge [
-      (lib.attrsets.mapAttrsRecursive (_: value: lib.mkForce value) cfg.home_cfg)
-      base_home_config
-    ];
-
+    time.timeZone = lib.mkDefault "Europe/Paris";
 
     environment.systemPackages = with pkgs; [
       coreutils-full
