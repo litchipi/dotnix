@@ -26,6 +26,11 @@ let
 
     home.keyboard.layout = "fr";
 
+    programs.password-store = {
+      enable = true;
+      package = pkgs.pass.withExtensions (exts: [exts.pass-otp]);
+      settings = {PASSWORD_STORE_DIR = "$HOME/.local/share/password-store";};
+    };
   };
 in
 {
