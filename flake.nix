@@ -109,15 +109,12 @@
 
     # Create output format derivation using nixos-generators
     build_deriv_output = { fname, pkgs, add_modules, format}: inputs.nixosgen.nixosGenerate {
-        inherit pkgs;
+        inherit pkgs format;
         modules = [ fname ] ++ base_modules ++ add_modules;
-      inherit format;
     };
 
     # Create entire NixOS derivation for a machine
-    build_machine_deriv = name: { fname, system, add_modules ? [], extra ? {}, ...}:
-    let
-
+    build_machine_deriv = name: { fname, system, add_modules ? [], ...}: let
       pkgs = pkgsForSystem system;
     in rec {
       # Installation ISO formats
