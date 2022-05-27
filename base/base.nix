@@ -14,8 +14,7 @@ let
       (if config.cmn.software.tui.git.enable
         then config.cmn.software.tui.git.ps1
         else ""
-      ) + ''
-      ${colors.fg.ps1.dollarsign}$ ${colors.reset}"
+      ) + ''${colors.fg.ps1.dollarsign}$ ${colors.reset}"
 
       clear
     '';
