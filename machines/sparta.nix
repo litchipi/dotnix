@@ -43,8 +43,7 @@ in {
       "firefox.desktop"
       "org.gnome.Nautilus.desktop"
       "org.gnome.gedit.desktop"
-      # TODO FIXME    LibreOffice writer doesn't show up (use core anyway ?)
-      "libreoffice-writer.desktop"
+      "startcenter.desktop"  # Libreoffice
       # TODO Add more usefull applications in shortcuts
       "signal-desktop.desktop"
     ];
@@ -83,10 +82,9 @@ in {
     wike # Wikipedia reader
     gnome-recipes # Browser / create cooking recipes
     gaphor # UML modelling tool
-    # geogebra6 # Math graph tool
+    geogebra # Math graph tool
     authenticator # 2FA TOTP app
 
-    # TODO  Put games in separated common configuration
     # Games
     teeworlds
   ];
