@@ -14,6 +14,9 @@ conf_lib.create_common_confs [
   {
     name = "gnome";
     parents = ["dconf"];
+    add_pkgs = [
+      config.cmn.wm.cursorTheme.package
+    ];
     home_cfg = {
       dconf.settings = {
         "org/gnome/login-screen" = {
@@ -67,6 +70,8 @@ conf_lib.create_common_confs [
           font-antialiasing = "rgba";
           font-hinting = "full";
           show-battery-percentage = false;
+          cursor-size = 26;
+          cursor-theme = config.cmn.wm.cursorTheme.name;
         };
 
         "org/gnome/desktop/sound" = {

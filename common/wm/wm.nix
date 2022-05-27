@@ -35,6 +35,11 @@ conf_lib.create_common_confs [
         default = null;
         description = "The GTK theme to set";
       };
+      cursorTheme = lib.mkOption {
+        type = lib.types.nullOr theme_type;
+        default = null;
+        description = "The cursor theme to set";
+      };
       font = lib.mkOption {
         type = lib.types.nullOr theme_type;
         default = null;
