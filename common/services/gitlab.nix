@@ -29,7 +29,7 @@ libconf.create_common_confs [
 
       users.users."${config.base.user}".extraGroups = [ "gitlab" ];
 
-      base.secrets = {
+      base.secrets.secrets = {
         gitlab_secretFile = gitlab_secret "secretfile";
         gitlab_otpFile = gitlab_secret "otp";
         gitlab_jwsFile = gitlab_secret "session";

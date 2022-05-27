@@ -75,10 +75,17 @@ let
       '';
     };
 in {
-  options.base.secrets = mkOption {
-    type = types.attrsOf secret;
-    description = "secret configuration";
-    default = { };
+  options.base.secrets = {
+    secrets = mkOption {
+      type = types.attrsOf secret;
+      description = "secret configuration";
+      default = { };
+    };
+    encrypted_master_key = mkOption {
+      type = types.bool;
+      default = config.base.is_vm;
+      description = "Wether to store a master key encrypted with a password or not";
+    };
   };
 
   config = {
@@ -86,10 +93,10 @@ in {
       units = mapAttrs' (name: info: {
         name = "${name}-key";
         value = (mkService name info);
-      }) cfg;
+      }) cfg.secrets;
     in units;
 
-    boot.postBootCommands = if config.base.is_vm then ''
+    boot.postBootCommands = if cfg.encrypted_master_key then ''
       function decrypt_key() {
         echo "Decrypting provision key..."
 
@@ -109,7 +116,7 @@ in {
         echo "Success"
       done
     '' else ''
-      if [ ! -f ${machine_secret_key_fname} ]; do
+      if [ ! -f ${machine_secret_key_fname} ]; then
         echo "ERROR: ${machine_secret_key_fname} is not provided"
         echo "Please populate key to ${machine_secret_key_fname} in order to decrypt machine secrets"
         exit 1;

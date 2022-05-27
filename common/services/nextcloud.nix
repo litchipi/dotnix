@@ -114,7 +114,7 @@ libconf.create_common_confs ([
 
       users.users."${config.base.user}".extraGroups = [ "nextcloud" "postgres" ];
 
-      base.secrets = {
+      base.secrets.secrets = {
         nextcloud_adminpass = nextcloud_secret "adminpass";
       };
 

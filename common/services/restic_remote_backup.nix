@@ -106,7 +106,7 @@ libconf.create_common_confs [
     };
 
     cfg = {
-      base.secrets = {
+      base.secrets.secrets = {
         restic_ssh_privk = restic_secret "ssh_privk";
         restic_repo_pwd = restic_secret "repo_pwd";
       };
