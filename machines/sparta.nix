@@ -13,27 +13,30 @@ in {
   cmn.wm = {
     autologin = true;
     bck-img = "galaxy_amongus.png";
-    # TODO    Change cursor theme
-    # cursorTheme = {
-    #   name = "Elementary";
-    #   package = pkgs.elementary;
-    # };
+    cursorTheme = {
+      name = "Qogir-dark";
+      package = pkgs.qogir-icon-theme;
+    };
     iconTheme = {
-      name = "Papirus-Dark";
-      package = pkgs.papirus-icon-theme;
+      name = "Tela-orange-dark";
+      package = pkgs.tela-icon-theme;
     };
     gtkTheme = {
       name = "Flat-Remix-GTK-Orange-Dark";
       package = pkgs.flat-remix-gtk;
     };
+    # TODO  Custom font
+    # font = {
+    #   name = "Cantarell 11";
+    #   package = pkgs.cantarell;
+    # };
   };
 
   cmn.wm.gnome = {
     enable = true;
-    # TODO    Find nice Gnome-shell theme
     theme = {
-      name = "Flat-Remix-Orange-Dark-fullPanel";
-      package = pkgs.flat-remix-gnome;
+      name = "Zuki-shell";
+      package = pkgs.zuki-themes;
       dark = true;
     };
     favorite-apps = [
