@@ -6,7 +6,9 @@ let
   conf_lib = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
 
-  bckimg_path = libdata.get_data_path ["assets" "wallpapers" config.cmn.wm.bck-img];
+  bckimg_path = libdata.get_data_path ["assets" "desktop" "wallpapers" config.cmn.wm.bck-img];
+  # TODO  Validate good utilisation in GDM
+  gdm_logo_path = libdata.get_data_path ["assets" "desktop" "gdm_greeting_logo.png"];
 in
 conf_lib.create_common_confs [
   {
@@ -14,8 +16,13 @@ conf_lib.create_common_confs [
     parents = ["dconf"];
     home_cfg = {
       dconf.settings = {
+        "org/gnome/login-screen" = {
+          logo="${gdm_logo_path}";
+        };
+
         "org/gnome/desktop/background" = {
           picture-uri="file://${bckimg_path}";
+          picture-uri-dark="file://${bckimg_path}";
           picture-options="zoom";
         };
 
@@ -33,6 +40,7 @@ conf_lib.create_common_confs [
           speed = 0.43321299638989164;
           tap-to-click = false;
           two-finger-scrolling-enabled = true;
+          click-method = "areas";
         };
 
         "org/gnome/desktop/privacy" = {
@@ -51,13 +59,13 @@ conf_lib.create_common_confs [
         };
 
         "org/gnome/desktop/interface" = {
+          color-scheme="prefer-dark";
           clock-show-seconds = true;
           clock-show-weekday = true;
           enable-animations = true;
           enable-hot-corners = false;
           font-antialiasing = "rgba";
           font-hinting = "full";
-          font-name = "Ubuntu 11";
           show-battery-percentage = false;
         };
 
@@ -192,10 +200,12 @@ conf_lib.create_common_confs [
             "user-theme@gnome-shell-extensions.gcampax.github.com"
             "gnome-ui-tune@itstime.tech"
             "dash-to-dock@micxgx.gmail.com"
+            "static-background@denizaksimsek.com"
           ];
           had-bluetooth-devices-setup = true;
           remember-mount-password = true;
           welcome-dialog-last-shown-version = "40.5";
+          favorite-apps=config.cmn.wm.gnome.favorite-apps;
         };
 
         "org/gnome/settings-daemon/plugins/power" = {
