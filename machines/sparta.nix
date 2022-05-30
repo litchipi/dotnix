@@ -1,11 +1,12 @@
 { config, lib, pkgs, ... }: let
   libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
 in {
-  # TODO    Set up real password
   base.user = "john";
   base.hostname = "sparta";
   base.networking.ssh_auth_keys = [ "tim" "restic_backup_ssh" ];
-  base.networking.connect_wifi = [ "nixostest" ];
+  base.networking.connect_wifi = [
+    "SFR-a0e0"
+  ];
 
   base.disks.swapsize = 16;
   installscript.nixos_config_branch = "sparta";
@@ -109,6 +110,12 @@ in {
     PICTURES=pics
     VIDEOS=videos
   '';
+
+  powerManagement.cpuFreqGovernor = "performance";
+
+  base.create_user_dirs = [ "work" "learn" ];
+
+  console.font = "Monaco";
 
   # TODO    Set up automatic restic backup, with remote sync
   # TODO    Set up firefox configuration
