@@ -45,7 +45,7 @@ let
   create_systemd_service = name: target: let
     fname_host = builtins.replaceStrings ["." "-"] ["_" "_"] target.host;
     tmpdir = "/tmp/${fname_host}";
-    sshfs_options = "-oIdentityFile=$(realpath ${config.base.secrets.restic_ssh_privk.dest}) -oStrictHostKeyChecking=yes";
+    sshfs_options = "-oIdentityFile=$(realpath ${config.base.secrets.store.restic_ssh_privk.dest}) -oStrictHostKeyChecking=yes";
   in { 
     "${service_name}_${fname_host}" = {
         serviceConfig = {
@@ -106,7 +106,7 @@ libconf.create_common_confs [
     };
 
     cfg = {
-      base.secrets.secrets = {
+      base.secrets.store = {
         restic_ssh_privk = restic_secret "ssh_privk";
         restic_repo_pwd = restic_secret "repo_pwd";
       };
@@ -122,7 +122,7 @@ libconf.create_common_confs [
 
       boot.postBootCommands = ''
         if [ ! -f ${cfg.restic_repo_dir}/config ]; then
-          ${pkgs.restic}/bin/restic init -q -p ${config.base.secrets.restic_repo_pwd.dest} -r ${cfg.restic_repo_dir}
+          ${pkgs.restic}/bin/restic init -q -p ${config.base.secrets.store.restic_repo_pwd.dest} -r ${cfg.restic_repo_dir}
         fi
         chown -R ${config.base.user}:${service_name} ${cfg.restic_repo_dir}
       '';

@@ -29,7 +29,7 @@ libconf.create_common_confs [
 
       users.users."${config.base.user}".extraGroups = [ "gitlab" ];
 
-      base.secrets.secrets = {
+      base.secrets.store = {
         gitlab_secretFile = gitlab_secret "secretfile";
         gitlab_otpFile = gitlab_secret "otp";
         gitlab_jwsFile = gitlab_secret "session";
@@ -49,8 +49,8 @@ libconf.create_common_confs [
         enable = true;
         packages.gitlab = pkgs.gitlab-ee;
         host = "git.${config.base.networking.domain}";
-        databasePasswordFile = config.base.secrets.gitlab_dbpwd.dest;
-        initialRootPasswordFile = config.base.secrets.gitlab_initialrootpwd.dest;
+        databasePasswordFile = config.base.secrets.store.gitlab_dbpwd.dest;
+        initialRootPasswordFile = config.base.secrets.store.gitlab_initialrootpwd.dest;
         # TODO Set up HTTPS with
         # https://nixos.org/manual/nixos/stable/#module-security-acme-nginx
         # https://nixos.wiki/wiki/Nginx
@@ -62,10 +62,10 @@ libconf.create_common_confs [
           port = 25;
         };
         secrets = {
-          dbFile = config.base.secrets.gitlab_dbFile.dest;
-          secretFile = config.base.secrets.gitlab_secretFile.dest;
-          otpFile = config.base.secrets.gitlab_otpFile.dest;
-          jwsFile = config.base.secrets.gitlab_jwsFile.dest;
+          dbFile = config.base.secrets.store.gitlab_dbFile.dest;
+          secretFile = config.base.secrets.store.gitlab_secretFile.dest;
+          otpFile = config.base.secrets.store.gitlab_otpFile.dest;
+          jwsFile = config.base.secrets.store.gitlab_jwsFile.dest;
         };
         extraConfig = {
           gitlab = {

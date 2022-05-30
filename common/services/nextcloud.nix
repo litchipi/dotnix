@@ -114,7 +114,7 @@ libconf.create_common_confs ([
 
       users.users."${config.base.user}".extraGroups = [ "nextcloud" "postgres" ];
 
-      base.secrets.secrets = {
+      base.secrets.store = {
         nextcloud_adminpass = nextcloud_secret "adminpass";
       };
 
@@ -128,7 +128,7 @@ libconf.create_common_confs ([
           dbuser = "nextcloud";
           dbhost = "/run/postgresql";
           dbname = "nextcloud";
-          adminpassFile = config.base.secrets.nextcloud_adminpass.dest;
+          adminpassFile = config.base.secrets.store.nextcloud_adminpass.dest;
           adminuser = "root";
         };
       };

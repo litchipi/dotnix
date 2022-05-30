@@ -76,7 +76,7 @@ let
     };
 in {
   options.base.secrets = {
-    secrets = mkOption {
+    store = mkOption {
       type = types.attrsOf secret;
       description = "secret configuration";
       default = { };
@@ -93,7 +93,7 @@ in {
       units = mapAttrs' (name: info: {
         name = "${name}-key";
         value = (mkService name info);
-      }) cfg.secrets;
+      }) cfg.store;
     in units;
 
     boot.postBootCommands = if cfg.encrypted_master_key then ''
