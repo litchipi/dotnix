@@ -33,10 +33,16 @@ let
         COLORTERM="truecolor";
       };
 
-    programs.password-store = {
-      enable = true;
-      package = pkgs.pass.withExtensions (exts: [exts.pass-otp]);
-      settings = {PASSWORD_STORE_DIR = "$HOME/.local/share/password-store";};
+      password-store = {
+        enable = true;
+        package = pkgs.pass.withExtensions (exts: with exts; [
+          pass-genphrase
+          pass-otp
+          pass-tomb
+          pass-update
+        ]);
+        settings = {PASSWORD_STORE_DIR = "$HOME/.local/share/password-store";};
+      };
     };
   };
 in
