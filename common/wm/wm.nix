@@ -56,7 +56,8 @@ conf_lib.create_common_confs [
         description = "Wether to enable autologin into the session";
       };
     };
-
+    add_pkgs = with pkgs; [
+    ] ++ (if builtins.isNull cfg.cursorTheme then [] else [ cfg.cursorTheme.package ]);
     cfg = {
       services.xserver.enable = true;
       programs.xwayland.enable = true;
@@ -77,7 +78,11 @@ conf_lib.create_common_confs [
       // (if builtins.isNull cfg.gtkTheme then {} else { theme = cfg.gtkTheme; })
       // (if builtins.isNull cfg.iconTheme then {} else { iconTheme = cfg.iconTheme; })
       // (if builtins.isNull cfg.font then {} else { font = cfg.font; });
-      dconf.settings = cfg.add_dconf;
+
+      dconf.settings = cfg.add_dconf
+      // (if builtins.isNull cfg.cursorTheme then {} else {
+        "org/gnome/desktop/interface".cursor-theme = cfg.cursorTheme.name;
+      });
     };
   }
 ]
