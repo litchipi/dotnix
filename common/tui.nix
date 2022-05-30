@@ -190,13 +190,11 @@ libconf.create_common_confs [
   {
     name = "git";
     parents = [ "software" "tui" ];
-    add_pkgs = with pkgs; [
-      git
-    ];
+    add_pkgs = [ pkgs.git ];
     add_opts = {
       ps1 = lib.mkOption {
         type = lib.types.str;
-        default = "${colors.fg.ps1.gitps1}\\`__git_ps1 \"<%s> \"\\`";
+        default = "${colors.fg.ps1.gitps1}`__git_ps1 \"<%s> \"`";
         description = "Indication of git repo in prompt info of bash";
       };
     };
