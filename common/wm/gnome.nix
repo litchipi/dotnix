@@ -32,23 +32,18 @@ conf_lib.create_common_confs [
         default = [ ];
         description = "Extensions to add to the gnome shell";
       };
-      default_terminal_app = lib.mkOption {
-        type = with lib.types; package;
-        default = pkgs.alacritty;
-        description = "Terminal to use by default";
-      };
       favorite-apps = lib.mkOption {
         type = with lib.types; listOf str;
         default = [];
         description = "Favourite applications pinned";
       };
       user_icon = lib.mkOption {
-        type = lib.types.path;
+        type = with lib.types; nullOr path;
         default = null;
         description = "Icon to use for the user";
       };
       theme = lib.mkOption {
-        type = gnome_theme_type;
+        type = lib.types.nullOr gnome_theme_type;
         description = "Gnome Shell theme to set";
         default = null;
       };
@@ -92,12 +87,10 @@ conf_lib.create_common_confs [
           Icon=${cfg.user_icon}
           SystemAccount=false
         '';
-        #Icon=/var/lib/AccountsService/icons/tim
       in ''
         mkdir -p /var/lib/AccountsService/users/
         echo '${gdm_user_conf}' > /var/lib/AccountsService/users/${config.base.user}
       '';
-      #cp ${cfg.user_icon} /var/lib/AccountsService/icons/${config.base.user}
     };
 
     home_cfg = {
@@ -125,8 +118,6 @@ conf_lib.create_common_confs [
       dock-from-dash
     ] ++ cfg.add_extensions) ++ (with pkgs; [
       gnome.gnome-tweaks
-      cfg.default_terminal_app
-      cfg.theme.package
-    ]);
+    ]) ++ (if builtins.isNull cfg.theme then [] else [ cfg.theme.package ]);
   }
 ]
