@@ -99,13 +99,16 @@ in {
   #boot.loader.grub.theme
   base.secrets.encrypted_master_key = true;
 
-  # TODO    Set up XDG directories like so:
-  #   - docs
-  #   - work
-  #   - learn
-  #   - downloads
-  #   - images
-  #   - videos
+  environment.etc."xdg/user-dirs.defaults".text = ''
+    DESKTOP=.system/desktop
+    TEMPLATES=.system/templates
+    PUBLICSHARE=.system/public
+    DOWNLOAD=downloads
+    DOCUMENTS=docs
+    MUSIC=music
+    PICTURES=pics
+    VIDEOS=videos
+  '';
 
   # TODO    Set up automatic restic backup, with remote sync
   # TODO    Set up firefox configuration
