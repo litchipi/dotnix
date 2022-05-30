@@ -51,6 +51,7 @@ conf_lib.create_common_confs [
 
     cfg = {
       cmn.wm.enable = true;
+      cmn.wm.boot.enable = true;
       programs.dconf.enable = true;
       cmn.dconf.gnome.enable = true;
       cmn.dconf.gnome_keyboard_shortcuts.enable = true;

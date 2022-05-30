@@ -11,6 +11,7 @@ in {
   installscript.nixos_config_branch = "sparta";
 
   cmn.wm = {
+    boot.theme = "hexagon_2";   # TODO  Test splash screen
     autologin = true;
     bck-img = "galaxy_amongus.png";
     cursorTheme = {
@@ -88,8 +89,6 @@ in {
     # Games
     teeworlds
   ];
-
-  # TODO  Install plymouth and set up custom theme
 
   # boot.zfs.enabled = true;
 
