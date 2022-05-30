@@ -1,5 +1,6 @@
 { config, lib, pkgs, home-manager, ... }:
 let
+  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
   conf_lib = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   utils_lib = import ../../lib/utils.nix {inherit config lib pkgs;};
   cfg = config.cmn.wm;
@@ -57,6 +58,7 @@ conf_lib.create_common_confs [
       };
     };
     add_pkgs = with pkgs; [
+      alacritty
     ] ++ (if builtins.isNull cfg.cursorTheme then [] else [ cfg.cursorTheme.package ]);
     cfg = {
       services.xserver.enable = true;
@@ -83,6 +85,8 @@ conf_lib.create_common_confs [
       // (if builtins.isNull cfg.cursorTheme then {} else {
         "org/gnome/desktop/interface".cursor-theme = cfg.cursorTheme.name;
       });
+
+      home.file.".alacritty.yml".source = libdata.get_data_path ["config" "alacritty.yml"];
     };
   }
 ]
