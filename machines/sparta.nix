@@ -91,8 +91,6 @@ in {
 
   # TODO  Install plymouth and set up custom theme
 
-  boot.kernelPackages = pkgs.linuxPackages_zen;
-
   # boot.zfs.enabled = true;
 
   programs.seahorse.enable = true;
@@ -114,4 +112,9 @@ in {
   # TODO    Set up firefox configuration
   # TODO    Add elements in fstab to auto-mount stuff
   # TODO    Add an option to create a swap file at boot time
+
+  cmn.hardware.efi.enable = true;
+  boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "ahci" "usb_storage" "usbhid" "sd_mod"];
+  boot.kernelPackages = pkgs.linuxPackages_zen;
+  boot.kernelParams = [ "quiet" ];
 }
