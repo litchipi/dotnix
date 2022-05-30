@@ -6,25 +6,32 @@ let
   colors = import ../lib/colors.nix {inherit config lib pkgs;};
 
   base_home_config = {
-    home.homeDirectory = "/home/${cfg.user}";
-    home.username = cfg.user;
-
-    programs.bash.initExtra = ''
-      source ${libdata.get_data_path [ "shell" "git-prompt.sh" ]}
-      export PS1="${colors.fg.ps1.username}\\u ${colors.fg.ps1.wdir}\\w '' +
-      (if config.cmn.software.tui.git.enable
-        then config.cmn.software.tui.git.ps1
-        else ""
-      ) + ''${colors.fg.ps1.dollarsign}$ ${colors.reset}"
-
-      clear
-    '';
-
-    programs.bash.sessionVariables = {
-      COLORTERM="truecolor";
+    home = {
+      homeDirectory = "/home/${cfg.user}";
+      username = cfg.user;
+      keyboard.layout = "fr";
+      activation.create_user_dirs = let
+        dirpaths = builtins.concatStringsSep " " (builtins.map (dir: "$HOME/${dir}") cfg.create_user_dirs);
+      in ''
+        if [ ! -z "${dirpaths}" ]; then
+          mkdir -p ${dirpaths}
+        fi
+      '';
     };
 
-    home.keyboard.layout = "fr";
+    programs = {
+      bash.initExtra = ''
+        source ${libdata.get_data_path [ "shell" "git-prompt.sh" ]}
+        export PS1="${colors.fg.ps1.username}\\u ${colors.fg.ps1.wdir}\\w '' +
+        (if config.cmn.software.tui.git.enable
+          then config.cmn.software.tui.git.ps1
+          else ""
+        ) + ''${colors.fg.ps1.dollarsign}$ ${colors.reset}"
+      '';
+
+      bash.sessionVariables = {
+        COLORTERM="truecolor";
+      };
 
     programs.password-store = {
       enable = true;
@@ -73,6 +80,12 @@ in
       type = with lib.types; listOf str;
       default = [];
       description = "Extra groups to add the base user into";
+    };
+
+    create_user_dirs = lib.mkOption {
+      type = with lib.types; listOf str;
+      default = [];
+      description = "Folders to create in $HOME of the user";
     };
   };
 
