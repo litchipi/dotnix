@@ -11,6 +11,7 @@ in
 conf_lib.create_common_confs [
   {
     name = "filesystem";
+    minimal.cli = true;
     default_enabled = true;
     parents = [ "shell" "aliases" ];
     home_cfg.programs.bash = {
@@ -36,6 +37,7 @@ conf_lib.create_common_confs [
   {
     name = "git";
     parents = [ "shell" "aliases" ];
+    minimal.cli = true;
     add_pkgs = with pkgs; [
       git
     ];
@@ -198,6 +200,7 @@ conf_lib.create_common_confs [
   {
     name = "network";
     default_enabled=true;
+    minimal.cli = true;
     parents = [ "shell" "aliases" ];
     add_opts = {
       pingtest_website = lib.mkOption {
@@ -219,6 +222,7 @@ conf_lib.create_common_confs [
   {
     name = "nix";
     default_enabled = true;
+    minimal.cli = true;
     parents = [ "shell" "aliases" ];
     add_opts = {
       nix_shells_dir = lib.mkOption {
@@ -359,6 +363,7 @@ conf_lib.create_common_confs [
   {
     name = "fzf";
     default_enabled = true;
+    minimal.cli = true;
     parents = [ "shell" "aliases" ];
     add_pkgs = with pkgs; [
       fzf

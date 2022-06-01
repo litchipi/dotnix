@@ -80,7 +80,7 @@ in
       blockGambling = true;
       blockPorn = true;
       blockSocial = true;
-      enable = lib.mkDefault true;
+      enable = lib.mkDefault (!config.base.minimal.cli);
     };
 
     services.openssh = lib.mkIf config.base.networking.ssh {

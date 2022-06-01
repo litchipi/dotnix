@@ -76,6 +76,12 @@ in
       description = "Additionnal packages to set for this machine";
     };
 
+    full_pkgs = lib.mkOption {
+      type = with lib.types; listOf package;
+      default = [];
+      description = "Additionnal packages that are not included for a minimal configuration";
+    };
+
     is_vm = lib.mkOption {
       type = lib.types.bool;
       default = false;
@@ -92,6 +98,18 @@ in
       type = with lib.types; listOf str;
       default = [];
       description = "Folders to create in $HOME of the user";
+    };
+
+    minimal.cli = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Wether to enable minimal CLI config";
+    };
+
+    minimal.gui = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Wether to enable minimal GUI config";
     };
   };
 
@@ -128,6 +146,7 @@ in
       coreutils-full
       vim
       wget
-    ] ++ cfg.add_pkgs;
+    ] ++ cfg.add_pkgs
+    ++ (if (config.base.minimal.cli || config.base.minimal.gui) then [] else cfg.full_pkgs);
   };
 }

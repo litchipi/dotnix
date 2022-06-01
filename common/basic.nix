@@ -6,6 +6,7 @@ conf_lib.create_common_confs [
   {
     name = "software";
     default_enabled = true;
+    minimal.cli = true;
     add_opts = {
       default_terminal_app = lib.mkOption {
         type = with lib.types; package;
@@ -33,6 +34,7 @@ conf_lib.create_common_confs [
 
   {
     name = "basic";
+    minimal.gui = true;
     cfg = {
       cmn.software.basic.enable = true;
       cmn.software.multimedia.enable = true;
@@ -45,6 +47,7 @@ conf_lib.create_common_confs [
   {
     name = "basic";
     parents = [ "software" ];
+    minimal.gui = true;
     add_pkgs = with pkgs; [
       libreoffice                 # Office suite
       evince                      # PDF viewer

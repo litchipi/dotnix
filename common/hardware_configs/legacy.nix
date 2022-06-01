@@ -5,6 +5,7 @@ in
 conf_lib.create_common_confs [
   {
     name = "legacy";
+    minimal.cli = true;
     parents = ["hardware"];
     assertions = [
       {

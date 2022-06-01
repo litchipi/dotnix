@@ -43,6 +43,7 @@ libconf.create_common_confs [
   {
     name = "minimal";
     parents = ["software" "tui"];
+    minimal.cli = true;
     add_pkgs = with pkgs; [
       fzf
       ripgrep
@@ -55,6 +56,7 @@ libconf.create_common_confs [
 
   {
     name = "neovim";
+    minimal.cli = true;
     parents = [ "software" "tui" ];
     add_pkgs = with pkgs; [
       neovim
@@ -189,6 +191,7 @@ libconf.create_common_confs [
 
   {
     name = "git";
+    minimal.cli = true;
     parents = [ "software" "tui" ];
     add_pkgs = [ pkgs.git ];
     add_opts = {
@@ -222,6 +225,7 @@ libconf.create_common_confs [
 
   {
     name = "tmux";
+    minimal.cli = true;
     parents = [ "software" "tui" ];
     add_pkgs = with pkgs; [
       tmux

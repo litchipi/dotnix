@@ -5,6 +5,7 @@ in
 conf_lib.create_common_confs [
   {
     name = "efi";
+    minimal.cli = true;
     parents = ["hardware"];
     assertions = [
       {

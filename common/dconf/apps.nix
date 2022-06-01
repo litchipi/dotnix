@@ -9,6 +9,7 @@ conf_lib.create_common_confs [
   {
     name = "apps";
     parents = ["dconf"];
+    minimal.gui = true;
     home_cfg.dconf.settings = {
       "org/gnome/nautilus/preferences" = {
         default-folder-viewer = "icon-view";

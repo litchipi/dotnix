@@ -21,6 +21,7 @@ in
 conf_lib.create_common_confs [
   {
     name = "wm";
+    minimal.gui = true;
     add_opts = {
       bck-img = lib.mkOption {
         type = lib.types.str;

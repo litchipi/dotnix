@@ -24,6 +24,7 @@ in
 conf_lib.create_common_confs [
   {
     name = "gnome";
+    minimal.gui = true;
     parents = ["wm"];
 
     add_opts = {

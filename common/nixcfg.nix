@@ -7,6 +7,7 @@ conf_lib.create_common_confs [
   {
     name = "ecospace";
     parents = ["nix" "profile"];
+    minimal.cli = true;
     add_opts = {
       minfree = lib.mkOption {
         type = lib.types.int;
