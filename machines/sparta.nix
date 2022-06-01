@@ -88,7 +88,7 @@ in {
     wike # Wikipedia reader
     gnome-recipes # Browser / create cooking recipes
     gaphor # UML modelling tool
-    geogebra # Math graph tool
+    #geogebra # Math graph tool
     authenticator # 2FA TOTP app
 
     # Games
@@ -121,4 +121,5 @@ in {
   boot.kernelPackages = pkgs.linuxPackages_zen;
   boot.kernelParams = [ "quiet" ];
   # boot.zfs.enabled = true;
+  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

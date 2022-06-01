@@ -52,8 +52,6 @@ conf_lib.create_common_confs [
         swapDevices = [
           { device = "/dev/disk/by-label/swap"; }
         ];
-
-      hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
     };
   }
 ]
