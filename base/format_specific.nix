@@ -16,6 +16,12 @@
         default = "main";
         description = "Branch to fetch from the remote repository";
       };
+
+      flake_target_name = lib.mkOption {
+        type = lib.types.str;
+        default = config.base.hostname;
+        description = "Name of the flake target to reach for NixOS install";
+      };
     };
   };
 }
