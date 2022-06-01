@@ -65,13 +65,13 @@ in
     };
 
     home_cfg = lib.mkOption {
-      type = lib.types.anything;
+      type = lib.types.attrs;
       default = {};
       description = "Additionnal home-manager configurations for this machine";
     };
 
     add_pkgs = lib.mkOption {
-      type = lib.types.anything;
+      type = with lib.types; listOf package;
       default = [];
       description = "Additionnal packages to set for this machine";
     };
