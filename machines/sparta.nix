@@ -3,6 +3,9 @@
 in {
   base.user = "john";
   base.hostname = "sparta";
+  base.create_user_dirs = [ "work" "learn" ];
+
+  base.secrets.encrypted_master_key = true;
   base.networking.ssh_auth_keys = [ "tim" "restic_backup_ssh" ];
   base.networking.connect_wifi = [
     "SFR-a0e0"
@@ -33,7 +36,7 @@ in {
     #   package = pkgs.cantarell;
     # };
   };
-
+  console.font = "Monaco";
   cmn.wm.gnome = {
     enable = true;
     theme = {
@@ -66,7 +69,8 @@ in {
   cmn.software.dev.enable = true;
   cmn.software.dev.all = true;
 
-  base.add_pkgs = with pkgs; [
+  # programs.seahorse.enable = true;
+  base.full_pkgs = with pkgs; [
     franz
     signal-desktop
 
@@ -91,15 +95,6 @@ in {
     teeworlds
   ];
 
-  # boot.zfs.enabled = true;
-
-  programs.seahorse.enable = true;
-
-  # TODO  Pimp Grub theme
-  #boot.loader.grub.splashImage
-  #boot.loader.grub.theme
-  base.secrets.encrypted_master_key = true;
-
   environment.etc."xdg/user-dirs.defaults".text = ''
     DESKTOP=.system/desktop
     TEMPLATES=.system/templates
@@ -111,19 +106,19 @@ in {
     VIDEOS=videos
   '';
 
-  powerManagement.cpuFreqGovernor = "performance";
-
-  base.create_user_dirs = [ "work" "learn" ];
-
-  console.font = "Monaco";
-
   # TODO    Set up automatic restic backup, with remote sync
   # TODO    Set up firefox configuration
   # TODO    Add elements in fstab to auto-mount stuff
   # TODO    Add an option to create a swap file at boot time
 
+  # TODO  Pimp Grub theme
+  #boot.loader.grub.splashImage
+  #boot.loader.grub.theme
+
+  powerManagement.cpuFreqGovernor = "performance";
   cmn.hardware.efi.enable = true;
   boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "ahci" "usb_storage" "usbhid" "sd_mod"];
   boot.kernelPackages = pkgs.linuxPackages_zen;
   boot.kernelParams = [ "quiet" ];
+  # boot.zfs.enabled = true;
 }
