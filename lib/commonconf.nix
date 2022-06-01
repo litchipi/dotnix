@@ -28,38 +28,41 @@ let
     lib.attrsets.mapAttrsToList (generate_chain_cfg basepath) chains
   );
 
-  commoncfg = user_cfg:
+  commoncfg = {
+    name,
+    parents ? [],
+    default_enabled ? false,
+    minimal ? { cli = false; gui = false; },
+    chain_enable_opts ? {},
+    assertions ? [],
+    imports ? [],
+    add_opts ? {},
+    add_pkgs ? [],
+    home_cfg ? {},
+    virtualisation_cfg ? {},
+    cfg ? {}
+  }:
     let
-      # Default arguments
-      arg_config = {
-        default_enabled = false;
-        chain_enable_opts = {};
-        parents = [];
-        add_opts = {};
-        assertions = [];
-        home_cfg = {};
-        activation_script = '''';
-        add_pkgs = [];
-        virtualisation_cfg = {};
-        imports = [];
-        cfg = {};
-      } // user_cfg;
+      minimal_cfg = { cli = false; gui = false; } // minimal;
+      opt_path = ["cmn"] ++ parents ++ [ name ];
 
-      opt_path = ["cmn"] ++ arg_config.parents ++ [ arg_config.name ];
+      enable_condition = builtins.foldl' (acc: val: acc && val) true [
+        (if config.base.minimal.cli then minimal_cfg.cli else true)
+        (if config.base.minimal.gui then (minimal_cfg.gui || minimal_cfg.cli) else true)
+        (lib.attrsets.getAttrFromPath (opt_path ++ [ "enable" ]) config)
+      ];
 
-      enable_condition = lib.attrsets.getAttrFromPath (opt_path ++ [ "enable" ]) config;
-      cfg = lib.mkMerge [
-        arg_config.cfg
+      total_cfg = lib.mkMerge [
+        cfg
         {
-          environment.systemPackages = arg_config.add_pkgs;
-          assertions = arg_config.assertions;
-          home-manager.users."${config.base.user}" = lib.mkIf enable_condition arg_config.home_cfg;
-          virtualisation = lib.mkIf config.base.is_vm arg_config.virtualisation_cfg;
+          environment.systemPackages = add_pkgs;
+          home-manager.users."${config.base.user}" = home_cfg;
+          virtualisation = lib.mkIf config.base.is_vm virtualisation_cfg;
+          inherit assertions;
         }
-        (generate_enable_chains_cfgs opt_path arg_config.chain_enable_opts)
+        (generate_enable_chains_cfgs opt_path chain_enable_opts)
       ];
     in
-    with arg_config;
     {
       options = lib.attrsets.setAttrByPath opt_path (libutils.mergeall [
         {
@@ -73,7 +76,7 @@ let
         add_opts
       ]);
 
-      config = lib.mkIf enable_condition cfg;
+      config = lib.mkIf enable_condition total_cfg;
 
       inherit imports;
     };
