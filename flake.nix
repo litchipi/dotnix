@@ -175,6 +175,7 @@
         (builtins.map ({fname, system, add_modules ? [], ...}: {
           name = name_from_fname fname;
           value = nixpkgs.lib.nixosSystem {
+            pkgs = pkgsForSystem system;
             inherit system;
             modules = [ fname ] ++ base_modules ++ add_modules;
           };
