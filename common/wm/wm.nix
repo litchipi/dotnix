@@ -86,8 +86,6 @@ conf_lib.create_common_confs [
       // (if builtins.isNull cfg.cursorTheme then {} else {
         "org/gnome/desktop/interface".cursor-theme = cfg.cursorTheme.name;
       });
-
-      home.file.".alacritty.yml".source = libdata.get_data_path ["config" "alacritty.yml"];
     };
   }
 ]

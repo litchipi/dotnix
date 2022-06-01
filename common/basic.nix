@@ -1,37 +1,33 @@
 { config, lib, pkgs, ... }:
 let
   conf_lib = import ../lib/commonconf.nix {inherit config lib pkgs;};
+  libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
 in
 conf_lib.create_common_confs [
   {
     name = "software";
     default_enabled = true;
     minimal.cli = true;
+    add_pkgs = [
+      config.cmn.software.default_terminal_app
+    ];
     add_opts = {
+      # Not supposed to be changed other by editing this config
       default_terminal_app = lib.mkOption {
-        type = with lib.types; package;
+        type = lib.types.package;
+        description = "Application to use for terminal emulation";
         default = pkgs.alacritty;
-        description = "Terminal application to use";
       };
-
       terminal_cmd = lib.mkOption {
-        type = with lib.types; str;
+        type = lib.types.str;
+        description = "Terminal command to execute a program";
         default = "alacritty -e";
-        description = "Command used to spawn a terminal running an application";
       };
     };
-    assertions = let 
-      cfg = config.cmn.software;
-    in
-    [
-      {
-        assertion = lib.strings.hasInfix (lib.strings.getName cfg.default_terminal_app) cfg.terminal_cmd;
-        message = "Terminal execution command does not contain the name of the default terminal application";
-      }
-    ];
-    add_pkgs = [ config.cmn.software.default_terminal_app ];
+    home_cfg = {
+      home.file.".alacritty.yml".source = libdata.get_data_path ["config" "alacritty.yml"];
+    };
   }
-
   {
     name = "basic";
     minimal.gui = true;
@@ -55,8 +51,6 @@ conf_lib.create_common_confs [
       gnome.eog                   # Image viewer
       # TODO    Set up gedit theme
       gnome.gedit                 # Notepad
-      # TODO  Set up alacritty theme
-      alacritty                   # Terminal
       firefox                     # Internet browser
       deluge                      # Torrent client
     ];
