@@ -20,6 +20,7 @@ conf_lib.create_common_confs [
     cfg = {
       cmn.software.basic.enable = true;
       cmn.software.tui.enable = true;
+      cmn.software.dev.scripts.enable = true;
     };
 
     add_pkgs = with pkgs; [
@@ -36,7 +37,7 @@ conf_lib.create_common_confs [
   {
     name = "gui";
     parents = ["software" "infosec" ];
-    default_enable = config.cmn.wm.enable;
+    default_enabled = config.cmn.wm.enable && config.cmn.software.infosec.enable;
     add_pkgs = with pkgs; [
       # Note taking
       cherrytree

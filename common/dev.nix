@@ -19,6 +19,7 @@ libconf.create_common_confs [
     name = "dev";
     parents = ["software"];
     chain_enable_opts  = {
+      scripts = []; # Python
       software = ["rust"]; # Python
       all = ["rust" "ocaml" "haskell" "nix"];
     };
