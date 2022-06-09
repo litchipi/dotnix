@@ -12,14 +12,6 @@ in {
   ];
 
   console.font = "Monaco";
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "/boot/efi";
-
-  # Setup keyfile
-  boot.initrd.secrets = {
-    "/crypto_keyfile.bin" = null;
-  };
 
   cmn.wm = {
     boot.theme = "hexagon_2";   # TODO  Test splash screen
@@ -65,12 +57,6 @@ in {
   cmn.basic.enable = true;
   cmn.server.enable = true;
   networking.stevenBlackHosts.enable = true;
-
-  # Enable swap on luks
-  boot.initrd.luks.devices."luks-d8d528de-520b-4821-b3eb-4acf42a897dd" = {
-    device = "/dev/disk/by-uuid/d8d528de-520b-4821-b3eb-4acf42a897dd";
-    keyFile = "/crypto_keyfile.bin";
-  };
 
   cmn.software.musicprod.all = true;
   cmn.software.dev.basic = true;
@@ -122,6 +108,21 @@ in {
 
 
   # TODO  Move as much as possible to common configurations
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.efi.efiSysMountPoint = "/boot/efi";
+
+  # Setup keyfile
+  boot.initrd.secrets = {
+    "/crypto_keyfile.bin" = null;
+  };
+
+  # Enable swap on luks
+  boot.initrd.luks.devices."luks-d8d528de-520b-4821-b3eb-4acf42a897dd" = {
+    device = "/dev/disk/by-uuid/d8d528de-520b-4821-b3eb-4acf42a897dd";
+    keyFile = "/crypto_keyfile.bin";
+  };
+
   boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
 
   fileSystems."/" = {
