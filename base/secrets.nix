@@ -6,7 +6,6 @@ with lib;
 let
   libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
   cfg = config.base.secrets;
-  machine_secret_key_fname = "/etc/secrets_key";
 
   secret = types.submodule {
     options = {
@@ -68,7 +67,7 @@ let
       in ''
         rm -rf ${dest}
         mkdir -p $(dirname ${dest})
-        rage -d -i ${machine_secret_key_fname} -o '${dest}' '${secret}'
+        rage -d -i ${cfg.machine_secret_key_fname} -o '${dest}' '${secret}'
 
         chown '${owner}':'${group}' '${dest}'
         chmod '${permissions}' '${dest}'
@@ -76,6 +75,11 @@ let
     };
 in {
   options.base.secrets = {
+    machine_secret_key_fname = lib.mkOption {
+      type = types.str;
+      description = "Filename for the master key";
+      default = "/etc/secrets_key";
+    };
     store = mkOption {
       type = types.attrsOf secret;
       description = "secret configuration";
@@ -102,23 +106,23 @@ in {
 
         read -p "Enter password: " -s password
         export PATH=$PATH:${pkgs.gnupg}/bin/
-        gpg -q --batch --passphrase "$password" --output ${machine_secret_key_fname} -d ${provision_privk}
+        gpg -q --batch --passphrase "$password" --output ${cfg.machine_secret_key_fname} -d ${provision_privk}
       }
 
-      while [ ! -f ${machine_secret_key_fname} ]; do
+      while [ ! -f ${cfg.machine_secret_key_fname} ]; do
         if ! decrypt_key; then
           echo "Failed to decrypt key"
           continue;
         fi
 
-        chmod 0400 ${machine_secret_key_fname}
-        chown root:root ${machine_secret_key_fname}
+        chmod 0400 ${cfg.machine_secret_key_fname}
+        chown root:root ${cfg.machine_secret_key_fname}
         echo "Success"
       done
     '' else ''
-      if [ ! -f ${machine_secret_key_fname} ]; then
-        echo "ERROR: ${machine_secret_key_fname} is not provided"
-        echo "Please populate key to ${machine_secret_key_fname} in order to decrypt machine secrets"
+      if [ ! -f ${cfg.machine_secret_key_fname} ]; then
+        echo "ERROR: ${cfg.machine_secret_key_fname} is not provided"
+        echo "Please populate key to ${cfg.machine_secret_key_fname} in order to decrypt machine secrets"
         exit 1;
       fi
     '';
