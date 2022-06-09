@@ -145,7 +145,7 @@ in
     time.timeZone = lib.mkDefault "Europe/Paris";
 
     hardware.firmware = if config.setup.is_nixos
-      then [
+      then with pkgs; [
         linux-firmware
       ]
       else [];

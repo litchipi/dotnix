@@ -3,13 +3,14 @@
 in {
   base.user = "john";
   base.hostname = "sparta";
+  base.email = "litchi.pi@proton.me";
 
-  base.secrets.encrypted_master_key = true;
   base.networking.ssh_auth_keys = [ "tim" "restic_backup_ssh" ];
   base.create_user_dirs = [ "work" "learn" ];
   base.networking.connect_wifi = [
     "SFR-a0e0"
   ];
+
 
   console.font = "Monaco";
 
@@ -106,31 +107,36 @@ in {
 
   powerManagement.cpuFreqGovernor = "performance";
 
-
   # TODO  Move as much as possible to common configurations
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "/boot/efi";
+  boot = {
+    kernelPackages = pkgs.linuxPackages_zen;
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+      efi.efiSysMountPoint = "/boot/efi";
+    };
+    initrd = {
+      availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
 
-  # Setup keyfile
-  boot.initrd.secrets = {
-    "/crypto_keyfile.bin" = null;
+      # Setup keyfiles
+      secrets = {
+        "/crypto_keyfile.bin" = null;
+      };
+
+      # Enable swap on luks
+      luks.devices."luks-d8d528de-520b-4821-b3eb-4acf42a897dd" = {
+        device = "/dev/disk/by-uuid/d8d528de-520b-4821-b3eb-4acf42a897dd";
+        keyFile = "/crypto_keyfile.bin";
+      };
+
+      luks.devices."luks-c1736d11-aad9-4fef-9a7c-162d038394bd".device = "/dev/disk/by-uuid/c1736d11-aad9-4fef-9a7c-162d038394bd";
+    };
   };
-
-  # Enable swap on luks
-  boot.initrd.luks.devices."luks-d8d528de-520b-4821-b3eb-4acf42a897dd" = {
-    device = "/dev/disk/by-uuid/d8d528de-520b-4821-b3eb-4acf42a897dd";
-    keyFile = "/crypto_keyfile.bin";
-  };
-
-  boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/814c7052-a17e-41c1-9c49-429662e6ce9d";
     fsType = "ext4";
   };
-
-  boot.initrd.luks.devices."luks-c1736d11-aad9-4fef-9a7c-162d038394bd".device = "/dev/disk/by-uuid/c1736d11-aad9-4fef-9a7c-162d038394bd";
 
   fileSystems."/boot/efi" = {
     device = "/dev/disk/by-uuid/0112-A359";
@@ -141,33 +147,6 @@ in {
 
   networking.networkmanager.enable = true;
   networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.eno1.useDHCP = lib.mkDefault true;
-  # networking.interfaces.wlp4s0.useDHCP = lib.mkDefault true;
-
-
-  # TODO   Remove any useless configuration from here
-  services.xserver.videoDrivers = ["amdgpu" "nvidia"];
-  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.legacy_470;
-  boot.blacklistedKernelModules = [ "nouveau" ];
-  boot.kernelModules = ["amdgpu"];
-  boot.kernelPackages = pkgs.linuxPackages_zen;
-
-  hardware.opengl.extraPackages = with pkgs; [
-    rocm-opencl-icd
-    rocm-opencl-runtime
-    amdvlk
-  ];
-
-  hardware.opengl.extraPackages32 = with pkgs; [
-    driversi686Linux.amdvlk
-  ];
-
-  hardware.opengl = {
-    driSupport = true;
-    driSupport32Bit = true;
-  };
-
-  environment.variables.AMD_VULKAN_ICD = "RADV";
 
   hardware.nvidia.prime = lib.mkForce {
     amdgpuBusId = "PCI:5:0:0";
