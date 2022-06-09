@@ -22,10 +22,15 @@ let
 
   generate_chain_cfg = basepath: tag: opts: lib.lists.foldl (acc: opt:
     lib.attrsets.recursiveUpdate acc (lib.setAttrByPath (basepath ++ [opt]) (generate_tag_cfg basepath tag))
-  ) {} opts;
+    ) {} opts;
 
   generate_enable_chains_cfgs = basepath: chains: lib.mkMerge (
     lib.attrsets.mapAttrsToList (generate_chain_cfg basepath) chains
+  );
+
+  get_enabled_chain = basepath: tag: _: lib.attrsets.getAttrFromPath (basepath ++ [tag]) config;
+  check_enabled_chain = basepath: chains: builtins.foldl' (acc: val: acc || val) false (
+    lib.attrsets.mapAttrsToList (get_enabled_chain basepath) chains
   );
 
   commoncfg = {
@@ -46,11 +51,11 @@ let
       minimal_cfg = { cli = false; gui = false; } // minimal;
       opt_path = ["cmn"] ++ parents ++ [ name ];
 
-      enable_condition = builtins.foldl' (acc: val: acc && val) true [
+      enable_condition = (builtins.foldl' (acc: val: acc && val) true [
         (if config.base.minimal.cli then minimal_cfg.cli else true)
         (if config.base.minimal.gui then (minimal_cfg.gui || minimal_cfg.cli) else true)
         (lib.attrsets.getAttrFromPath (opt_path ++ [ "enable" ]) config)
-      ];
+      ]) || (check_enabled_chain opt_path chain_enable_opts);
 
       total_cfg = lib.mkMerge [
         cfg
