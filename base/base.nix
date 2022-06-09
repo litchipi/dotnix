@@ -110,6 +110,13 @@ in
   config = {
     system.stateVersion = "22.05";
 
+    boot.cleanTmpDir = true;
+
+    # clean logs older than 2d
+    services.cron.systemCronJobs = [
+        "0 20 * * * root journalctl --vacuum-time=2d"
+    ];
+
     i18n.defaultLocale = "fr_FR.UTF-8";
 
     users = {
@@ -136,10 +143,18 @@ in
 
     time.timeZone = lib.mkDefault "Europe/Paris";
 
+    hardware.firmware = if config.setup.is_nixos
+      then [
+        linux-firmware
+      ]
+      else [];
     environment.systemPackages = with pkgs; [
       coreutils-full
+      util-linux
       vim
       wget
+      git
+      git-crypt
     ] ++ cfg.add_pkgs
     ++ (if (config.base.minimal.cli || config.base.minimal.gui) then [] else cfg.full_pkgs);
   };
