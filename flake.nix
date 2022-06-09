@@ -70,7 +70,7 @@
         add_paths = builtins.map (pkg:
           "${pkg}/bin:${pkg}/sbin"
         ) (add_pkgs pkgs);
-        exec = pkgs.writeShellScriptBin name (pkgs.lib.debug.traceValSeq ((
+        exec = pkgs.writeShellScriptBin name ((
           pkgs.lib.strings.optionalString ((builtins.length add_paths) > 0)
           ''
             # Script ${name} defined in flake ${self}
@@ -78,7 +78,7 @@
             ${builtins.concatStringsSep "\n" env}
             PATH=${builtins.concatStringsSep ":" add_paths}:$PATH
           ''
-        ) + script));
+        ) + script);
       in
       "${exec}/bin/${name}";
     };
