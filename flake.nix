@@ -117,22 +117,6 @@
     build_machine_deriv = name: { fname, system, add_modules ? [], ...}: let
       pkgs = pkgsForSystem system;
     in rec {
-      # Installation ISO formats
-      iso-install = build_deriv_output {    # Bootable ISO
-        inherit pkgs fname;
-        add_modules = add_modules ++ [
-          ./format_cfg/iso-install-diskfmt.nix
-          ./format_cfg/iso-install-installscript.nix
-        ];
-        format="install-iso";
-      };
-
-      iso = build_deriv_output {    # Live ISO (can be used for servers)
-        inherit pkgs fname;
-        add_modules = add_modules ++ [];
-        format = "iso";
-      };
-
       # Virtual machine options
       vbox = build_deriv_output {
         inherit pkgs fname;

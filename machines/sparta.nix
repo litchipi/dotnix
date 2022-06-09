@@ -11,9 +11,6 @@ in {
     "SFR-a0e0"
   ];
 
-  base.disks.swapsize = 16;
-  installscript.nixos_config_branch = "sparta";
-
   console.font = "Monaco";
   console.keyMap = "fr";
 

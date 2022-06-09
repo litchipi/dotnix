@@ -13,13 +13,6 @@
   # Load the wifi password for the SSID "nixostest"
   base.networking.connect_wifi = [ "nixostest" ];
 
-  # Configure the disk setup
-  base.disks.swapsize = 4;
-  base.disks.add_partition = [
-    { label = "part0"; size.Gib = 4; fstype = "ntfs"; }
-    { label = "part1"; size.Mib = 500; fstype = "ext4"; }
-  ];
-
   installscript.nixos_config_branch = "dev";
 
   # The desktop software to use
@@ -53,4 +46,5 @@
     cowsay
   ];
 
+  base.disks.add_swapfile = 5000;
 }
