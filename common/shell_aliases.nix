@@ -7,6 +7,7 @@ let
 
   cfg = config.cmn.shell.aliases;
   cfg_memory = cfg.memory;
+  # TODO  Create standardized functions definition for aliases
 in
 conf_lib.create_common_confs [
   {
@@ -237,6 +238,8 @@ conf_lib.create_common_confs [
         NIX_SHELLS_DIR="$HOME/${cfg.nix.nix_shells_dir}";
       };
 
+      # TODO  New Nix aliases:
+      #   Get store path from flake file / dir
       initExtra = '' 
         NIX_SHELL_TEMPLATE='{
           description = "DESCRIPTION_HERE";
