@@ -52,6 +52,7 @@ conf_lib.create_common_confs [
         default = {};
         description = "Additionnal dconf configuration";
       };
+      # TODO  Bind to config
       autologin = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -60,18 +61,29 @@ conf_lib.create_common_confs [
     };
     add_pkgs = with pkgs; [
       alacritty
+      glxinfo
     ] ++ (if builtins.isNull cfg.cursorTheme then [] else [ cfg.cursorTheme.package ]);
     cfg = {
-      services.xserver.enable = true;
-      programs.xwayland.enable = true;
       programs.dconf.enable = true;
       cmn.dconf.apps.enable = true;
       cmn.software.infosec = lib.mkIf config.cmn.software.infosec.enable { gui.enable = true; };
-      services.xserver.displayManager.autoLogin = {
+
+      services.xserver = {
         enable = true;
-        user = config.base.user;
+        layout = "fr";
+        xkbOptions = "eurosign:e";
+        libinput.enable = true;
+        xkbVariant = "";
+        displayManager.autoLogin = {
+          enable = true;
+          user = config.base.user;
+        };
+        desktopManager.wallpaper.mode = lib.mkIf config.services.xserver.enable "fill";
       };
-      services.xserver.desktopManager.wallpaper.mode = lib.mkIf config.services.xserver.enable "fill";
+
+      # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
+      systemd.services."getty@tty1".enable = false;
+      systemd.services."autovt@tty1".enable = false;
     };
 
     home_cfg = {
