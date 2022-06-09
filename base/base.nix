@@ -154,6 +154,7 @@ in
       util-linux
       vim
       wget
+      lshw
       git
       git-crypt
     ] ++ cfg.add_pkgs
