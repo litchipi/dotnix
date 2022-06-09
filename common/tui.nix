@@ -214,8 +214,8 @@ libconf.create_common_confs [
     home_cfg.programs = {
       git = {
         enable = true;
-        userName = libutils.email_to_name config.base.email;
-        userEmail = config.base.email;
+        userName = lib.mkDefault (libutils.email_to_name config.base.email);
+        userEmail = lib.mkDefault config.base.email;
         extraConfig = {
           init.defaultBranch = "main";
           safe.directory = "/etc/nixos";

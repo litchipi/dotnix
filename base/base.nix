@@ -122,7 +122,7 @@ in
       useGlobalPkgs = true;
       useUserPackages = true;
       users."${cfg.user}" = lib.mkMerge [
-        (lib.attrsets.mapAttrsRecursive (_: value: lib.mkForce value) cfg.home_cfg)
+        cfg.home_cfg
         base_home_config
       ];
     };
