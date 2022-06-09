@@ -83,7 +83,7 @@ in {
     };
     encrypted_master_key = mkOption {
       type = types.bool;
-      default = config.base.is_vm;
+      default = config.setup.is_vm;
       description = "Wether to store a master key encrypted with a password or not";
     };
   };

@@ -2,7 +2,7 @@
 {
   config = {
     services.getty.autologinUser = config.base.user;
-    base.is_vm = true;
+    setup.is_vm = true;
     virtualisation = {
       qemu.options = [
         "-cpu host"

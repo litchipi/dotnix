@@ -177,7 +177,12 @@
           value = nixpkgs.lib.nixosSystem {
             pkgs = pkgsForSystem system;
             inherit system;
-            modules = [ fname ] ++ base_modules ++ add_modules;
+            modules = [
+              fname
+              {
+                config.setup.is_nixos = true;
+              }
+            ] ++ base_modules ++ add_modules;
           };
         })
         (builtins.filter (m: if m ? "noconf" then !m.noconf else true) machines))

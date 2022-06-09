@@ -57,7 +57,7 @@ let
         {
           environment.systemPackages = add_pkgs;
           home-manager.users."${config.base.user}" = home_cfg;
-          virtualisation = lib.mkIf config.base.is_vm virtualisation_cfg;
+          virtualisation = lib.mkIf config.setup.is_vm virtualisation_cfg;
           inherit assertions;
         }
         (generate_enable_chains_cfgs opt_path chain_enable_opts)

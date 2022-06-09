@@ -82,12 +82,6 @@ in
       description = "Additionnal packages that are not included for a minimal configuration";
     };
 
-    is_vm = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Wether to enable virtualisation config or not";
-    };
-
     extraGroups = lib.mkOption {
       type = with lib.types; listOf str;
       default = [];
