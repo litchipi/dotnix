@@ -2,8 +2,6 @@
 let
   cfg = config.base;
   libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
-  libutils = import ../lib/utils.nix {inherit config lib pkgs;};
-  colors = import ../lib/colors.nix {inherit config lib pkgs;};
 
   base_home_config = {
     home = {
@@ -20,19 +18,6 @@ let
     };
 
     programs = {
-      bash.initExtra = ''
-        source ${libdata.get_data_path [ "shell" "git-prompt.sh" ]}
-        export PS1="${colors.fg.ps1.username}\\u ${colors.fg.ps1.wdir}\\w '' +
-        (if config.cmn.software.tui.git.enable
-          then config.cmn.software.tui.git.ps1
-          else ""
-        ) + ''${colors.fg.ps1.dollarsign}$ ${colors.reset}"
-      '';
-
-      bash.sessionVariables = {
-        COLORTERM="truecolor";
-      };
-
       password-store = {
         enable = true;
         package = pkgs.pass.withExtensions (exts: with exts; [
@@ -151,10 +136,6 @@ in
       else [];
     environment.systemPackages = with pkgs; [
       coreutils-full
-      util-linux
-      vim
-      wget
-      lshw
       git
       git-crypt
     ] ++ cfg.add_pkgs
