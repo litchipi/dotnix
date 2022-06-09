@@ -49,8 +49,7 @@ conf_lib.create_common_confs [
       evince                      # PDF viewer
       gnome.nautilus              # File manager
       gnome.eog                   # Image viewer
-      # TODO    Set up gedit theme
-      gnome.gedit                 # Notepad
+      gnome-text-editor           # Notepad
       firefox                     # Internet browser
       deluge                      # Torrent client
     ];
