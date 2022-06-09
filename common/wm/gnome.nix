@@ -57,6 +57,11 @@ conf_lib.create_common_confs [
       cmn.dconf.gnome.enable = true;
       cmn.dconf.gnome_keyboard_shortcuts.enable = true;
 
+      services.xserver = {
+        displayManager.gdm.enable = true;
+        desktopManager.gnome.enable = true;
+      };
+
       services.gnome = {
         core-os-services.enable = true;
         core-shell.enable = true;
@@ -65,12 +70,6 @@ conf_lib.create_common_confs [
         gnome-settings-daemon.enable = true;
         gnome-user-share.enable = true;
         sushi.enable = true;
-      };
-
-      services.xserver.desktopManager.gnome.enable = true;
-      services.xserver.displayManager.gdm = {
-        enable = true;
-        wayland = true;
       };
 
       environment.gnome.excludePackages = with pkgs.gnome; [
@@ -113,7 +112,7 @@ conf_lib.create_common_confs [
       bring-out-submenu-of-power-offlogout-button
       disconnect-wifi
       hide-activities-button
-      night-light-slider  # Hopefully will be compatible one day
+      # night-light-slider  # Hopefully will be compatible one day
       runcat
       tray-icons-reloaded
       static-background-in-overview
