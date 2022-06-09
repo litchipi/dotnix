@@ -13,7 +13,7 @@
   description = "NixOs config builder";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/22.05"; #nixos-unstable";
 
     envfs.url = "github:Mic92/envfs";
     envfs.inputs.nixpkgs.follows = "nixpkgs";
