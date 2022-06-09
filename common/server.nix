@@ -13,15 +13,9 @@ conf_lib.create_common_confs [
         ssh = { from = "host"; host.port = 40022; guest.port = 22;};
       };
 
-      cmn.shell.aliases = {
-        filesystem.enable = true;
-        network.enable = true;
-        nix.enable = true;
-      };
       cmn.software.tui = {
-        neovim.enable = true;
-        minimal.enable = true;
-        tmux.enable = true;
+        enable = true;
+        full.enable = false;
       };
 
       networking.extraHosts = ''

@@ -8,7 +8,36 @@ in
 libconf.create_common_confs [
   {
     name = "tui";
+    minimal.cli = true;
     parents = [ "software" ];
+    add_pkgs = with pkgs; [
+      fzf
+      ripgrep
+      autojump
+
+      # TODO Configure / replace with other software
+      htop
+    ];
+    cfg = {
+      cmn.software.tui = {
+        full.enable = lib.mkDefault true;
+        git.enable = lib.mkDefault true;
+        neovim.enable = lib.mkDefault true;
+        tmux.enable = lib.mkDefault true;
+        jrnl.enable = lib.mkDefault true;
+      };
+
+      cmn.shell.aliases = {
+        filesystem.enable = lib.mkDefault true;
+        network.enable = lib.mkDefault true;
+        nix.enable = lib.mkDefault true;
+      };
+    };
+  }
+
+  {
+    name = "full";
+    parents = ["software" "tui"];
     add_pkgs = with pkgs; [
       du-dust
       irssi
@@ -23,35 +52,11 @@ libconf.create_common_confs [
       litchipi.memory
     ];
     cfg = {
-      cmn.software.tui = {
-        minimal.enable = true;
-        neovim.enable = true;
-        tmux.enable = true;
-        jrnl.enable = true;
-      };
-
       cmn.shell.aliases = {
-        filesystem.enable = true;
-        music.enable = true;
-        network.enable = true;
-        nix.enable = true;
-        memory.enable = true;
+        music.enable = lib.mkDefault true;
+        memory.enable = lib.mkDefault true;
       };
     };
-  }
-
-  {
-    name = "minimal";
-    parents = ["software" "tui"];
-    minimal.cli = true;
-    add_pkgs = with pkgs; [
-      fzf
-      ripgrep
-      autojump
-
-      # TODO Configure / replace with other software
-      htop
-    ];
   }
 
   {
@@ -231,6 +236,7 @@ libconf.create_common_confs [
       tmux
       tmuxp
 
+      # TODO Add tmux configuration
       # TODO Add tmuxp_session_creator
       # litchipi.tmuxp_session_creator
     ];
