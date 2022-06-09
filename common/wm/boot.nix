@@ -14,6 +14,7 @@ let
       };
     };
   };
+
   cfg = config.cmn.wm.boot;
 
   plymouth_themes = pkgs.stdenv.mkDerivation rec {
@@ -30,10 +31,16 @@ let
     installPhase = ''
       . $stdenv/setup
       ALL_THEMES=$(find $src -name "*.plymouth" | grep -v "template")
+      if ! echo "$ALL_THEMES" | grep "${cfg.theme}" 2>/dev/null 1>/dev/null; then
+        echo "Theme ${cfg.theme} not found"
+        echo ""
+        echo "All themes found: "
+        echo "$ALL_THEMES"
+        exit 1;
+      fi
+      theme=$(realpath $(echo "$ALL_THEMES" | grep "${cfg.theme}"))
       mkdir -p $out/share/plymouth/themes/
-      for theme in $ALL_THEMES; do
-        cp -r $(dirname $theme) $out/share/plymouth/themes/
-      done
+      cp -r $(dirname $theme) $out/share/plymouth/themes/
     '';
   };
 in
@@ -51,8 +58,8 @@ conf_lib.create_common_confs [
     cfg = {
       boot.plymouth = {
         enable = true;
-        # theme = cfg.theme;
-        # themePackages = [ plymouth_themes ];
+        theme = cfg.theme;
+        themePackages = [ plymouth_themes ];
         extraConfig = ''
         '';
       };
