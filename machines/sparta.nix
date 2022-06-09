@@ -12,8 +12,6 @@ in {
   ];
 
   console.font = "Monaco";
-  console.keyMap = "fr";
-
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";

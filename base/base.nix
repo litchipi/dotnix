@@ -117,6 +117,7 @@ in
         "0 20 * * * root journalctl --vacuum-time=2d"
     ];
 
+    console.keyMap = "fr";
     i18n.defaultLocale = "fr_FR.UTF-8";
 
     users = {
