@@ -13,7 +13,6 @@ conf_lib.create_common_confs [
         ssh = { from = "host"; host.port = 40022; guest.port = 22;};
       };
 
-      networking.wireless.enable = false;
       cmn.shell.aliases = {
         filesystem.enable = true;
         network.enable = true;
@@ -24,6 +23,10 @@ conf_lib.create_common_confs [
         minimal.enable = true;
         tmux.enable = true;
       };
+
+      networking.extraHosts = ''
+        127.0.0.1 ${config.base.networking.domain}
+      '';
     };
   }
 
@@ -45,11 +48,6 @@ conf_lib.create_common_confs [
           factor = "4";
         };
       };
-
-      networking.stevenBlackHosts.enable = false;
-      networking.extraHosts = ''
-        127.0.0.1 ${config.base.networking.domain}
-      '';
     };
   }
 ]
