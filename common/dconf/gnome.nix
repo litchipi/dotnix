@@ -144,49 +144,7 @@ conf_lib.create_common_confs [
           user-enabled = true;
         };
 
-        "org/gnome/shell/extensions/dash-to-dock" = {
-          animate-show-apps = true;
-          apply-custom-theme = false;
-          background-color = "#000000";
-          background-opacity = 0.34;
-          click-action = "launch";
-          custom-background-color = true;
-          custom-theme-customize-running-dots = false;
-          custom-theme-running-dots-border-color = "#000000";
-          custom-theme-running-dots-border-width = 0;
-          custom-theme-shrink = true;
-          dash-max-icon-size = 48;
-          dock-fixed = false;
-          dock-position = "BOTTOM";
-          extend-height = false;
-          force-straight-corner = true;
-          height-fraction = 0.75;
-          hot-keys = true;
-          icon-size-fixed = false;
-          intellihide-mode = "FOCUS_APPLICATION_WINDOWS";
-          isolate-monitors = false;
-          isolate-workspaces = true;
-          multi-monitor = false;
-          preferred-monitor = 0;
-          pressure-threshold = 100.0;
-          require-pressure-to-show = true;
-          running-indicator-dominant-color = true;
-          running-indicator-style = "DOTS";
-          scroll-action = "switch-workspace";
-          shortcut = [ "<Super>q" ];
-          shortcut-text = "<Super>q";
-          shortcut-timeout = 1.15;
-          show-apps-at-top = true;
-          show-favorites = true;
-          show-mounts = true;
-          show-running = true;
-          show-show-apps-button = true;
-          show-trash = false;
-          show-windows-preview = false;
-          transparency-mode = "FIXED";
-          unity-backlit-items = false;
-        };
-
+        # TODO  Find replacement for night light slider
         "org/gnome/shell" = {
           enabled-extensions = [
             "caffeine@patapon.info"
@@ -196,7 +154,6 @@ conf_lib.create_common_confs [
             "runcat@kolesnikov.se"
             "BringOutSubmenuOfPowerOffLogoutButton@pratap.fastmail.fm"
             "Hide_Activities@shay.shayel.org"
-            "night-light-slider.timur@linux.com"
             "trayIconsReloaded@selfmade.pl"
             "unite@hardpixel.eu"
             "user-theme@gnome-shell-extensions.gcampax.github.com"
@@ -213,14 +170,6 @@ conf_lib.create_common_confs [
         "org/gnome/settings-daemon/plugins/power" = {
           sleep-inactive-ac-timeout = 3600;
           sleep-inactive-ac-type = "nothing";
-        };
-
-        "org/gnome/settings-daemon/plugins/color" = {
-          night-light-enabled = false;
-          night-light-schedule-automatic = false;
-          night-light-schedule-from = 5.0;
-          night-light-schedule-to = 17.0;
-          night-light-temperature = mkUint32 2173;
         };
 
         "org/gnome/desktop/input-sources" = {
