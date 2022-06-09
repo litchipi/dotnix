@@ -5,10 +5,13 @@ let
 
   cfg = config.cmn.software.dev;
 
-  lang_profile = {name, add_pkgs ? [], vimplugs ? [], coc-settings ? {}, vimcfg ? ""}:
+  lang_profile = {name, initExtra ? "", shellAliases ? {}, add_pkgs ? [], vimplugs ? [], coc-settings ? {}, vimcfg ? ""}:
     {
       inherit name add_pkgs;
       parents = ["software" "dev"];
+      home_cfg.programs.bash = {
+        inherit initExtra shellAliases;
+      };
       home_cfg.programs.neovim.plugins = vimplugs;
       cfg.cmn.software.tui.neovim.vimcfg = [(libdata.read_data_else_empty ["config" "nvim" "${name}.vim"])] ++ [vimcfg];
       cfg.cmn.software.tui.neovim.coc-settings = coc-settings;
@@ -19,9 +22,10 @@ libconf.create_common_confs [
     name = "dev";
     parents = ["software"];
     chain_enable_opts  = {
-      scripts = []; # Python
-      software = ["rust"]; # Python
-      all = ["rust" "ocaml" "haskell" "nix"];
+      basic = [ "rust" "nix" "python" ];
+      scripts = ["python"];
+      software = ["rust" "python"];
+      functionnal = ["ocaml" "haskell"];
     };
     cfg = {
       cmn.software.tui.enable = true;
@@ -45,6 +49,9 @@ libconf.create_common_confs [
       inlayHints.refreshOnInsertMode = true;
       cargo.loadOutDirsFromCheck = true;
       procMacro.enable = true;
+    };
+    shellAliases = {
+      cargocheck = "cargo-watch -c -x 'check --tests'";
     };
   })
 
@@ -100,5 +107,16 @@ libconf.create_common_confs [
       command = "rnix-lsp";
       filetypes = ["nix"];
     };
+  })
+
+  # TODO  Python dev
+  (lang_profile {
+    name = "python";
+    add_pkgs = with pkgs; [
+    ];
+    vimplugs = with pkgs.vimPlugins; [
+    ];
+    # coc-settings.languageserver.python = {
+    # };
   })
 ]
