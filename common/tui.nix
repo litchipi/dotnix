@@ -6,6 +6,7 @@ let
 
   libcolors = import ../lib/colors.nix {inherit config lib pkgs;};
   libnvim = import ../lib/software/neovim.nix {inherit config lib pkgs;};
+  libtmux = import ../lib/software/tmux.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.software.tui;
 in
@@ -251,7 +252,6 @@ libconf.create_common_confs [
       tmux
       tmuxp
 
-      # TODO Add tmux configuration
       # TODO Add tmuxp_session_creator
       # litchipi.tmuxp_session_creator
     ];
@@ -261,6 +261,18 @@ libconf.create_common_confs [
         type = lib.types.str;
         description = "Extra tmux configuration to add";
         default = "";
+      };
+
+      themeOverride = lib.mkOption {
+        type = lib.types.attrs;
+        default = {};
+        description = "Theme to apply over the default one";
+      };
+
+      varsOverride = lib.mkOption {
+        type = lib.types.attrs;
+        default = {};
+        description = "Override theme variables over default ones";
       };
     };
 
@@ -291,7 +303,6 @@ libconf.create_common_confs [
         tmuxp.enable = true;
         extraConfig = cfg.tmux.extraConfig + ''
           set -ga terminal-overrides ",*256col*:Tc"
-          setw -g monitor-activity on
 
           unbind d
           unbind z
@@ -324,7 +335,6 @@ libconf.create_common_confs [
           #bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel 'xclip -in -selection clipboard'
 
           bind-key n command-prompt -I "#W" "rename-window -- '%%'"
-          #bind-key Tab choose-tree
 
           bind-key & select-window -t 0
           bind-key é select-window -t 1
@@ -338,12 +348,20 @@ libconf.create_common_confs [
           bind-key ) select-window -t 9
           
           set -g @urlview-key 'u'
+          set -g monitor-activity on
+          set -g default-terminal "tmux"
 
+          set -g mouse on
           unbind -T copy-mode-vi MouseDragEnd1Pane
           bind -T copy-mode-vi MouseDown3Pane send -X clear-selection \; send-keys -X cancel
-          set-window-option -g mode-style "fg=black,bg=white"
 
-        '' + (libdata.read_data ["config" "tmux_theme"]);
+          # Generated theme
+        ''
+        + (libtmux.generate_theme
+            ((libtmux.default_theme (libtmux.default_vars // cfg.tmux.varsOverride))
+            // cfg.tmux.themeOverride)
+          )
+        + cfg.tmux.extraConfig;
       };
     };
   }
