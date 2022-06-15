@@ -39,6 +39,9 @@ libconf.create_common_confs [
       rust-bin.stable.latest.default
       rust-analyzer
       gcc
+
+      cargo-watch
+      clippy
     ];
     vimplugs = with pkgs.vimPlugins; [
       #coc-rust-analyzer
@@ -51,6 +54,7 @@ libconf.create_common_confs [
       procMacro.enable = true;
     };
     shellAliases = {
+      cargo2nix = "nix run github:cargo2nix/cargo2nix --";
       cargocheck = "cargo-watch -c -x 'check --tests'";
     };
   })
