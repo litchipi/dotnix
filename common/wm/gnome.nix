@@ -59,9 +59,12 @@ conf_lib.create_common_confs [
 
       security.pam.services.login.enableGnomeKeyring = true;
 
+      nixpkgs.config.firefox.enableGnomeExtensions = true;
+
       services.gnome = {
         core-os-services.enable = true;
         core-shell.enable = true;
+        chrome-gnome-shell.enable = true;
         gnome-keyring.enable = true;
         gnome-online-accounts.enable = true;
         gnome-settings-daemon.enable = true;
