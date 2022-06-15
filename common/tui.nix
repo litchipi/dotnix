@@ -20,6 +20,7 @@ libconf.create_common_confs [
       ripgrep
       autojump
       glances
+      python310
     ];
     cfg = {
       cmn.software.tui = {
