@@ -138,18 +138,24 @@ libconf.create_common_confs [
         description = "Attrset of options to pass to the restic service";
         default = {};
       };
+
+      pathsFromFile = lib.mkOption {
+        type = lib.types.str;
+        description = "File to read to get the paths to save";
+        default = "/home/${config.base.user}/.backup_paths";
+      };
     };
     home_cfg.programs.bash.shellAliases = let
       service_name = "restic-backups-${config.base.hostname}.service";
     in {
-      forcebackup = "sudo systemctl start ${service_name}";
+      forcebackup = "sudo systemctl start ${service_name} &";
       lastbackup = "systemctl status ${service_name}|grep 'since'|awk -F \"since \" '{print $2}'";
     };
     cfg = {
       base.secrets.store.restic_password = restic_secret "password";
       services.restic.backups.${config.base.hostname} = {
         initialize = true;
-        dynamicFilesFrom = "cat $HOME/.backup_paths";
+        dynamicFilesFrom = "cat ${cfg.to_remote.pathsFromFile}";
         passwordFile = config.base.secrets.store.restic_password.dest;
         timerConfig.OnCalendar = "daily";
       } // cfg.to_remote.resticConfig;
