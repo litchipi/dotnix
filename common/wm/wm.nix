@@ -52,7 +52,6 @@ conf_lib.create_common_confs [
         default = {};
         description = "Additionnal dconf configuration";
       };
-      # TODO  Bind to config
       autologin = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -75,7 +74,7 @@ conf_lib.create_common_confs [
         libinput.enable = true;
         xkbVariant = "";
         displayManager.autoLogin = {
-          enable = true;
+          enable = cfg.autologin;
           user = config.base.user;
         };
         desktopManager.wallpaper.mode = lib.mkIf config.services.xserver.enable "fill";
