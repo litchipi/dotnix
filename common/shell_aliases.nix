@@ -265,6 +265,10 @@ conf_lib.create_common_confs [
             cd - 1>/dev/null 2>/dev/null
         fi
 
+        function nxshell() {
+          nix shell nixpkgs#$1
+        }
+
         function _nixfiles() {
             COMPREPLY=($(compgen -W "$(ls *.nix)" -- "$${COMP_WORDS[COMP_CWORD]}"))
         }
@@ -280,7 +284,7 @@ conf_lib.create_common_confs [
                 nix-store -q --references $(nix-store -r $drvfile)
         }
 
-        function nxnewshell() {
+        function nxnewdevshell() {
             if [ $# -lt 3 ]; then
                 echo "Missing parameter: <name> <start directory> <description> [<package> <package> ...]"
                 return;
@@ -315,12 +319,12 @@ conf_lib.create_common_confs [
             git commit -m "Modify $name shell" 1>/dev/null 2>/dev/null
             cd - 1>/dev/null 2>/dev/null
             echo "Written to $NIX_SHELLS_DIR/$name/flake.nix"
-            echo "Use \"nxshell $name\" to start shell"
+            echo "Use \"nxdevshell $name\" to start shell"
         }
 
-        function nxshell() {
+        function nxdevshell() {
             if [ $# -lt 1 ]; then
-                echo "Usage: nxshell <shell name>"
+                echo "Usage: nxdevshell <shell name>"
                 return;
             fi
             if [ ! -d $NIX_SHELLS_DIR/$1 ]; then
@@ -335,8 +339,8 @@ conf_lib.create_common_confs [
             cd - 1>/dev/null 2>/dev/null
         }
 
-        complete -F _nxshell_autocomplete nxshell
-        function _nxshell_autocomplete {
+        complete -F _nxdevshell_autocomplete nxdevshell
+        function _nxdevshell_autocomplete {
             if [ $COMP_CWORD -gt 1 ]; then
                 return;
             fi
@@ -355,7 +359,7 @@ conf_lib.create_common_confs [
             git commit -m "Manually edited $name shell" 1>/dev/null 2>/dev/null
             cd - 1>/dev/null 2>/dev/null
         }
-        complete -F _nxshell_autocomplete nxedit
+        complete -F _nxdevshell_autocomplete nxedit
       '';
     };
   }
