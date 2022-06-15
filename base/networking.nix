@@ -76,10 +76,10 @@ in
 
     # Block unwanted internet data
     networking.stevenBlackHosts = {
-      blockFakenews = true;
-      blockGambling = true;
-      blockPorn = true;
-      blockSocial = true;
+      blockFakenews = lib.mkDefault true;
+      blockGambling = lib.mkDefault true;
+      blockPorn = lib.mkDefault true;
+      blockSocial = lib.mkDefault false;
     };
 
     services.openssh = lib.mkIf config.base.networking.ssh {
