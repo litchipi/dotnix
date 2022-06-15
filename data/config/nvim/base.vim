@@ -5,12 +5,7 @@ set undofile
 
 set shortmess+=c
 
-if has("nvim-0.5.0") || has("patch-8.1.1564")
-  " Recently vim can merge signcolumn and number column into one
-  set signcolumn=number
-else
-  set signcolumn=yes
-endif
+set signcolumn=number
 
 if &encoding != 'utf-8'
     set encoding=utf-8              "Necessary to show Unicode glyphs
@@ -33,3 +28,9 @@ set cc=100
 set wildmode=longest,list   " get bash-like tab completions
 
 set clipboard+=unnamedplus
+
+set termguicolors
+set background=dark
+
+set cursorline
+syntax on

@@ -1,3 +1,4 @@
+
 let g:mapleader = '$'
 
 noremap <leader><Space> :nohlsearch<CR>

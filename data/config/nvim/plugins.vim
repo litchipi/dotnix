@@ -1,11 +1,8 @@
+
 " IndentLine
 let g:indentLine_setColors = 1
 let g:indentLine_color_term = 1
 let g:indentLine_char = '┊'
-
-" GitGutter
-let g:gitgutter_set_sign_backgrounds = 1
-let g:gitgutter_map_keys = 0
 
 " LSP
 let g:lsp_fold_enabled = 0
@@ -39,3 +36,6 @@ let g:NERDToggleCheckAllLines = 1
 
 " Add your own custom formats or override the defaults
 let g:NERDCustomDelimiters = {'c': { 'left': '//' }, 'haskell': {'left':'--'}}
+
+set termguicolors
+lua require'colorizer'.setup()

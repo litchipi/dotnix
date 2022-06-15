@@ -3,7 +3,9 @@ let
   libconf = import ../lib/commonconf.nix {inherit config lib pkgs;};
   libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
   libutils = import ../lib/utils.nix {inherit config lib pkgs;};
-  colors = import ../lib/colors.nix {inherit config lib pkgs;};
+
+  libcolors = import ../lib/colors.nix {inherit config lib pkgs;};
+  libnvim = import ../lib/software/neovim.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.software.tui;
 in
@@ -90,6 +92,12 @@ libconf.create_common_confs [
         default = [];
         description = "List of vim configuration lines to add to the config";
       };
+
+      themeOverride = lib.mkOption {
+        type = lib.types.attrs;
+        default = {};
+        description = "Theme to apply over the default one";
+      };
     };
     home_cfg = {
       home.file.".local/share/nvim/site/autoload/plug.vim".source = libdata.get_data_path ["config" "nvim" "plug.vim"];
@@ -126,10 +134,11 @@ libconf.create_common_confs [
           vimtex
           vim-latex-live-preview
           vim-plug
+          nvim-colorizer-lua
 
           # Theme
-          tokyonight-nvim
           vim-airline
+          vim-airline-themes
 
           # Coc
           coc-fzf
@@ -143,7 +152,7 @@ libconf.create_common_confs [
         extraConfig = builtins.concatStringsSep "\n" ([
           "call plug#begin()"
           (builtins.concatStringsSep "\n\n" (builtins.map (plug: "  Plug '${plug}'")
-            (config.cmn.software.tui.neovim.add_plugins ++ [
+            (cfg.neovim.add_plugins ++ [
               "markstory/vim-zoomwin"
               # "reedes/vim-colors-pencil"
               # "miyakogi/conoline.vim"
@@ -156,11 +165,8 @@ libconf.create_common_confs [
           (libdata.read_data ["config" "nvim" "keybindings.vim"])
 
           # Setting the base colors for the theme
-          ''
-
-          ''
-          (libdata.read_data ["config" "nvim" "theme.vim"])
-        ] ++ config.cmn.software.tui.neovim.vimcfg);
+          (libnvim.generate_theme (libnvim.default_theme // cfg.neovim.themeOverride))
+        ] ++ cfg.neovim.vimcfg);
       };
 
       xdg.configFile."nvim/coc-settings.json".text = let
@@ -179,7 +185,7 @@ libconf.create_common_confs [
             virtualTextCurrentLineOnly = false;
           };
         };
-        in builtins.toJSON (lib.attrsets.recursiveUpdate default_coc_settings config.cmn.software.tui.neovim.coc-settings);
+        in builtins.toJSON (lib.attrsets.recursiveUpdate default_coc_settings cfg.neovim.coc-settings);
 
       /** install the few vim-plug plugins in a non-reproducable way
        automatically upon 'home-manager switch' by running neovim
@@ -227,6 +233,12 @@ libconf.create_common_confs [
         vim-gitgutter
         coc-git
       ];
+      neovim.extraConfig = ''
+
+        " GitGutter
+        let g:gitgutter_set_sign_backgrounds = 0
+        let g:gitgutter_map_keys = 0
+      '';
     };
   }
 

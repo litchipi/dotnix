@@ -1,3 +1,4 @@
+
 " OcaMl configuration
 
 if executable('opam')
