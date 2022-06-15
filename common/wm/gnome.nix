@@ -33,11 +33,6 @@ conf_lib.create_common_confs [
         default = [ ];
         description = "Extensions to add to the gnome shell";
       };
-      favorite-apps = lib.mkOption {
-        type = with lib.types; listOf str;
-        default = [];
-        description = "Favourite applications pinned";
-      };
       user_icon = lib.mkOption {
         type = with lib.types; nullOr path;
         default = null;
@@ -61,6 +56,8 @@ conf_lib.create_common_confs [
         displayManager.gdm.enable = true;
         desktopManager.gnome.enable = true;
       };
+
+      security.pam.services.login.enableGnomeKeyring = true;
 
       services.gnome = {
         core-os-services.enable = true;

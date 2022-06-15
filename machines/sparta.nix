@@ -55,14 +55,6 @@ in {
       package = pkgs.zuki-themes;
       dark = true;
     };
-    favorite-apps = [
-      "firefox.desktop"
-      "org.gnome.Nautilus.desktop"
-      "org.gnome.gedit.desktop"
-      "startcenter.desktop"  # Libreoffice
-      # TODO Add more usefull applications in shortcuts
-      "signal-desktop.desktop"
-    ];
     user_icon = libdata.get_data_path ["assets" "desktop" "user_icons" "litchi.jpg"];
   };
 

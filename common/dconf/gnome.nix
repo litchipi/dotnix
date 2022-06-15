@@ -164,7 +164,6 @@ conf_lib.create_common_confs [
           had-bluetooth-devices-setup = true;
           remember-mount-password = true;
           welcome-dialog-last-shown-version = "40.5";
-          favorite-apps=config.cmn.wm.gnome.favorite-apps;
         };
 
         "org/gnome/settings-daemon/plugins/power" = {
