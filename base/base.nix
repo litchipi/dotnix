@@ -134,9 +134,18 @@ in
         linux-firmware
       ]
       else [];
+
+    services.pcscd.enable = true;
+    programs.gnupg.agent = {
+       enable = true;
+       pinentryFlavor = "curses";
+       enableSSHSupport = true;
+    };
+
     environment.systemPackages = with pkgs; [
       coreutils-full
       git git-crypt
+      gnupg pinentry pinentry-curses
     ] ++ cfg.add_pkgs
     ++ (if (config.base.minimal.cli || config.base.minimal.gui) then [] else cfg.full_pkgs);
   };

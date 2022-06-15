@@ -49,8 +49,8 @@ let
       phases = "installPhase";
       buildInputs = [ pkgs.rage ];
       installPhase = ''
-          rage -a -R '${provision_pubk}' -o "$out" '${source}'
-        '';
+        rage -a -R '${provision_pubk}' -o "$out" '${source}'
+      '';
     };
 
   mkService = name:
