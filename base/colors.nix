@@ -9,31 +9,32 @@ in
   };
 
   options.colors = {
-
     primary = colors.mk_color_option {
       description = "Primary color to use in the system";
-      value = {r=174; g=79; b=129;};
+      value = {r=255; g=128; b=0;};
     };
 
-    secondary = colors.mk_color_option {
-      description = "Secondary color to use in the system";
-      value = {r=217; g=155; b=98;};
-    };
-
-    tertiary = colors.mk_color_option {
-      description = "Tertiary color to use in the system";
-      value = {r=98; g=160; b=217;};
+    palette = lib.mkOption {
+      type = with lib.types; listOf colors.colortype;
+      description = "Palette of colors to be used in different themes";
+      default = [];
     };
 
     ok = colors.mk_color_option {
       description = "Color to use when everything goes well";
-      value = {r=36; g=154; b=92;};
+      value = {r=151; g=240; b=148;}; # #97F094
       style = colors.style.bold;
     };
-    
+
+    warn = colors.mk_color_option {
+      description = "Color to use when warning the user about something";
+      value = {r=245; g=207; b=91;};  # #F5CF5B
+      style = colors.style.bold;
+    };
+
     bad = colors.mk_color_option {
       description = "Color to use when everything goes shit";
-      value = {r=173; g=61; b=61;};
+      value = {r=245; g=91; b=91;};   # #F55B5B
       style = colors.style.bold;
     };
 
@@ -41,7 +42,7 @@ in
     ps1 = {
       username = colors.mk_color_option {
         description = "Color for PS1 username";
-        value = {r=154; g=36; b=98;};
+        value = config.colors.primary;
         style = colors.style.bold;
       };
 
@@ -53,12 +54,12 @@ in
 
       gitps1 = colors.mk_color_option {
         description = "Color for PS1 git information";
-        value = {r=146; g=233; b=178;};
+        value = colors.get_palette 0;
       };
 
       dollarsign = colors.mk_color_option {
         description = "Color for PS1 dollar sign";
-        value = {r=255; g=210; b=71;};
+        value = colors.get_palette 3;
         style = colors.style.bold;
       };
     };
