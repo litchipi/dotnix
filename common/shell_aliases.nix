@@ -7,6 +7,7 @@ let
 
   cfg = config.cmn.shell.aliases;
   cfg_memory = cfg.memory;
+  # TODO  Create standardized functions definition for aliases, with variable shell
 in
 conf_lib.create_common_confs [
   {

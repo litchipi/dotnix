@@ -136,8 +136,7 @@ in
       else [];
     environment.systemPackages = with pkgs; [
       coreutils-full
-      git
-      git-crypt
+      git git-crypt
     ] ++ cfg.add_pkgs
     ++ (if (config.base.minimal.cli || config.base.minimal.gui) then [] else cfg.full_pkgs);
   };

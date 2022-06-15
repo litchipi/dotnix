@@ -10,7 +10,7 @@ let
 in
 {
   config = {
-    home-manager.users."${config.base.user}" = hmcfg: {
+    home-manager.users."${config.base.user}" = {
       xdg.userDirs = {
         download = "\$HOME/${cfg.dirs.download}";
         desktop = "\$HOME";

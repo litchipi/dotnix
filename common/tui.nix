@@ -47,8 +47,6 @@ libconf.create_common_confs [
       irssi
       wkhtmltopdf
       youtube-dl
-
-      # TODO Replace with other ?
       neofetch
 
       # Custom TUI tools
@@ -407,9 +405,7 @@ libconf.create_common_confs [
       jrnl
     ];
 
-    home_cfg.xdg.configFile."jrnl/jrnl.yaml".text = let
-      cfg = config.cmn.software.tui.jrnl;
-    in ''
+    home_cfg.xdg.configFile."jrnl/jrnl.yaml".text = ''
       colors:
         body: none
         date: none
@@ -417,14 +413,14 @@ libconf.create_common_confs [
         title: none
       default_hour: 9
       default_minute: 0
-      editor: '${cfg.editor}'
-      encrypt: ${builtins.toString cfg.encrypt}
+      editor: '${cfg.jrnl.editor}'
+      encrypt: ${builtins.toString cfg.jrnl.encrypt}
       highlight: true
       indent_character: '|'
       journals:
     '' + (builtins.foldl' (acc: name:
-        acc + "  ${name}: ${cfg.jrnl_paths}/${name}.txt\n"
-        ) "" cfg.add_journals) +
+        acc + "  ${name}: ${cfg.jrnl.jrnl_paths}/${name}.txt\n"
+        ) "" cfg.jrnl.add_journals) +
     ''
       linewrap: 100
       tagsymbols: '@'
