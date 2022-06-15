@@ -113,7 +113,7 @@ conf_lib.create_common_confs [
       runcat
       tray-icons-reloaded
       static-background-in-overview
-      dock-from-dash
+      dash-to-dock
     ] ++ cfg.add_extensions) ++ (with pkgs; [
       gnome.gnome-tweaks
     ]) ++ (if builtins.isNull cfg.theme then [] else [ cfg.theme.package ]);
