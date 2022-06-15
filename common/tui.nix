@@ -19,9 +19,7 @@ libconf.create_common_confs [
       fzf
       ripgrep
       autojump
-
-      # TODO Configure / replace with other software
-      htop
+      glances
     ];
     cfg = {
       cmn.software.tui = {
