@@ -159,7 +159,11 @@ in {
         keyFile = "/crypto_keyfile.bin";
       };
 
-      luks.devices."luks-c1736d11-aad9-4fef-9a7c-162d038394bd".device = "/dev/disk/by-uuid/c1736d11-aad9-4fef-9a7c-162d038394bd";
+      luks.devices."luks-c1736d11-aad9-4fef-9a7c-162d038394bd" = {
+        fallbackToPassword = true;
+        keyFile = "/dev/disks/by-label/Spartakey";
+        device = "/dev/disk/by-uuid/c1736d11-aad9-4fef-9a7c-162d038394bd";
+      };
     };
   };
 
