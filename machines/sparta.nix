@@ -5,6 +5,7 @@ in {
   base.hostname = "sparta";
   base.email = "litchi.pi@proton.me";
 
+  base.secrets.encrypted_master_key = false; # true;
   base.networking.ssh_auth_keys = [ "tim" "restic_backup_ssh" ];
   base.create_user_dirs = [ "work" "learn" ];
   base.networking.connect_wifi = [
