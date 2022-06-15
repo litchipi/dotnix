@@ -130,7 +130,9 @@ in {
 
   # TODO    Set up firefox configuration
   # TODO    Add elements in fstab to auto-mount stuff
-  # TODO    Add an option to create a swap file at boot time
+
+  # 5Gib swapfile
+  base.disks.add_swapfile = 5000;
 
   powerManagement.cpuFreqGovernor = "performance";
 
