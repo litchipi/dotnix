@@ -103,7 +103,20 @@ in {
     VIDEOS=videos
   '';
 
-  # TODO    Set up automatic restic backup, with remote sync
+  cmn.services.restic.to_remote = {
+    gdrive.enable = true;
+    resticConfig = {
+      pruneOpts = [
+        "--keep-weekly 4"
+        "--keep-monthly 15"
+        "--keep-yearly 50"
+      ];
+      timerConfig = {
+        OnCalendar="00/4:00";
+      };
+    };
+  };
+
   # TODO    Set up firefox configuration
   # TODO    Add elements in fstab to auto-mount stuff
   # TODO    Add an option to create a swap file at boot time

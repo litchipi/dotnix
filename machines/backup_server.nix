@@ -1,11 +1,12 @@
 { config, lib, pkgs, ... }:
 {
   base.user = "op";
-  base.hostname = "backup";
+  base.hostname = "backup_server";
   base.networking.ssh_auth_keys = [ "john" "tim" ];
 
+  # TODO  Adapt this configuration to new restic service definition
   cmn.server.enable = true;
-  cmn.services.restic.remote_backup = {
+  cmn.services.restic.from_remote = {
     enable = true;
     targets.orion3 = {
       user = "john";

@@ -3,12 +3,10 @@ let
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
 
-  cfg = config.cmn.services.restic.remote_backup;
-  service_name = "restic_backup_remote";
-  restic_secret = name: libdata.set_secret config.base.user
-    ["services" "restic" "remote_backup" config.base.hostname name] {
-    group = service_name;
-  };
+  cfg = config.cmn.services.restic;
+  service_name = "restic_backup_from_remote";
+  restic_secret = name: libdata.set_secret "root"
+    ["services" "restic" config.base.hostname name] {};
 
   # TODO Add option to copy the backup made to different locations
   target_type = lib.types.submodule {
@@ -78,7 +76,7 @@ let
 in
 libconf.create_common_confs [
   {
-    name = "remote_backup";
+    name = "from_remote";
     parents = [ "services" "restic" ];
 
     add_opts = {
@@ -128,6 +126,50 @@ libconf.create_common_confs [
       '';
 
       systemd.services = lib.mkMerge (lib.attrsets.mapAttrsToList create_systemd_service cfg.targets);
+    };
+  }
+
+  {
+    name = "to_remote";
+    parents = [ "services" "restic" ];
+    add_opts = {
+      resticConfig = lib.mkOption {
+        type = lib.types.attrs;
+        description = "Attrset of options to pass to the restic service";
+        default = {};
+      };
+    };
+    home_cfg.programs.bash.shellAliases = let
+      service_name = "restic-backups-${config.base.hostname}.service";
+    in {
+      forcebackup = "sudo systemctl start ${service_name}";
+      lastbackup = "systemctl status ${service_name}|grep 'since'|awk -F \"since \" '{print $2}'";
+    };
+    cfg = {
+      base.secrets.store.restic_password = restic_secret "password";
+      services.restic.backups.${config.base.hostname} = {
+        initialize = true;
+        dynamicFilesFrom = "cat $HOME/.backup_paths";
+        passwordFile = config.base.secrets.store.restic_password.dest;
+        timerConfig.OnCalendar = "daily";
+      } // cfg.to_remote.resticConfig;
+    };
+  }
+
+  # TODO  Create shell alias "gdrive_mnt_lastsnp" to mount the last snapshot
+  {
+    name = "gdrive";
+    parents = ["services" "restic" "to_remote"];
+    cfg = {
+      cmn.services.restic.to_remote.enable = true;
+      base.secrets.store.restic_rclone_conf = restic_secret "gdrive.conf";
+      services.restic.backups.${config.base.hostname} = {
+        rcloneOptions = {
+          drive-use-trash = "false";
+        };
+        rcloneConfigFile = config.base.secrets.store.restic_rclone_conf.dest;
+        repository = "rclone:gdrive:restic/";
+      };
     };
   }
 ]
