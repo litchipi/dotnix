@@ -68,29 +68,40 @@ in {
   cmn.remote.gogs.enable = true;
   cmn.remote.gogs.ipaddr = "185.167.99.178";
 
-  base.add_pkgs = with pkgs; [
+  base.full_pkgs = with pkgs; [
+    # Communication
     signal-desktop
-
-    # TODO  Add in "full" experience package
     cawbird # Twitter reader
     newsflash # RSS reader
+
+    # Creation
     gimp-with-plugins # Image editor
     inkscape-with-extensions # Vector image editor
     shotcut   # Video editor
+
+    # Writing
+    apostrophe  # Markdown editor
     marp # Markdown to PDF
+
+    # Music
     blanket # Play relaxing sound
     shortwave # Listen Internet radio
     gnome-podcasts # Listen to podcasts
-    tangram # Web apps for desktop
+
+    # Other
     wike # Wikipedia reader
     gnome-recipes # Browser / create cooking recipes
     gaphor # UML modelling tool
     geogebra # Math graph tool
+
+    # System
     authenticator # 2FA TOTP app
 
     # Games
     teeworlds
   ];
+
+  services.flatpak.enable = true;
 
   environment.etc."xdg/user-dirs.defaults".text = ''
     DESKTOP=.system/desktop
