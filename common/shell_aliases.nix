@@ -178,7 +178,7 @@ conf_lib.create_common_confs [
     home_cfg.programs.bash = {
       enable = true;
       shellAliases = let
-        ytdl_args = "-x --add-metadata -o '${config.xdg.dirs.music}/%(title)s.%(ext)s'";
+        ytdl_args = "-x --add-metadata -o '~/${config.xdg.dirs.music}/%(title)s.%(ext)s'";
       in
       rec {
         dl_mp3="youtube-dl ${ytdl_args} --audio-format mp3";
@@ -247,12 +247,12 @@ conf_lib.create_common_confs [
             flake-utils.lib.eachDefaultSystem
               (system:
               let
-                pkgs = nixpkgs.legacyPackages.\''\${system};
+                pkgs = nixpkgs.legacyPackages.''${system};
                 project_root = START_DIRECTORY;
               in
                 {
                   devShell = pkgs.mkShell {
-                    shellHook = ''\''cd \"\''\${toString project_root }\"''\'';
+                    shellHook = '''cd "''${toString project_root }"''';
                     buildInputs = with pkgs; [ PACKAGE_LIST ];
                   };
                 }
