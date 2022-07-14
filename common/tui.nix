@@ -79,10 +79,10 @@ libconf.create_common_confs [
         description = "List of plugins to add to the configuration";
       };
 
-      coc-settings = lib.mkOption {
-        type = lib.types.attrs;
-        default = {};
-        description = "Special Coc settings to set";
+      coc-plugins = lib.mkOption {
+        type = with lib.types; listOf str;
+        default = [];
+        description = "Plugins to install for coc-nvim";
       };
 
       vimcfg = lib.mkOption {
@@ -110,8 +110,39 @@ libconf.create_common_confs [
         vimdiffAlias = true;
 
         withPython3 = true;
-        withNodeJs = false;
-        withRuby = false;
+        withNodeJs = true;
+        withRuby = true;
+
+        coc = {
+          enable = true;
+          package = pkgs.vimUtils.buildVimPluginFrom2Nix {
+            pname = "coc.nvim";
+            version = "2022-05-21";
+            src = pkgs.fetchFromGitHub {
+              owner = "neoclide";
+              repo = "coc.nvim";
+              rev = "791c9f673b882768486450e73d8bda10e391401d";
+              sha256 = "sha256-MobgwhFQ1Ld7pFknsurSFAsN5v+vGbEFojTAYD/kI9c=";
+            };
+            meta.homepage = "https://github.com/neoclide/coc.nvim/";
+          };
+
+          settings = {
+            diagnostic = {
+              enableSign = true;
+              enableHighlightLineNumber = true;
+              errorSign = "✘";
+              warningSign = "!";
+              infoSign = ">";
+              enableMessage = "jump";
+              virtualText = true;
+              refreshOnInsertMode = true;
+              autoRefresh = true;
+              level = "warning";
+              virtualTextCurrentLineOnly = false;
+            };
+          };
+        };
 
         extraPython3Packages = (ps: with ps; [
           pynvim
@@ -140,7 +171,6 @@ libconf.create_common_confs [
 
           # Coc
           coc-fzf
-          coc-nvim
           coc-json
           coc-lists
           coc-vimtex
@@ -166,24 +196,6 @@ libconf.create_common_confs [
           (libnvim.generate_theme (libnvim.default_theme // cfg.neovim.themeOverride))
         ] ++ cfg.neovim.vimcfg);
       };
-
-      xdg.configFile."nvim/coc-settings.json".text = let
-        default_coc_settings = {
-          diagnostic = {
-            enableSign = true;
-            enableHighlightLineNumber = true;
-            errorSign = "✘";
-            warningSign = "!";
-            infoSign = ">";
-            enableMessage = "jump";
-            virtualText = true;
-            refreshOnInsertMode = true;
-            autoRefresh = true;
-            level = "warning";
-            virtualTextCurrentLineOnly = false;
-          };
-        };
-        in builtins.toJSON (lib.attrsets.recursiveUpdate default_coc_settings cfg.neovim.coc-settings);
 
       /** install the few vim-plug plugins in a non-reproducable way
        automatically upon 'home-manager switch' by running neovim

@@ -12,9 +12,13 @@ let
       home_cfg.programs.bash = {
         inherit initExtra shellAliases;
       };
-      home_cfg.programs.neovim.plugins = vimplugs;
-      cfg.cmn.software.tui.neovim.vimcfg = [(libdata.read_data_else_empty ["config" "nvim" "${name}.vim"])] ++ [vimcfg];
-      cfg.cmn.software.tui.neovim.coc-settings = coc-settings;
+      cfg.cmn.software.tui.neovim.vimcfg = [
+        (libdata.read_data_else_empty ["config" "nvim" "${name}.vim"])
+      ] ++ [vimcfg];
+      home_cfg.programs.neovim = {
+        plugins = vimplugs;
+        coc.settings = coc-settings;
+      };
     };
 in
 libconf.create_common_confs [
@@ -36,7 +40,9 @@ libconf.create_common_confs [
   (lang_profile {
     name = "rust";
     add_pkgs = with pkgs; [
-      rust-bin.stable.latest.default
+      (rust-bin.stable.latest.default.override {
+        extensions = [ "rust-src" ];
+      })
       rust-analyzer
       gcc
 
@@ -44,8 +50,8 @@ libconf.create_common_confs [
       clippy
     ];
     vimplugs = with pkgs.vimPlugins; [
-      #coc-rust-analyzer
-      pkgs.nodePackages.coc-rust-analyzer
+      rust-vim
+      coc-rust-analyzer
     ];
     coc-settings.rust-analyzer = {
       inlayHints.typeHintsSeparator = "      => ";
@@ -117,6 +123,10 @@ libconf.create_common_confs [
   (lang_profile {
     name = "python";
     add_pkgs = with pkgs; [
+      python310
+      python310Packages.pip
+      virtualenv
+      poetry
     ];
     vimplugs = with pkgs.vimPlugins; [
     ];
