@@ -30,6 +30,7 @@
 
     # Overlays
     rust-overlay.url = "github:oxalica/rust-overlay";
+    nur.url = "github:nix-community/NUR";
   };
 
   outputs = { self, nixpkgs, nixpkgs_unstable, ...}@inputs:
@@ -63,6 +64,7 @@
     in import nixpkgs {
       overlays = [
         inputs.rust-overlay.overlay
+        inputs.nur.overlay
         (prev: final: (import ./overlays/overlays.nix final))
 
         (prev: final: builtins.listToAttrs (builtins.map (pkg: {
@@ -98,6 +100,7 @@
     base_modules = (find_all_files ./base) ++ (find_all_files ./common) ++ [
       inputs.home-manager.nixosModules.home-manager
       inputs.StevenBlackHosts.nixosModule
+      inputs.nix-ld.nixosModules.nix-ld
       inputs.shix.nixosModules.x86_64-linux.default
       # inputs.envfs.nixosModules.envfs
       {

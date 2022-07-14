@@ -50,9 +50,32 @@ conf_lib.create_common_confs [
       gnome.nautilus              # File manager
       gnome.eog                   # Image viewer
       gnome-text-editor           # Notepad
-      firefox                     # Internet browser
       deluge                      # Torrent client
     ];
+    cfg = {
+      services.pipewire.enable = true;
+    };
+    home_cfg.programs.firefox = {
+      enable = true;
+      # enableGnomeExtensions = true;
+      # package = pkgs.wrapFirefox pkgs.firefox-unwrapped {
+      #   # forceWayland = true;
+      #   # extraPolicies = {
+      #   #   ExtensionSettings = {};
+      #   # };
+      # };
+      extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+        https-everywhere
+        bitwarden
+        foxyproxy-standard
+        ghostery
+        ublock-origin
+      ];
+    };
+    home_cfg.home.sessionVariables = {
+      MOZ_ENABLE_WAYLAND = 1;
+      XDG_CURRENT_DESKTOP = "sway"; 
+    };
   }
 
   {
