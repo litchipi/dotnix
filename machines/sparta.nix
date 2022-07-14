@@ -58,6 +58,7 @@ in {
     user_icon = libdata.get_data_path ["assets" "desktop" "user_icons" "litchi.jpg"];
   };
 
+  cmn.software.tui.irssi.theme = pkgs.litchipi.irssitheme;
   cmn.software.protonvpn = {
     enable = true;
     username = "litchipi";

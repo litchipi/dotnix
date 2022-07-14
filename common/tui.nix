@@ -29,6 +29,7 @@ libconf.create_common_confs [
         neovim.enable = lib.mkDefault true;
         tmux.enable = lib.mkDefault true;
         jrnl.enable = lib.mkDefault true;
+        irssi.enable = lib.mkDefault true;
       };
 
       cmn.shell.aliases = {
@@ -448,6 +449,47 @@ libconf.create_common_confs [
 
     cfg = {
       cmn.shell.aliases.jrnl.enable = true;
+    };
+  }
+
+  {
+    # TODO  Add custom keybindings to Irssi
+    name = "irssi";
+    parents = [ "software" "tui" ];
+    add_opts = {
+      extraConfig = lib.mkOption {
+        type = lib.types.str;
+        default = "";
+        description = "Configuration to add at the bottom of the default one";
+      };
+      default_nick = lib.mkOption {
+        type = lib.types.str;
+        default = "nonickset";
+        description = "The nickname to set by default";
+      };
+      theme = lib.mkOption {
+        type = with lib.types; nullOr package;
+        default = null;
+        description = "Theme to apply";
+      };
+    };
+    home_cfg.programs.irssi = {
+      enable = true;
+      extraConfig = cfg.irssi.extraConfig;
+      networks = {
+        libera = {
+          nick = cfg.irssi.default_nick;
+          server = {
+            address = "irc.libera.chat";
+            port = 6697;
+          };
+        };
+      };
+    };
+    home_cfg.home.file = lib.mkIf (!builtins.isNull cfg.irssi.theme) {
+      ".irssi/startup".source = "${cfg.irssi.theme}/startup";
+      ".irssi/scripts".source = "${cfg.irssi.theme}/scripts";
+      ".irssi/nixos.theme".source = "${cfg.irssi.theme}/nixos.theme";
     };
   }
 ]
