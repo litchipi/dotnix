@@ -57,7 +57,6 @@ in
         #     "*" "except:type:wwan" "except:type:gsm"
         #   ];
         # };
-      enableIPv6 = false;
       nameservers = [ "1.1.1.1" "1.0.0.1" "8.8.8.8" ] ++ cfg.add_dns;
     };
 
