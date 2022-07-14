@@ -148,9 +148,15 @@ libconf.create_common_confs [
     home_cfg.programs.bash.shellAliases = let
       service_name = "restic-backups-${config.base.hostname}.service";
     in {
-      forcebackup = "sudo systemctl start ${service_name} &";
+      forcebackup = "sudo systemctl start ${service_name}";
       lastbackup = "systemctl status ${service_name}|grep 'since'|awk -F \"since \" '{print $2}'";
     };
+    home_cfg.programs.bash.initExtra = ''
+      function addbackup() {
+        fname=$(realpath $1)
+        echo "$fname" >> /home/${config.base.user}/.backup_paths
+      }
+    '';
     cfg = {
       base.secrets.store.restic_password = restic_secret "password";
       services.restic.backups.${config.base.hostname} = {
