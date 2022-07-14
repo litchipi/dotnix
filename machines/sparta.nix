@@ -4,6 +4,7 @@ in {
   base.user = "john";
   base.hostname = "sparta";
   base.email = "litchi.pi@proton.me";
+  base.extraGroups = [ "kvm" ];
 
   base.networking.ssh_auth_keys = [ "tim" "restic_backup_ssh" ];
   base.create_user_dirs = [ "work" "learn" ];

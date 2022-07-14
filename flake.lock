@@ -70,6 +70,21 @@
         "type": "github"
       }
     },
+    "flake-utils_3": {
+      "locked": {
+        "lastModified": 1653893745,
+        "narHash": "sha256-0jntwV3Z8//YwuOjzhV2sgJJPt+HY6KhU7VZUL0fKZQ=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "1ed9fb1935d260de5fe1c2f7ee0ebaae17ed2fa1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -204,6 +219,21 @@
         "type": "github"
       }
     },
+    "nur": {
+      "locked": {
+        "lastModified": 1657794145,
+        "narHash": "sha256-5SnT0zcQgn4ccMnAxfocRoTo/3LZSp6a3E+XRZCd7bw=",
+        "owner": "nix-community",
+        "repo": "NUR",
+        "rev": "56c611aa1d49830e2240b4c43c002ccb72d1e628",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "NUR",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "StevenBlackHosts": "StevenBlackHosts",
@@ -213,7 +243,9 @@
         "nixosgen": "nixosgen",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs_unstable": "nixpkgs_unstable",
-        "rust-overlay": "rust-overlay"
+        "nur": "nur",
+        "rust-overlay": "rust-overlay",
+        "shix": "shix"
       }
     },
     "rust-overlay": {
@@ -243,11 +275,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1657637872,
-        "narHash": "sha256-Fn73L/KrlZpcgm+JI98k7UoLuUajIPyex8gHtC+qxm8=",
+        "lastModified": 1657745949,
+        "narHash": "sha256-5VHn6ciKtY0J8EZl/DjO5c7wON42vI0RGHk5aIl6hSg=",
         "owner": "litchipi",
         "repo": "shix",
-        "rev": "632432587c00a464bfe39ee0acf3e0a22079254b",
+        "rev": "4192db83c3f9b6131d56dd70d8d4c9636af10753",
         "type": "github"
       },
       "original": {

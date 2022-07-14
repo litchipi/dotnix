@@ -11,9 +11,9 @@ libconf.create_common_confs [
     name = "gitlab";
     parents = [ "services" ];
     add_opts = {
-      port = lib.mkOption {
+      redis_port = lib.mkOption {
         type = lib.types.int;
-        description = "Port of the Gitlab server";
+        description = "Port of the Redis server";
         default = 4005;
       };
     };
@@ -28,7 +28,7 @@ libconf.create_common_confs [
       networking.firewall.allowedTCPPorts = [ 80 443 ];
 
       users.users."${config.base.user}".extraGroups = [ "gitlab" ];
-
+  
       base.secrets.store = {
         gitlab_secretFile = gitlab_secret "secretfile";
         gitlab_otpFile = gitlab_secret "otp";
@@ -40,6 +40,10 @@ libconf.create_common_confs [
 
       services.nginx = {
         enable = true;
+        recommendedGzipSettings = true;
+        recommendedOptimisation = true;
+        recommendedProxySettings = true;
+        recommendedTlsSettings = true;
         virtualHosts."git.${config.base.networking.domain}" = {
           locations."/".proxyPass = "http://unix:/run/gitlab/gitlab-workhorse.socket";
         };
@@ -55,12 +59,12 @@ libconf.create_common_confs [
         # https://nixos.org/manual/nixos/stable/#module-security-acme-nginx
         # https://nixos.wiki/wiki/Nginx
         https = false; #true;
-        port = cfg.port;
-        smtp = {
-          enable = true;
-          address = "smtp.${config.base.networking.domain}";
-          port = 25;
-        };
+        port = cfg.redis_port;
+        # smtp = {
+        #   enable = true;
+        #   address = "smtp.${config.base.networking.domain}";
+        #   port = 25;
+        # };
         secrets = {
           dbFile = config.base.secrets.store.gitlab_dbFile.dest;
           secretFile = config.base.secrets.store.gitlab_secretFile.dest;

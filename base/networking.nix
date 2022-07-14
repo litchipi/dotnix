@@ -57,7 +57,8 @@ in
         #     "*" "except:type:wwan" "except:type:gsm"
         #   ];
         # };
-      nameservers = [ "1.1.1.1" "1.0.0.1" "8.8.8.8" ] ++ cfg.add_dns;
+        nameservers = [ "1.1.1.1" "1.0.0.1" "8.8.8.8" ] ++ cfg.add_dns;
+        enableIPv6 = false;
     };
 
     users.users."${config.base.user}" = {
