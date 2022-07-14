@@ -188,6 +188,22 @@
         "type": "github"
       }
     },
+    "nixpkgs_unstable": {
+      "locked": {
+        "lastModified": 1657624652,
+        "narHash": "sha256-rFJNM0X/dxekT6EESSh80mlBGqztfN/XOF/oRL6in68=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "68c63e60b8413260605efbe1ac5addaa099cdfb3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "StevenBlackHosts": "StevenBlackHosts",
@@ -196,6 +212,7 @@
         "nixos-hardware": "nixos-hardware",
         "nixosgen": "nixosgen",
         "nixpkgs": "nixpkgs_2",
+        "nixpkgs_unstable": "nixpkgs_unstable",
         "rust-overlay": "rust-overlay"
       }
     },
