@@ -20,11 +20,11 @@ in
         sessionVariables.COLORTERM="truecolor";
         initExtra = ''
           source ${libdata.get_data_path [ "shell" "git-prompt.sh" ]}
-          export PS1="${colors.fg.ps1.username}\\u ${colors.fg.ps1.wdir}\\w '' +
+          export PS1="\[${colors.fg.ps1.username}\]\\u \[${colors.fg.ps1.wdir}\]\\w '' +
           (if config.cmn.software.tui.git.enable
             then config.cmn.software.tui.git.ps1
             else ""
-          ) + ''${colors.fg.ps1.dollarsign}$ ${colors.reset}"
+          ) + ''\[${colors.fg.ps1.dollarsign}\]$ \[${colors.reset}\]"
         '';
       };
     };

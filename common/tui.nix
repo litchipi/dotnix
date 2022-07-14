@@ -210,7 +210,7 @@ libconf.create_common_confs [
     add_opts = {
       ps1 = lib.mkOption {
         type = lib.types.str;
-        default = "${libcolors.fg.ps1.gitps1}\\`__git_ps1 \\\"<%s> \\\"\\`";
+        default = "\\[${libcolors.fg.ps1.gitps1}\\]\\`__git_ps1 \\\"<%s> \\\"\\`";
         description = "Indication of git repo in prompt info of bash";
       };
     };
