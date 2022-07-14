@@ -109,6 +109,10 @@ in {
 
     # Games
     teeworlds
+
+    # Dev libraries
+    openssl
+    openssl.dev
   ];
 
   services.flatpak.enable = true;

@@ -31,6 +31,11 @@ libconf.create_common_confs [
       software = ["rust" "python"];
       functionnal = ["ocaml" "haskell"];
     };
+    add_pkgs = with pkgs; [
+      pkg-config
+      binutils
+      bintools
+    ];
     cfg = {
       cmn.software.tui.enable = true;
       cmn.software.tui.git.enable = true;
