@@ -13,6 +13,7 @@ conf_lib.create_common_confs [
     };
     add_pkgs = with pkgs; [
       youtube-dl
+      ffmpeg
       audacity
     ];
     parents = [ "software" ];
