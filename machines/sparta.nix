@@ -11,7 +11,7 @@ in {
     "SFR-a0e0"
   ];
 
-  colors.primary = {r=255; g=113; b=206;}; # #ff71ce
+  colors.primary = {r=221; g=37; b=158;}; # #DD259E
   colors.palette = [
     {r=1; g=205; b=254;}   # 0 #01cdfe
     {r=5; g=255; b=161;}   # 1 #05ffa1
