@@ -58,6 +58,11 @@ in {
     user_icon = libdata.get_data_path ["assets" "desktop" "user_icons" "litchi.jpg"];
   };
 
+  cmn.software.protonvpn = {
+    enable = true;
+    username = "litchipi";
+  };
+
   cmn.basic.enable = true;
   cmn.server.enable = true;
   networking.stevenBlackHosts.enable = true;

@@ -30,7 +30,7 @@ conf_lib.create_common_confs [
   home_cfg.home.file.".protonvpn_login.tcl".text = ''
       set user [lindex $argv 0]
       set p [lindex $argv 1]
-      spawn -noecho protonvpn login $user
+      spawn -noecho protonvpn-cli login $user
       expect {
         "already logged" { exit 0 };
         "password" {
@@ -46,15 +46,15 @@ conf_lib.create_common_confs [
     home_cfg.programs.bash = {
       enable = true;
       shellAliases = {
-        vpn_logout = "protonvpn logout";
+        vpn_logout = "protonvpn-cli logout";
         vpn_login = "expect $HOME/.protonvpn_login.tcl ${vpncfg.username} $(cat ${vpncreds})";
-        vpn = "protonvpn c --sc";
-        vpn_p2p = "protonvpn c --p2p";
-        vpn_tor = "protonvpn c --tor";
-        vpn_cc = "protonvpn c --cc";
-        vpn_random = "protonvpn c -r";
-        vpn_fast = "protonvpn c -f";
-        novpn = "protonvpn d";
+        vpn = "protonvpn-cli c --sc";
+        vpn_p2p = "protonvpn-cli c --p2p";
+        vpn_tor = "protonvpn-cli c --tor";
+        vpn_cc = "protonvpn-cli c --cc";
+        vpn_random = "protonvpn-cli c -r";
+        vpn_fast = "protonvpn-cli c -f";
+        novpn = "protonvpn-cli d";
       };
     };
   }
