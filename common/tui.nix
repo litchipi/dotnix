@@ -248,6 +248,7 @@ libconf.create_common_confs [
       neovim.extraConfig = ''
 
         " GitGutter
+        let g:gitgutter_git_executable="${pkgs.git}/bin/git"
         let g:gitgutter_set_sign_backgrounds = 0
         let g:gitgutter_map_keys = 0
       '';
