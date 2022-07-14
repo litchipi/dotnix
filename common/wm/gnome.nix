@@ -108,11 +108,12 @@ conf_lib.create_common_confs [
 
     add_pkgs = (with pkgs.gnomeExtensions; [
       caffeine
+      alt-tab-only-on-current-workspace
       bluetooth-quick-connect
       bring-out-submenu-of-power-offlogout-button
       disconnect-wifi
       hide-activities-button
-      # night-light-slider  # Hopefully will be compatible one day
+      night-light-slider  # Hopefully will be compatible one day
       runcat
       tray-icons-reloaded
       static-background-in-overview
