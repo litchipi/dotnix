@@ -11,6 +11,9 @@ in {
     "SFR-a0e0"
   ];
 
+  # Open a bunch of ports for fun things
+  networking.firewall.allowedTCPPorts = [ 4444 4445 4446 4447 4448 ];
+
   colors.primary = {r=221; g=37; b=158;}; # #DD259E
   colors.palette = [
     {r=1; g=205; b=254;}   # 0 #01cdfe
