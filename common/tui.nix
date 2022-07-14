@@ -242,6 +242,9 @@ libconf.create_common_confs [
         extraConfig = {
           init.defaultBranch = "main";
           safe.directory = "/etc/nixos";
+          credential.helper = "${
+              pkgs.git.override { withLibsecret = true; }
+            }/bin/git-credential-libsecret";
         };
       };
 
