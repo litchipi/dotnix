@@ -105,23 +105,13 @@ in {
 
     # System
     authenticator # 2FA TOTP app
+    blueman     # Bluetooth manager
 
     # Games
     teeworlds
   ];
 
   services.flatpak.enable = true;
-
-  environment.etc."xdg/user-dirs.defaults".text = ''
-    DESKTOP=.system/desktop
-    TEMPLATES=.system/templates
-    PUBLICSHARE=.system/public
-    DOWNLOAD=downloads
-    DOCUMENTS=docs
-    MUSIC=music
-    PICTURES=pics
-    VIDEOS=videos
-  '';
 
   cmn.services.restic.to_remote = {
     gdrive.enable = true;
