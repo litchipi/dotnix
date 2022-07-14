@@ -21,6 +21,8 @@ libconf.create_common_confs [
       autojump
       glances
       python310
+
+      unzip unrar
     ];
     cfg = {
       cmn.software.tui = {
@@ -48,7 +50,9 @@ libconf.create_common_confs [
       irssi
       wkhtmltopdf
       youtube-dl
+      ffmpeg
       neofetch
+      bat
 
       # Custom TUI tools
       litchipi.pomodoro
@@ -264,9 +268,6 @@ libconf.create_common_confs [
     add_pkgs = with pkgs; [
       tmux
       tmuxp
-
-      # TODO Add tmuxp_session_creator
-      # litchipi.tmuxp_session_creator
     ];
 
     add_opts = {
@@ -318,7 +319,7 @@ libconf.create_common_confs [
           better-mouse-mode
         ];
         tmuxp.enable = true;
-        extraConfig = cfg.tmux.extraConfig + ''
+        extraConfig = ''
           set -ga terminal-overrides ",*256col*:Tc"
 
           unbind d
