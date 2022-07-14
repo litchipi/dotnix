@@ -294,6 +294,10 @@ libconf.create_common_confs [
     ];
 
     home_cfg.programs = {
+      bash.shellAliases = {
+        quitses = "tmux kill-session -t $(tmux display-message -p \"#S\")";
+      };
+
       neovim.plugins = with pkgs.vimPlugins; [
         tmux-complete-vim
       ];
