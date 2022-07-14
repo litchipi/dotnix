@@ -24,6 +24,10 @@
 
     StevenBlackHosts.url = "github:StevenBlack/hosts";
 
+
+    shix.url = "github:litchipi/shix";
+    shix.inputs.nixpkgs.follows = "nixpkgs";
+
     # Overlays
     rust-overlay.url = "github:oxalica/rust-overlay";
   };
@@ -94,6 +98,7 @@
     base_modules = (find_all_files ./base) ++ (find_all_files ./common) ++ [
       inputs.home-manager.nixosModules.home-manager
       inputs.StevenBlackHosts.nixosModule
+      inputs.shix.nixosModules.x86_64-linux.default
       # inputs.envfs.nixosModules.envfs
       {
         _module.args = {

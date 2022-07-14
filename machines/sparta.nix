@@ -71,6 +71,7 @@ in {
   cmn.server.enable = true;
   networking.stevenBlackHosts.enable = true;
 
+  cmn.nix.shix.enable = true;
   cmn.software.musicprod.all = true;
   cmn.software.dev.basic = true;
 

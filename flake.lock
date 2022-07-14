@@ -235,6 +235,27 @@
         "type": "github"
       }
     },
+    "shix": {
+      "inputs": {
+        "flake-utils": "flake-utils_3",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1657637872,
+        "narHash": "sha256-Fn73L/KrlZpcgm+JI98k7UoLuUajIPyex8gHtC+qxm8=",
+        "owner": "litchipi",
+        "repo": "shix",
+        "rev": "632432587c00a464bfe39ee0acf3e0a22079254b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "litchipi",
+        "repo": "shix",
+        "type": "github"
+      }
+    },
     "utils": {
       "locked": {
         "lastModified": 1610051610,
