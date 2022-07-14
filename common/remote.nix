@@ -50,7 +50,7 @@ conf_lib.create_common_confs [
       initExtra = ''
         new_gogs_repo(){
             REPO=$1
-            TOK=$(cat $HOME/gogs_token)
+            TOK=$(cat $HOME/.gogs_token)
             URL="http://${cfg.name}:3000/api/v1"
             REQ="{\"name\":\"''${REPO}\"}"
             RES=$(curl \
