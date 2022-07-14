@@ -13,10 +13,7 @@ conf_lib.create_common_confs [
         ssh = { from = "host"; host.port = 40022; guest.port = 22;};
       };
 
-      cmn.software.tui = {
-        enable = true;
-        full.enable = false;
-      };
+      cmn.software.tui.enable = true;
 
       networking.extraHosts = ''
         127.0.0.1 ${config.base.networking.domain}
