@@ -4,7 +4,8 @@
   description = "NixOs config builder";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/22.05"; #nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/22.05";
+    nixpkgs_unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     envfs.url = "github:Mic92/envfs";
     envfs.inputs.nixpkgs.follows = "nixpkgs";
@@ -27,7 +28,7 @@
     rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
-  outputs = { self, nixpkgs, ...}@inputs:
+  outputs = { self, nixpkgs, nixpkgs_unstable, ...}@inputs:
   let
   # General utils
     # Find all files located in a specific directory
@@ -46,10 +47,24 @@
       );
 
     # Prepare the nixpkgs for a specific system;
-    pkgsForSystem = system: import nixpkgs {
+    pkgsForSystem = system: let
+      pkgs_unstable = import nixpkgs_unstable {
+        inherit system;
+      };
+      packages_on_unstable = [
+        pkgs_unstable.protonvpn-cli
+        pkgs_unstable.gitFull
+        pkgs_unstable.neovim
+      ];
+    in import nixpkgs {
       overlays = [
         inputs.rust-overlay.overlay
         (prev: final: (import ./overlays/overlays.nix final))
+
+        (prev: final: builtins.listToAttrs (builtins.map (pkg: {
+          name = pkg.name;
+          value = pkg;
+        }) packages_on_unstable))
       ];
       config.allowUnfree = true;
       inherit system;
