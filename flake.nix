@@ -100,7 +100,6 @@
     base_modules = (find_all_files ./base) ++ (find_all_files ./common) ++ [
       inputs.home-manager.nixosModules.home-manager
       inputs.StevenBlackHosts.nixosModule
-      inputs.nix-ld.nixosModules.nix-ld
       inputs.shix.nixosModules.x86_64-linux.default
       # inputs.envfs.nixosModules.envfs
       {
