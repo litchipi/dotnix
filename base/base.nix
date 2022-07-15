@@ -96,6 +96,7 @@ in
     system.stateVersion = "22.05";
 
     boot.cleanTmpDir = true;
+    boot.kernelModules = [ "kvm-amd" "kvm-intel" ];
 
     # clean logs older than 2d
     services.cron.systemCronJobs = [
