@@ -9,6 +9,7 @@ in
   base.hostname = "${company_name}";
   base.networking.ssh_auth_keys = [ "john" "tim" "restic_backup_ssh" ];
   base.networking.connect_wifi = [ "SFR_11EF" ];
+  base.disks.add_swapfile = 2000;
 
   cmn.server.enable = true;
   # TODO  Investigate 502 timeout error
@@ -48,7 +49,16 @@ in
       fsType = "ext4";
       options = ["noatime"];
     };
+
+    "/boot" = {
+      device = "/dev/disk/by-label/NIXOS_BOOT";
+      fsType = "vfat";
+    };
   };
+
+  boot.loader.grub.enable = false;
+  boot.loader.generic-extlinux-compatible.enable = true;
+  boot.kernelPackages = pkgs.linuxPackages_rpi3;
 
   boot.kernelParams = [
     "console=ttyS1,115200n8"
