@@ -8,6 +8,7 @@ in
   base.user = "op";
   base.hostname = "${company_name}";
   base.networking.ssh_auth_keys = [ "john" "tim" "restic_backup_ssh" ];
+  base.networking.connect_wifi = [ "SFR_11EF" ];
 
   cmn.server.enable = true;
   # TODO  Investigate 502 timeout error
@@ -41,12 +42,19 @@ in
     };
   };
 
-  # NixOS configuration
-  # boot.loader.grub.enable = true;
-  # boot.loader.grub.version = 2;
-  # boot.loader.grub.devices = [ "/dev/sda" ];
-  #
-  # networking.useDHCP = false;
-  # networking.interfaces.ens18.useDHCP = true;
-  # system.stateVersion = "22.05";
+  fileSystems = {
+    "/" = {
+      device = "/dev/disk/by-label/NIXOS_SD";
+      fsType = "ext4";
+      options = ["noatime"];
+    };
+  };
+
+  boot.kernelParams = [
+    "console=ttyS1,115200n8"
+  ];
+  boot.loader.raspberryPi = {
+    enable = true;
+    version = 3;
+  };
 }

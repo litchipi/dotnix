@@ -213,7 +213,7 @@
 
       {
         fname=./machines/company_server.nix;
-        system="x86_64-linux";
+        system="aarch64";
       }
 
       {
