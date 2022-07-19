@@ -12,6 +12,8 @@ in
   base.disks.add_swapfile = 2000;
 
   cmn.server.enable = true;
+  cmn.wm.enable = false;
+
   # TODO  Investigate 502 timeout error
   cmn.services.gitlab.enable = false;
   cmn.services.conduit.enable = false;
