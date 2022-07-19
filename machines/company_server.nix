@@ -13,10 +13,10 @@ in
 
   cmn.server.enable = true;
   # TODO  Investigate 502 timeout error
-  cmn.services.gitlab.enable = true;
-  cmn.services.conduit.enable = true;
+  cmn.services.gitlab.enable = false;
+  cmn.services.conduit.enable = false;
   cmn.services.nextcloud = {
-    enable = true;
+    enable = false;
 
     theme = {
       name = company_name;
