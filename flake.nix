@@ -7,8 +7,10 @@
     nixpkgs.url = "github:nixos/nixpkgs/22.05";
     nixpkgs_unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    envfs.url = "github:Mic92/envfs";
-    envfs.inputs.nixpkgs.follows = "nixpkgs";
+    flake-utils = {
+      url = "github:numtide/flake-utils";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixosgen = {
       url = "github:nix-community/nixos-generators";
@@ -16,20 +18,31 @@
     };
 
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/release-22.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    StevenBlackHosts.url = "github:StevenBlack/hosts";
+    StevenBlackHosts = {
+      url = "github:StevenBlack/hosts";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
 
-    shix.url = "github:litchipi/shix";
-    shix.inputs.nixpkgs.follows = "nixpkgs";
+    shix = {
+      url = "github:litchipi/shix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Overlays
-    rust-overlay.url = "github:oxalica/rust-overlay";
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, nixpkgs_unstable, ...}@inputs:
@@ -64,7 +77,6 @@
       overlays = [
         inputs.rust-overlay.overlay
         (prev: final: (import ./overlays/overlays.nix final))
-
         (prev: final: builtins.listToAttrs (builtins.map (pkg: {
           name = pkg.name;
           value = pkg;
@@ -74,23 +86,11 @@
       inherit system;
     };
 
-    declare_script = { name, script, pkgs, env ? [], add_pkgs ? p: []}: {
+    simple_script = pkgs: name: text: {
       type = "app";
       program = let
-        add_paths = builtins.map (pkg:
-          "${pkg}/bin:${pkg}/sbin"
-        ) (add_pkgs pkgs);
-        exec = pkgs.writeShellScriptBin name ((
-          pkgs.lib.strings.optionalString ((builtins.length add_paths) > 0)
-          ''
-            # Script ${name} defined in flake ${self}
-            set -e
-            ${builtins.concatStringsSep "\n" env}
-            PATH=${builtins.concatStringsSep ":" add_paths}:$PATH
-          ''
-        ) + script);
-      in
-      "${exec}/bin/${name}";
+        exec = pkgs.writeShellScript name text;
+      in "${exec}";
     };
 
   # Building
@@ -109,132 +109,113 @@
       }
     ];
 
-    # Gets the base name of a file without the extension, from a path
-    name_from_fname = fname :
-      nixpkgs.lib.removeSuffix ".nix"
-        (nixpkgs.lib.lists.last
-          (nixpkgs.lib.strings.splitString "/"
-            (builtins.toString fname)
-        )
-      );
-
     # Create output format derivation using nixos-generators
-    build_deriv_output = { fname, pkgs, add_modules, format}: inputs.nixosgen.nixosGenerate {
-        inherit pkgs format;
-        modules = [ fname ] ++ base_modules ++ add_modules;
+    build_deriv_output = format: { software, hardware ? null, add_modules ? [], ...}:
+      system: format_modules:
+      inputs.nixosgen.nixosGenerate {
+        pkgs = pkgsForSystem system;
+        inherit format;
+        modules = [ software ] ++ (if builtins.isNull hardware then [] else [hardware])
+          ++ base_modules ++ add_modules ++ format_modules;
     };
 
     # Create entire NixOS derivation for a machine
-    build_machine_deriv = name: { fname, system, add_modules ? [], ...}: let
-      pkgs = pkgsForSystem system;
-    in rec {
+    build_machine_deriv = { name, add_modules ? [], ...}@machine: system: let
+    in {
       # Virtual machine options
-      vbox = build_deriv_output {
-        inherit pkgs fname;
-        add_modules=add_modules ++ [ ./format_cfg/virtualbox.nix ];
-        format="virtualbox";
-      };
+      vbox = build_deriv_output "virtualbox" machine system [
+        ./format_cfg/virtualbox.nix
+      ];
 
-      guivm = build_deriv_output {
-        inherit pkgs fname;
-        add_modules=add_modules ++ [ ./format_cfg/virtualisation.nix ];
-        format="vm";
-      };
+      guivm = build_deriv_output "vm" machine system [
+        ./format_cfg/virtualisation.nix
+      ];
 
-      clivm = build_deriv_output {
-        inherit pkgs fname;
-        add_modules=add_modules ++ [ ./format_cfg/virtualisation.nix ];
-        format="vm-nogui";
-      };
-
-      spawn.cli = declare_script {
-        inherit pkgs;
-        name = "${name}-clivm-spawn";
-        script = ''
-          ${clivm}/bin/run-${name}-vm
-        '';
-      };
- 
-      spawn.gui = declare_script {
-        inherit pkgs;
-        name = "${name}-guivm-spawn";
-        script = ''
-          ${guivm}/bin/run-${name}-vm
-        '';
-      };
+      clivm = build_deriv_output "vm-nogui" machine system [
+        ./format_cfg/virtualisation.nix
+      ];
     };
 
-    # Target used by the installed NixOS system to rebuild the system
-    generate_nixos_configuration = machines: {
-      nixosConfigurations = builtins.listToAttrs (
-        (builtins.map ({fname, system, add_modules ? [], ...}: {
-          name = name_from_fname fname;
-          value = nixpkgs.lib.nixosSystem {
-            pkgs = pkgsForSystem system;
-            inherit system;
-            modules = [
-              fname
-              {
-                config.setup.is_nixos = true;
-              }
-            ] ++ base_modules ++ add_modules;
-          };
-        })
-        (builtins.filter (m: if m ? "noconf" then !m.noconf else true) machines))
-        );
-      };
+    build_machine_scripts = { name, ...}@machine: system: let
+      derivs = build_machine_deriv machine system;
+      pkgs = pkgsForSystem system;
+    in {
+      spawn.cli = simple_script pkgs "spawn_${name}_clivm" ''
+        ${derivs.clivm}/bin/run-${name}-vm
+      '';
 
-    # Build the derivation for each machine declared
-    #   as a set in the form: { fname = ; system = ;}
-    declare_machines = machines :
-      (builtins.listToAttrs (
+      spawn.gui = simple_script pkgs "spawn_${name}_guivm" ''
+        ${derivs.guivm}/bin/run-${name}-vm
+      '';
+    };
+
+    build_machine_nixoscfg = { name, software, hardware ? null, add_modules, ...}:
+    system: nixpkgs.lib.nixosSystem {
+      pkgs = pkgsForSystem system;
+      inherit system;
+      modules = [
+        software
+        {
+          config.setup.is_nixos = true;
+        }
+      ] ++ (if builtins.isNull hardware then [] else [hardware])
+      ++ base_modules ++ add_modules;
+    };
+
+    declare_machines = system: machines: {
+      packages = (builtins.listToAttrs (
         (builtins.map (machine: rec {
-          name = name_from_fname machine.fname;
-          value = build_machine_deriv name machine;
+          name = machine.name;
+          value = build_machine_deriv machine system;
         }) machines
-      ))) // (generate_nixos_configuration machines);
+      )));
 
-    generate_outputs = {machines ? [], extra ? {}, devShell ? {}}:
-    (declare_machines machines)
-      // extra
-      // {
-        inherit devShell;
-      };
-  in
-  generate_outputs {
-    machines = [
-      {
-        fname=./machines/nixostest.nix;
-        system="x86_64-linux";
-        noconf = true;
-      }
+      apps = (builtins.listToAttrs (
+        (builtins.map (machine: rec {
+          name = machine.name;
+          value = build_machine_scripts machine system;
+        }) machines
+      )));
 
-      {
-        fname=./machines/company_server.nix;
-        system="x86_64-linux";
-      }
-
-      {
-        fname=./machines/backup_server.nix;
-        system="x86_64-linux";
-        noconf = true;
-      }
-      {
-        fname=./machines/sparta.nix;
-        system="x86_64-linux";
-        add_modules = [
-          inputs.nixos-hardware.nixosModules.lenovo-legion-15arh05h
-        ];
-      }
-      # {
-      #   fname=./machines/diamond.nix;
-      #   system="x86_64-linux";
-      #   add_modules = [ nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen ];
-      # }
-    ];
-    extra = {
+      nixosConfigurations = (builtins.listToAttrs (
+        (builtins.map (machine: rec {
+          name = machine.name;
+          value = build_machine_nixoscfg machine system;
+        }) (builtins.filter (m: ! builtins.isNull m.hardware) machines)
+      )));
     };
-    devShell = {
-    };
-  };
+
+  in inputs.flake-utils.lib.eachDefaultSystem (system: declare_machines system [
+    {
+      name="nixostest";
+      software=./software/nixostest.nix;
+    }
+
+    {
+      name="tyf";
+      software=./software/company_server.nix;
+    }
+
+    {
+      name="backup_server";
+      software=./software/backup_server.nix;
+    }
+    {
+      name="sparta";
+      software=./software/personnal_computer.nix;
+      hardware=./hardware/sparta.nix;
+      add_modules = [
+        inputs.nixos-hardware.nixosModules.lenovo-legion-15arh05h
+      ];
+    }
+    # {
+    #   name="diamond";
+    #   software=./software/work_computer.nix;
+    #   hardware=./hardware/diamond.nix;
+    #   add_modules = [
+    #     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
+    #   ];
+    # }
+
+  ]);
 }
