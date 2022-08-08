@@ -59,7 +59,9 @@ rec {
     default = value // {inherit style;};
   };
 
-  get_palette = builtins.elemAt config.colors.palette;
+  get_palette = idx: if idx >= builtins.length config.colors.palette
+    then basic.white
+    else builtins.elemAt config.colors.palette idx;
 
   fg = apply_to_all_colors fg_rgb_color cfg;
   bg = apply_to_all_colors bg_rgb_color cfg;
