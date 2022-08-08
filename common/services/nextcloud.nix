@@ -261,11 +261,11 @@ libconf.create_common_confs ([
     version = "1.0.3";
   };
 
-  jitsi = {
-    sha256 = "sha256-aFwYQpb2WrPD00qPtCu5zGu0LlKFYdwZYTAmvX2li4o=";
-    url = "https://pubcode.weimann.digital/downloads/projects/nextcloud-jitsi/builds/48/artifacts/nextcloud-jitsi.tar.gz";
-    version = "0.15.0";
-  };
+  # jitsi = {
+  #   sha256 = "sha256-aFwYQpb2WrPD00qPtCu5zGu0LlKFYdwZYTAmvX2li4o=";
+  #   url = "https://pubcode.weimann.digital/downloads/projects/nextcloud-jitsi/builds/48/artifacts/nextcloud-jitsi.tar.gz";
+  #   version = "0.15.0";
+  # };
 
   # appointments = {
   #   sha256 = "sha256-gnmUGZDYtPh+Z1dCEyEue0Cqzs1dA8teBZi3rIiZmBw=";
