@@ -194,6 +194,7 @@
     {
       name="tyf";
       software=./software/company_server.nix;
+      hardware=./hardware/suzie.nix;
     }
 
     {
