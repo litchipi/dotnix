@@ -11,9 +11,9 @@ libconf.create_common_confs [
     name = "gitlab";
     parents = [ "services" ];
     add_opts = {
-      port = lib.mkOption {
+      redis_port = lib.mkOption {
         type = lib.types.int;
-        description = "Port of the Gitlab server";
+        description = "Port of the Redis server";
         default = 4005;
       };
     };
@@ -55,7 +55,7 @@ libconf.create_common_confs [
         # https://nixos.org/manual/nixos/stable/#module-security-acme-nginx
         # https://nixos.wiki/wiki/Nginx
         https = false; #true;
-        port = cfg.port;
+        port = cfg.redis_port;
         smtp = {
           enable = true;
           address = "smtp.${config.base.networking.domain}";
