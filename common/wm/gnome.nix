@@ -64,7 +64,7 @@ conf_lib.create_common_confs [
       services.gnome = {
         core-os-services.enable = true;
         core-shell.enable = true;
-        chrome-gnome-shell.enable = true;
+        chrome-gnome-shell.enable = true;   # TODO  FIXME   Controller not found in firefox ?
         gnome-keyring.enable = true;
         gnome-online-accounts.enable = true;
         gnome-settings-daemon.enable = true;
@@ -108,7 +108,7 @@ conf_lib.create_common_confs [
 
     add_pkgs = (with pkgs.gnomeExtensions; [
       caffeine
-      alt-tab-only-on-current-workspace
+      current-screen-only-for-alternate-tab
       bluetooth-quick-connect
       bring-out-submenu-of-power-offlogout-button
       disconnect-wifi
