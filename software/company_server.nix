@@ -3,18 +3,22 @@ let
   company_name="tyf";
 
   libnc = import ../lib/services/nextcloud.nix { inherit config lib pkgs;};
+  libdata = import ../lib/manage_data.nix { inherit config lib pkgs;};
 in
 {
   base.user = "op";
   base.hostname = "${company_name}";
   base.networking.ssh_auth_keys = [ "john" "tim" "restic_backup_ssh" ];
+  base.networking.connect_wifi = [ "SFR_11EF" ];
+
+  # TODO    FIXME   Doesn't work when using a custom domain name
+  base.networking.domain = "localhost";
 
   cmn.server.enable = true;
-  # TODO  Investigate 502 timeout error
+  cmn.wm.enable = false;
+
   cmn.services.gitlab.enable = true;
-
   cmn.services.conduit.enable = true;
-
   cmn.services.nextcloud = {
     enable = true;
 
@@ -42,13 +46,4 @@ in
       port = 8189;
     };
   };
-
-  # NixOS configuration
-  boot.loader.grub.enable = true;
-  boot.loader.grub.version = 2;
-  boot.loader.grub.devices = [ "/dev/sda" ];
-
-  networking.useDHCP = false;
-  networking.interfaces.ens18.useDHCP = true;
-  system.stateVersion = "22.05";
 }
