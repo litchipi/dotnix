@@ -22,7 +22,7 @@
 
   config = {
     base.home_cfg.programs.bash.shellAliases = lib.mkIf config.setup.is_nixos {
-      upgrade = "sudo nixos-rebuild switch --flake ${config.setup.config_repo_path} && echo 'Success'";
+      upgrade = "sudo nixos-rebuild switch --flake ${config.setup.config_repo_path} $@ && echo 'Success'";
     };
   };
 }
