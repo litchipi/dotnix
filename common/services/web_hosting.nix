@@ -31,6 +31,24 @@ let
       description = "Port that the application use";
       default = null;
     };
+
+    options.wait_service = lib.mkOption {
+      type = with lib.types; nullOr (listOf str);
+      description = "Systemd service to wait before starting app";
+      default = null;
+    };
+
+    options.service_user = lib.mkOption {
+      type = lib.types.str;
+      description = "Name of the User from which the service is start";
+      default = cfg.user;
+    };
+
+    options.initScript = lib.mkOption {
+      type = lib.types.str;
+      description = "Script to execute before the web application";
+      default = "";
+    };
   };
 
   create_application_service = name: app: {
@@ -38,10 +56,10 @@ let
       enable = true;
       path = app.add_pkgs;
       serviceConfig = {
-        User = cfg.user;
+        User = app.service_user;
       };
       script = app.command;
-      after = ["network.target"];
+      after = ["network.target"] ++ (if builtins.isNull app.wait_service then [] else app.wait_service);
       wantedBy = [ "multi-user.target" ];
     };
   };
@@ -53,12 +71,6 @@ libconf.create_common_confs [
     parents = ["services"];
 
     add_opts = {
-      user = lib.mkOption {
-        type = lib.types.str;
-        description = "User running the web hosting services";
-        default = "www-data";
-      };
-
       websites = lib.mkOption {
         type = with lib.types; attrsOf website;
         description = "Static websites to serve";
@@ -73,15 +85,14 @@ libconf.create_common_confs [
     };
 
     # TODO  Asserts that applications and websites do not overlap subdomain
-
     cfg = {
-      users.extraUsers.${cfg.user} = {
-        isSystemUser = true;
-        group = cfg.user;
-      };
+      boot.postBootCommands = builtins.concatStringsSep "\n" (lib.attrsets.mapAttrsToList
+        (_: app: app.initScript) cfg.applications
+      );
 
       services.nginx = {
         enable = true;
+
         # TODO  Find a way to limit the web server to cfg.user (on the web hosting services)
         #     If it's a global config, move the www-data creation and setup inside base/networking.nix
         virtualHosts = lib.mkMerge [
