@@ -1,9 +1,16 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, system, ... }:
 let
   company_name="tyf";
 
   libnc = import ../lib/services/nextcloud.nix { inherit config lib pkgs;};
   libdata = import ../lib/manage_data.nix { inherit config lib pkgs;};
+
+  persowebsite = {
+    user = "op_persowebsite";
+    port = 8095;
+    dbname = "persowebsite";
+    dir = "/www/posts";
+  };
 in
 {
   base.user = "op";
@@ -37,13 +44,43 @@ in
     ];
   };
 
+  cmn.services.postgresql = {
+    enable = true;
+    users.${persowebsite.user} = {
+      databases = [ persowebsite.dbname ];
+      permissions.${persowebsite.dbname} = "ALL PRIVILEGES";
+      # TODO  Find anothing thing than "trust" to put there
+      auth_method = "trust";
+    };
+  };
+
   cmn.services.web_hosting = {
     enable = true;
-    websites."www".package = pkgs.litchipi.tyf_website;
-    applications."app" = rec {
-      add_pkgs = [ pkgs.litchipi.webapp ];
-      command = "app -p ${builtins.toString port}";
-      port = 8189;
+    websites."static".package = pkgs.litchipi.tyf_website;
+    applications = {
+
+      # Personnal website
+      "www" = {
+        command = let
+          startup = inputs.persowebsite.packages.${system}.prepare {
+            port = persowebsite.port;
+            posts_dir = persowebsite.dir;
+            spawnDatabase = false;
+            database = {
+              user = persowebsite.user;
+              dbname = persowebsite.dbname;
+              inherit (config.cmn.services.postgresql) port dir;
+            };
+          };
+        in "${startup}";
+        initScript = ''
+          mkdir -p ${persowebsite.dir}
+          chown +R ${persowebsite.user} ${persowebsite.dir}
+        '';
+        service_user = persowebsite.user;
+        wait_service = [ "postgresql.service" ];
+        port = persowebsite.port;
+      };
     };
   };
 }

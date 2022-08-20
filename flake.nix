@@ -38,6 +38,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    persowebsite = {
+      url = "path:/home/tim/Projects/perso/webdev_portfolio/personnal_website";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Overlays
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
