@@ -95,17 +95,15 @@
 
   # Building
     # Additionnal modules for any nixos configuration
-    base_modules = (find_all_files ./base) ++ (find_all_files ./common) ++ [
+    base_modules = system: (find_all_files ./base) ++ (find_all_files ./common) ++ [
       inputs.home-manager.nixosModules.home-manager
       inputs.StevenBlackHosts.nixosModule
       inputs.shix.nixosModules.x86_64-linux.default
       # inputs.envfs.nixosModules.envfs
       {
         _module.args = {
-          inherit inputs;
-          extra = {};
+          inherit inputs system;
         };
-
       }
     ];
 
@@ -116,7 +114,7 @@
         pkgs = pkgsForSystem system;
         inherit format;
         modules = [ software ] ++ (if builtins.isNull hardware then [] else [hardware])
-          ++ base_modules ++ add_modules ++ format_modules;
+          ++ (base_modules system) ++ add_modules ++ format_modules;
     };
 
     # Create entire NixOS derivation for a machine
@@ -159,7 +157,7 @@
           config.setup.is_nixos = true;
         }
       ] ++ (if builtins.isNull hardware then [] else [hardware])
-      ++ base_modules ++ add_modules;
+      ++ (base_modules system) ++ add_modules;
     };
 
     declare_machines = system: machines: {
