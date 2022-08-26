@@ -149,5 +149,16 @@ in
       file
     ] ++ cfg.add_pkgs
     ++ (if (config.base.minimal.cli || config.base.minimal.gui) then [] else cfg.full_pkgs);
+
+    nix.settings = {
+      auto-optimise-store = true;
+      experimental-features = [ "nix-command" "flakes" "ca-derivations" ];
+    };
+    nix.extraOptions = ''
+      keep-outputs = true
+      keep-derivations = true
+    '';
+    # TODO  Set flake registry
+    # global flake:nixpkgs github:NixOS/nixpkgs/nixpkgs-unstable
   };
 }
