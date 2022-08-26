@@ -41,6 +41,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nix-ld = {
+      url = "github:Mic92/nix-ld";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Overlays
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
@@ -103,6 +108,7 @@
     base_modules = system: (find_all_files ./base) ++ (find_all_files ./common) ++ [
       inputs.home-manager.nixosModules.home-manager
       inputs.StevenBlackHosts.nixosModule
+      inputs.nix-ld.nixosModules.nix-ld
       inputs.shix.nixosModules.x86_64-linux.default
       # inputs.envfs.nixosModules.envfs
       {
