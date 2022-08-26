@@ -14,11 +14,12 @@ let
 in
 {
   base.user = "op";
+  base.email = "litchi.pi@proton.me";
   base.networking.ssh_auth_keys = [ "john" "tim" "restic_backup_ssh" ];
   base.networking.connect_wifi = [ "SFR_11EF" ];
 
   # TODO    FIXME   Doesn't work when using a custom domain name
-  base.networking.domain = "localhost";
+  base.networking.domain = "localhost"; #"orionstar.cyou";
 
   cmn.server.enable = true;
   cmn.wm.enable = false;
@@ -79,7 +80,7 @@ in
         in "${startup}";
         initScript = ''
           mkdir -p ${persowebsite.dir}
-          chown +R ${persowebsite.user} ${persowebsite.dir}
+          chown -R ${persowebsite.user} ${persowebsite.dir}
         '';
         service_user = persowebsite.user;
         wait_service = [ "postgresql.service" ];
@@ -87,4 +88,10 @@ in
       };
     };
   };
+
+  # Services to check
+  # - syncstorage-rs
+  # - ethercalc
+  # - invoceplane
+  # - vikunja 
 }
