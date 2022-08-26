@@ -6,7 +6,6 @@
 
   powerManagement.cpuFreqGovernor = "performance";
 
-  # TODO  Move as much as possible to common configurations
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
     loader = {

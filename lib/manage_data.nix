@@ -30,8 +30,6 @@ in
       ) assets
     );
 
-  # TODO Assertions on the secret strength
-  #   Add a bypass in the options
   set_secret = user: path: { group ? user, permissions ? "0400" }: {
     source = get_data_path (["secrets"] ++ path);
     dest = "/run/nixos-secrets/${builtins.concatStringsSep "/" path}";

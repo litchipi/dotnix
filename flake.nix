@@ -1,6 +1,4 @@
 {
-  # TODO  Write comments everywhere
-
   description = "NixOs config builder";
 
   inputs = {

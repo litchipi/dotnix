@@ -87,19 +87,6 @@ libconf.create_common_confs [
     };
   })
 
-
-  # TODO  Nickel dev
-  #Plug 'nickel-lang/vim-nickel'
-
-    # "nickel_ls": {
-    #   "command": "nls",
-    #   "filetypes": [
-    #     "nickel",
-    #     "ncl"
-    #   ]
-    # }
-
-  # TODO Complete haskell config
   (lang_profile {
     name = "haskell";
     coc-settings.languageserver.haskell = {
@@ -110,7 +97,6 @@ libconf.create_common_confs [
     };
   })
 
-  # TODO Complete Nix dev
   (lang_profile {
     name = "nix";
     add_pkgs = with pkgs; [
