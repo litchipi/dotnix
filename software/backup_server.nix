@@ -1,7 +1,6 @@
 { config, lib, pkgs, ... }:
 {
   base.user = "op";
-  base.hostname = "backup_server";
   base.networking.ssh_auth_keys = [ "john" "tim" ];
 
   # TODO  Adapt this configuration to new restic service definition

@@ -1,4 +1,6 @@
 { config, lib, pkgs, ... }: {
+  base.hostname = "sparta";
+
   # 5Gib swapfile
   base.disks.add_swapfile = 5000;
 

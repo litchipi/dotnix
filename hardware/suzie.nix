@@ -1,6 +1,7 @@
 { config, lib, pkgs, ...}: let
   libdata = import ../lib/manage_data.nix { inherit config pkgs lib; };
 in {
+  base.hostname = "suzie";
   base.disks.add_swapfile = 8000;
   base.secrets.store."suzie_storage_keyfile" = libdata.set_secret config.base.user [ "keys" "suzie" "storage" ] { group = "users"; };
 

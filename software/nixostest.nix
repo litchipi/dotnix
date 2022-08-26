@@ -3,9 +3,6 @@
   # The name of the main user of the system
   base.user = "nx";
 
-  # The system hostname
-  base.hostname = "nixostest";
-
   # What SSH key to allow for remote login
   #   (has to be a file in data/ssh/pubkeys/<name>.pub)
   base.networking.ssh_auth_keys = ["john" "tim"];

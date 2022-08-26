@@ -14,7 +14,6 @@ let
 in
 {
   base.user = "op";
-  base.hostname = "${company_name}";
   base.networking.ssh_auth_keys = [ "john" "tim" "restic_backup_ssh" ];
   base.networking.connect_wifi = [ "SFR_11EF" ];
 

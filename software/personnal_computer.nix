@@ -3,7 +3,6 @@
   libcolors = import ../lib/colors.nix {inherit config lib pkgs;};
 in {
   base.user = "john";
-  base.hostname = "sparta";
   base.email = "litchi.pi@proton.me";
 
   base.networking.ssh_auth_keys = [ "tim" "restic_backup_ssh" ];
