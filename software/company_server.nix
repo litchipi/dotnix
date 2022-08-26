@@ -43,6 +43,11 @@ in
     ];
   };
 
+  services.jitsi-meet = {
+    enable = true;
+    hostName = "meet.${config.base.networking.domain}";
+  };
+
   cmn.services.postgresql = {
     enable = true;
     users.${persowebsite.user} = {
