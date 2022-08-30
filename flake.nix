@@ -160,9 +160,7 @@
       inherit system;
       modules = [
         software
-        {
-          config.setup.is_nixos = true;
-        }
+        { config.setup.is_nixos = true; }
       ] ++ (if builtins.isNull hardware then [] else [hardware])
       ++ (base_modules system) ++ add_modules;
     };
@@ -203,7 +201,7 @@
     }
 
     {
-      name="backup_server";
+      name="dumbo";
       software=./software/backup_server.nix;
     }
     {
