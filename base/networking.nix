@@ -64,7 +64,15 @@ in
       extraGroups = [ "networkmanager" ];
       openssh.authorizedKeys.keys = libssh.get_authorized_keys config.base.user cfg.ssh_auth_keys;
     };
-    services.avahi.enable = true;
+
+    services.avahi = {
+        enable = true;
+        publish = {
+            enable = true;
+            workstation = true;
+            addresses = true;
+        };
+    };
 
     networking.wireless.networks = builtins.listToAttrs (
       builtins.map (cfg: { name=cfg.ssid; value={ pskRaw = cfg.passwd; }; })
