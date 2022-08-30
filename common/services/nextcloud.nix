@@ -59,18 +59,6 @@ libconf.create_common_confs ([
         default = 4006;
       };
 
-      dbport = lib.mkOption {
-        type = lib.types.int;
-        description = "Port of the Nextcloud database";
-        default = 4007;
-      };
-
-      dbhost = lib.mkOption {
-        type = lib.types.str;
-        description = "Host of the Nextcloud database";
-        default = "localhost";
-      };
-
       extra_config_script = lib.mkOption {
         type = lib.types.str;
         description = "Configuration script for the Nextcloud instance";
@@ -113,10 +101,9 @@ libconf.create_common_confs ([
       };
 
       users.users."${config.base.user}".extraGroups = [ "nextcloud" "postgres" ];
+      users.users.nextcloud.extraGroups = [ "postgres" ];
 
-      base.secrets.store = {
-        nextcloud_adminpass = nextcloud_secret "adminpass";
-      };
+      base.secrets.store.nextcloud_adminpass = nextcloud_secret "adminpass";
 
       cmn.services.postgresql.users.nextcloud = {
         databases = [ "nextcloud" ];
@@ -133,22 +120,11 @@ libconf.create_common_confs ([
         config = {
           dbtype = "pgsql";
           dbuser = "nextcloud";
-          dbhost = "/run/postgresql"; #config.services.postgresql.dataDir;
+          dbhost = "/run/postgresql:${builtins.toString config.services.postgresql.port}";
           dbname = "nextcloud";
-          adminpassFile = config.base.secrets.store.nextcloud_adminpass.dest;
           adminuser = "root";
+          adminpassFile = config.base.secrets.store.nextcloud_adminpass.dest;
         };
-      };
-
-      services.postgresql = {
-        enable = true;
-        ensureDatabases = [ "nextcloud" ];
-        ensureUsers = [
-          {
-            name = "nextcloud";
-            ensurePermissions."DATABASE nextcloud" = "ALL PRIVILEGES";
-         }
-        ];
       };
 
       # ensure that postgres is running *before* running the setup
