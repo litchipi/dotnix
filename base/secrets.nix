@@ -100,7 +100,7 @@ in {
       }) cfg.store;
     in units;
 
-    boot.postBootCommands = if cfg.encrypted_master_key then ''
+    boot.postBootCommands = (if cfg.encrypted_master_key then ''
       function decrypt_key() {
         echo "Decrypting provision key..."
 
@@ -114,9 +114,6 @@ in {
           echo "Failed to decrypt key"
           continue;
         fi
-
-        chmod 0400 ${cfg.machine_secret_key_fname}
-        chown root:root ${cfg.machine_secret_key_fname}
         echo "Success"
       done
     '' else ''
@@ -125,6 +122,10 @@ in {
         echo "Please populate key to ${cfg.machine_secret_key_fname} in order to decrypt machine secrets"
         exit 1;
       fi
+    '') + ''
+
+    chmod 0400 ${cfg.machine_secret_key_fname}
+    chown root:root ${cfg.machine_secret_key_fname}
     '';
   };
 }
