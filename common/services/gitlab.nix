@@ -10,13 +10,6 @@ libconf.create_common_confs [
   {
     name = "gitlab";
     parents = [ "services" ];
-    add_opts = {
-      redis_port = lib.mkOption {
-        type = lib.types.int;
-        description = "Port of the Redis server";
-        default = 4005;
-      };
-    };
     add_pkgs = [
       pkgs.nginx
     ];
@@ -45,17 +38,22 @@ libconf.create_common_confs [
         };
       };
 
-      services.gitlab = {
+      services.gitlab = rec {
         enable = true;
         packages.gitlab = pkgs.gitlab-ee;
+
         host = "git.${config.base.networking.domain}";
+        port = 80;
+        extraDatabaseConfig.port = config.services.postgresql.port;
+
         databasePasswordFile = config.base.secrets.store.gitlab_dbpwd.dest;
+        initialRootEmail = config.base.email;
         initialRootPasswordFile = config.base.secrets.store.gitlab_initialrootpwd.dest;
+
         # TODO Set up HTTPS with
         # https://nixos.org/manual/nixos/stable/#module-security-acme-nginx
         # https://nixos.wiki/wiki/Nginx
         https = false; #true;
-        port = cfg.redis_port;
         smtp = {
           enable = true;
           address = "smtp.${config.base.networking.domain}";
@@ -67,6 +65,7 @@ libconf.create_common_confs [
           otpFile = config.base.secrets.store.gitlab_otpFile.dest;
           jwsFile = config.base.secrets.store.gitlab_jwsFile.dest;
         };
+
         extraConfig = {
           gitlab = {
             email_from = "gitlab-no-reply@example.com";
