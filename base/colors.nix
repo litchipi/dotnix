@@ -3,63 +3,52 @@ let
   cfg = config.colors;
 
   colors = import ../lib/colors.nix {inherit config lib pkgs;};
-in
-{
-  config = {
+
+
+  palette_options = with colors; {
+    primary = mk_color_option { color={r=217; g=83; b=79;}; };
+    secondary = mk_color_option { color={r=249; g=249; b=249;}; };
+    tertiary = mk_color_option { color={r=91; g=192; b=222;}; };
+    highlight = mk_color_option { color={r=92; g=184; b=92;}; };
+    active = mk_color_option { color={r=167; g=234; b=236;}; };
+    inactive = mk_color_option { color={r=104; g=146; b=148;}; };
+    dimmed = mk_color_option { color={r=232; g=151; b=149;}; };
+    dark = mk_color_option { color={r=83; g=79; b=217;}; };
+    light = mk_color_option { color={r=251; g=238; b=191;}; };
+
+    ok = mk_color_option { color={r=151; g=240; b=148;}; style=style.bold; };
+    warn = mk_color_option { color={r=245; g=207; b=91;}; style=style.bold; };
+    bad = mk_color_option { color={r=245; g=91; b=91;}; style=style.bold; };
   };
 
+in
+{
+  config = {};
   options.colors = {
-    primary = colors.mk_color_option {
-      description = "Primary color to use in the system";
-      value = {r=255; g=128; b=0;};
-    };
-
-    palette = lib.mkOption {
-      type = with lib.types; listOf colors.colortype;
-      description = "Palette of colors to be used in different themes";
-      default = [];
-    };
-
-    ok = colors.mk_color_option {
-      description = "Color to use when everything goes well";
-      value = {r=151; g=240; b=148;}; # #97F094
-      style = colors.style.bold;
-    };
-
-    warn = colors.mk_color_option {
-      description = "Color to use when warning the user about something";
-      value = {r=245; g=207; b=91;};  # #F5CF5B
-      style = colors.style.bold;
-    };
-
-    bad = colors.mk_color_option {
-      description = "Color to use when everything goes shit";
-      value = {r=245; g=91; b=91;};   # #F55B5B
-      style = colors.style.bold;
-    };
+    palette = palette_options;
 
     # Colors for PS1 prompt
     ps1 = {
       username = colors.mk_color_option {
         description = "Color for PS1 username";
-        value = config.colors.primary;
+        color = cfg.palette.primary;
         style = colors.style.bold;
       };
 
       wdir = colors.mk_color_option {
         description = "Color for PS1 word directory";
-        value = {r=200; g=200; b=200;};
+        color = cfg.palette.secondary;
         style = colors.style.italic;
       };
 
       gitps1 = colors.mk_color_option {
         description = "Color for PS1 git information";
-        value = colors.get_palette 0;
+        color = colors.basic.gray 120;
       };
 
       dollarsign = colors.mk_color_option {
         description = "Color for PS1 dollar sign";
-        value = colors.get_palette 3;
+        color = cfg.palette.tertiary;
         style = colors.style.bold;
       };
     };

@@ -88,7 +88,7 @@ conf_lib.create_common_confs [
         __git_complete gload _git_checkout
         
         function __gh() {
-                echo -e "${colors.fg.primary} $1:   ${colors.reset} $2"
+                echo -e "${colors.fg.palette.primary} $1:   ${colors.reset} $2"
         }
 
         function ghelp() {
@@ -214,8 +214,8 @@ conf_lib.create_common_confs [
       enable = true;
       shellAliases = {
         pingt=''ping -c 1 -W 1 ${cfg.network.pingtest_website} '' +
-          ''1> /dev/null 2> /dev/null && echo -e "${colors.fg.ok}Connected${colors.reset}" '' +
-          ''|| echo -e "${colors.fg.bad}No connection${colors.reset}" '';
+          ''1> /dev/null 2> /dev/null && echo -e "${colors.fg.palette.ok}Connected${colors.reset}" '' +
+          ''|| echo -e "${colors.fg.palette.bad}No connection${colors.reset}" '';
       };
     };
   }

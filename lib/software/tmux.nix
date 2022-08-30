@@ -1,6 +1,7 @@
 { config, lib, pkgs, ...}: let
   libcolors = import ../colors.nix {inherit config lib pkgs;};
-  
+
+  pal = config.colors.palette;
   col = c: if c == "default" then c else "#${libcolors.tohex c}";
   
   tmuxstyle = {fg ? null, bg ? null, add ? null, ...}: builtins.concatStringsSep ","
@@ -66,22 +67,50 @@ in {
   };
 
   default_theme = vars: {
-    "pane-border-style" = tmuxstyle { fg = libcolors.get_palette 2; bg = "default"; };
-    "pane-active-border-style" = tmuxstyle { fg = config.colors.primary; bg = "default"; add = "bold";};
-    "message-style" = tmuxstyle { fg = libcolors.get_palette 0; };
+    "pane-border-style" = tmuxstyle { fg = pal.secondary; bg = "default"; };
+    "pane-active-border-style" = tmuxstyle { fg = pal.primary; bg = "default"; add = "bold";};
+    "message-style" = tmuxstyle { fg = pal.primary; };
 
-    "mode-style" = tmuxstyle { bg = libcolors.get_palette 1; fg = libcolors.basic.black; };
+    "mode-style" = tmuxstyle { bg = pal.dark; fg = libcolors.basic.white; };
 
     "status-style" = tmuxstyle { bg = "default"; };
     "status-left" = sidebar { char = ""; left = true;} [
-      { bg = config.colors.primary; fg = libcolors.basic.black; txt = vars.status.left.left; add="bold";}
-      { bg = libcolors.get_palette 1; fg = libcolors.get_palette 4; txt = vars.status.left.mid;}
-      { bg = libcolors.basic.gray 40; fg = libcolors.get_palette 3; txt = vars.status.left.right; add="nobold";}
+      {
+        bg = pal.primary;
+        fg = libcolors.contrast_text pal.primary;
+        txt = vars.status.left.left;
+        add="bold";
+      }
+      {
+        bg = pal.secondary;
+        fg = libcolors.contrast_text pal.secondary;
+        txt = vars.status.left.mid;
+      }
+      {
+        bg = libcolors.basic.gray 40;
+        fg = pal.tertiary;
+        txt = vars.status.left.right;
+        add="nobold";
+      }
     ];
     "status-right" = sidebar {char = ""; left=false;} [
-      { bg = libcolors.basic.gray 40; fg = libcolors.get_palette 3; txt = vars.status.right.left; add="nobold";}
-      { bg = libcolors.get_palette 1; fg = libcolors.get_palette 4; txt = vars.status.right.mid; add="bold";}
-      { bg = config.colors.primary; fg = libcolors.basic.black; txt = vars.status.right.right; }
+      {
+        bg = libcolors.basic.gray 40;
+        fg = pal.tertiary;
+        txt = vars.status.right.left;
+        add="nobold";
+      }
+      {
+        bg = pal.secondary;
+        fg = libcolors.contrast_text pal.secondary;
+        txt = vars.status.right.mid;
+        add="bold";
+      }
+      {
+        bg = pal.primary;
+        fg = libcolors.contrast_text pal.primary;
+        txt = vars.status.right.right;
+      }
     ];
 
     "status-interval" = vars.status.interval;
@@ -90,7 +119,7 @@ in {
     "status-right-length" = vars.status.right.length;
 
     "window-status-current-format" = tmuxfmts [
-      { txt = " "; bg="default"; fg = config.colors.primary; add="nobold,noitalics"; }
+      { txt = " "; bg="default"; fg = pal.primary; add="nobold,noitalics"; }
       { txt = "#W"; add = "bold"; }
       { txt = " "; add="nobold"; }
     ];
@@ -101,10 +130,12 @@ in {
 
     "window-status-style" = tmuxstyle {
       bg="default";
-      fg = libcolors.get_palette 6;
+      fg = pal.primary;
       add="nobold,italics";
     };
-    "window-status-activity-style" = tmuxstyle { fg = libcolors.get_palette 1; add = "bold,noitalics"; };
-    "window-status-bell-style" = tmuxstyle { fg = libcolors.get_palette 1; add = "reverse,bold,noitalics"; };
+    "window-status-activity-style" = tmuxstyle {
+      fg = pal.active; add = "bold,noitalics"; };
+    "window-status-bell-style" = tmuxstyle {
+      fg = pal.active; add = "reverse,bold,noitalics"; };
   };
 }
