@@ -335,14 +335,18 @@
         "flake-utils": "flake-utils_5"
       },
       "locked": {
-        "lastModified": 1660899035,
-        "narHash": "sha256-LEat2tutRIN3NYOwhT7fLYinSjxvtCLHkfBnrXFVZ2A=",
-        "path": "/home/tim/Projects/perso/webdev_portfolio/personnal_website",
-        "type": "path"
+        "lastModified": 1660899034,
+        "narHash": "sha256-Fy8FLVqoWn8QYp1JtLCMdMjZZmXNo1tfNne4rHuk+SM=",
+        "ref": "dev",
+        "rev": "1b3387df3daf6a73fd8d907d5737be52abc686fb",
+        "revCount": 74,
+        "type": "git",
+        "url": "file:///home/op/webdev_portfolio_personnal_website"
       },
       "original": {
-        "path": "/home/tim/Projects/perso/webdev_portfolio/personnal_website",
-        "type": "path"
+        "ref": "dev",
+        "type": "git",
+        "url": "file:///home/op/webdev_portfolio_personnal_website"
       }
     },
     "root": {

@@ -19,8 +19,11 @@ in
   base.networking.ssh_auth_keys = [ "john@sparta" "tim@diamond" ];
   base.networking.connect_wifi = [ "SFR_11EF" ];
 
-  # TODO    FIXME   Doesn't work when using a custom domain name
-  base.networking.domain = "localhost"; #"orionstar.cyou";
+  base.networking.domain = "orionstar.cyou";
+
+  base.add_pkgs = with pkgs; [
+    htop
+  ];
 
   cmn.server.enable = true;
   cmn.wm.enable = false;
@@ -30,6 +33,7 @@ in
   cmn.services.nextcloud = {
     enable = true;
 
+    # TODO      FIXME   Theme doesn't load
     theme = {
       name = company_name;
       logo = libnc.theme "logo.svg";
@@ -46,12 +50,13 @@ in
   };
 
   services.jitsi-meet = {
-    enable = true;
+    enable = false;
     hostName = "meet.${config.base.networking.domain}";
   };
 
   cmn.services.postgresql = {
     enable = true;
+    port = 5433;
     users.${persowebsite.user} = {
       databases = [ persowebsite.dbname ];
       permissions.${persowebsite.dbname} = "ALL PRIVILEGES";
@@ -60,6 +65,8 @@ in
     };
   };
 
+  # TODO        Add an option to define what is the behaviour of the nginx server
+  #             Without any subdomain, default would be to raise "404 not found"
   cmn.services.web_hosting = {
     enable = true;
     websites."static".package = pkgs.litchipi.tyf_website;
@@ -81,7 +88,7 @@ in
         in "${startup}";
         initScript = ''
           mkdir -p ${persowebsite.dir}
-          chown -R ${persowebsite.user} ${persowebsite.dir}
+          chown -R ${persowebsite.user}:${persowebsite.user} ${persowebsite.dir}
         '';
         service_user = persowebsite.user;
         wait_service = [ "postgresql.service" ];
@@ -94,5 +101,5 @@ in
   # - syncstorage-rs
   # - ethercalc
   # - invoceplane
-  # - vikunja 
+  # - vikunja
 }

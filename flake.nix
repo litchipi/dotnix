@@ -37,7 +37,7 @@
     };
 
     persowebsite = {
-      url = "path:/home/tim/Projects/perso/webdev_portfolio/personnal_website";
+      url = "/home/op/webdev_portfolio_personnal_website?ref=dev";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -199,7 +199,7 @@
     }
 
     {
-      name="tyf";
+      name="suzie";
       software=./software/company_server.nix;
       hardware=./hardware/suzie.nix;
     }
