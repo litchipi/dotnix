@@ -86,9 +86,18 @@ libconf.create_common_confs [
 
     # TODO  Asserts that applications and websites do not overlap subdomain
     cfg = {
+      networking.firewall.allowedTCPPorts = [ 80 443 ];
       boot.postBootCommands = builtins.concatStringsSep "\n" (lib.attrsets.mapAttrsToList
         (_: app: app.initScript) cfg.applications
       );
+
+      users.extraUsers = lib.attrsets.mapAttrs' (_: app: {
+        name = app.service_user;
+        value = {
+          isSystemUser = true;
+          group = app.service_user;
+        };
+      }) cfg.applications;
 
       services.nginx = {
         enable = true;
