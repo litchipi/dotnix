@@ -112,6 +112,7 @@ in
 
       users."${cfg.user}" = {
         isNormalUser = true;
+        group = cfg.user;
         extraGroups = [ "wheel" ] ++ cfg.extraGroups;
         password = libdata.plain_secrets.logins."${cfg.user}_${cfg.hostname}";
       };

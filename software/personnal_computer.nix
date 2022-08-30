@@ -121,12 +121,13 @@ in {
     gdrive.enable = true;
     resticConfig = {
       pruneOpts = [
+        "--keep-daily 6"
         "--keep-weekly 4"
         "--keep-monthly 15"
         "--keep-yearly 50"
       ];
       timerConfig = {
-        OnCalendar="00/4:00";
+        OnCalendar="00/1:00";
       };
     };
   };
