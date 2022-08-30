@@ -63,6 +63,7 @@ libconf.create_common_confs [
       inlayHints.refreshOnInsertMode = true;
       cargo.loadOutDirsFromCheck = true;
       procMacro.enable = true;
+      serverPath = pkgs.rust-analyzer;
     };
     shellAliases = {
       cargo2nix = "nix run github:cargo2nix/cargo2nix --";

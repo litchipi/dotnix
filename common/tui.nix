@@ -169,6 +169,7 @@ libconf.create_common_confs [
           vim-latex-live-preview
           vim-plug
           nvim-colorizer-lua
+          vim-better-whitespace
 
           # Theme
           vim-airline

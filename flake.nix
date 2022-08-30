@@ -77,6 +77,8 @@
         pkgs_unstable.protonvpn-cli
         pkgs_unstable.gitFull
         pkgs_unstable.neovim
+        pkgs_unstable.rust-analyzer
+        pkgs_unstable.vimPlugins.coc-rust-analyzer
       ];
     in import nixpkgs {
       overlays = [
