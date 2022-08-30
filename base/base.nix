@@ -108,7 +108,7 @@ in
     users = {
       groups = lib.mkMerge (builtins.map (group:
         lib.attrsets.setAttrByPath [ group ] {}
-      ) cfg.extraGroups);
+      ) ([cfg.user] ++ cfg.extraGroups));
 
       users."${cfg.user}" = {
         isNormalUser = true;
