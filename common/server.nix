@@ -8,7 +8,6 @@ conf_lib.create_common_confs [
     name = "server";
     minimal.cli = true;
     cfg = {
-      base.networking.ssh = true;
       base.networking.vm_forward_ports = {
         ssh = { from = "host"; host.port = 40022; guest.port = 22;};
       };

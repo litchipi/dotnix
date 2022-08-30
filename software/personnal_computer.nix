@@ -5,7 +5,7 @@ in {
   base.user = "john";
   base.email = "litchi.pi@proton.me";
 
-  base.networking.ssh_auth_keys = [ "tim" "restic_backup_ssh" ];
+  base.networking.ssh_auth_keys = [ "tim@diamond" ];
   base.create_user_dirs = [ "work" "learn" ];
   base.networking.connect_wifi = [
     "SFR-a0e0"

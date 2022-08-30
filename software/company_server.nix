@@ -15,7 +15,8 @@ in
 {
   base.user = "op";
   base.email = "litchi.pi@proton.me";
-  base.networking.ssh_auth_keys = [ "john" "tim" "restic_backup_ssh" ];
+  # TODO  Add backup server once ready
+  base.networking.ssh_auth_keys = [ "john@sparta" "tim@diamond" ];
   base.networking.connect_wifi = [ "SFR_11EF" ];
 
   # TODO    FIXME   Doesn't work when using a custom domain name

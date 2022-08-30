@@ -18,12 +18,6 @@ in
       description = "SSH authorizedKeys to add for the base user of this machine";
     };
 
-    ssh = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Wether to setup OpenSSH or not";
-    };
-
     domain = lib.mkOption {
       type = lib.types.str;
       description = "Domain name resolving to the IP of this machine";
@@ -44,7 +38,16 @@ in
     };
   };
 
-  config = {
+  config = let
+    ssh_ident = "${config.base.user}@${config.base.hostname}";
+    ssh_privk_secret_k = "${ssh_ident}_ssh_privk";
+  in {
+    base.secrets.store.${ssh_privk_secret_k} = libdata.set_secret config.base.user ["keys" config.base.hostname "ssh_${config.base.user}_privk"] {};
+    boot.postBootCommands = ''
+        ln -s ${config.base.secrets.store.${ssh_privk_secret_k}.dest} /home/${config.base.user}/.ssh/id_rsa
+    '';
+    base.home_cfg.home.file.".ssh/id_rsa.pub".source = libdata.get_data_path ["ssh_pubkeys" "${ssh_ident}.pub"];
+
     networking = {
       firewall.enable = true;
 
@@ -89,7 +92,7 @@ in
       blockSocial = lib.mkDefault false;
     };
 
-    services.openssh = lib.mkIf config.base.networking.ssh {
+    services.openssh = {
       enable = true;
       passwordAuthentication = false;
       permitRootLogin = lib.mkForce "no";
