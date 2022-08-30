@@ -158,7 +158,7 @@
       '';
     };
 
-    build_machine_nixoscfg = { name, software, hardware ? null, add_modules, ...}:
+    build_machine_nixoscfg = { name, software, hardware ? null, add_modules ? [], ...}:
     system: nixpkgs.lib.nixosSystem {
       pkgs = pkgsForSystem system;
       inherit system;
@@ -175,21 +175,21 @@
           name = machine.name;
           value = build_machine_deriv machine system;
         }) machines
-      )));
+      ))) // {
+          nixosConfigurations = builtins.listToAttrs (
+            builtins.map (machine: {
+              name = machine.name;
+              value = build_machine_nixoscfg machine system;
+            }) machines
+          );
+      };
 
-      apps = (builtins.listToAttrs (
+      apps = builtins.listToAttrs (
         (builtins.map (machine: rec {
           name = machine.name;
           value = build_machine_scripts machine system;
         }) machines
-      )));
-
-      nixosConfigurations = (builtins.listToAttrs (
-        (builtins.map (machine: rec {
-          name = machine.name;
-          value = build_machine_nixoscfg machine system;
-        }) (builtins.filter (m: ! builtins.isNull m.hardware) machines)
-      )));
+      ));
     };
 
   in inputs.flake-utils.lib.eachDefaultSystem (system: declare_machines system [
@@ -224,6 +224,5 @@
     #     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
     #   ];
     # }
-
   ]);
 }
