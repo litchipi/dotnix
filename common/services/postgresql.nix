@@ -55,7 +55,7 @@ libconf.create_common_confs [
     cfg = {
       boot.postBootCommands = ''
         mkdir -p ${cfg.dir}
-        chown -R postgres ${cfg.dir}
+        chown -R postgres:postgres ${cfg.dir}
       '';
 
       services.postgresql = {
