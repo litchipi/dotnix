@@ -77,4 +77,32 @@ libconf.create_common_confs [
       };
     };
   }
+
+  {
+    name = "restic_backup";
+    parents = ["services", "gitlab"];
+    add_opts = {
+      repo_path = lib.mkOption {
+        type = lib.types.str;
+        description = "Path of the restic repo on the disk";
+        default = "/var/userbackup/gitlab/";
+      };
+      timerConfig = lib.mkOption {
+        type = lib.attrs;
+        description = "Timer configuration in the format of systemd.time";
+        default = { OnCalendar = "daily"; };
+      };
+      gdrive = lib.types.submodule {
+        options.enable = lib.mkEnableOption { description = "Enable google drive backup" };
+        options.rcloneConfigFile = lib.mkOption {
+          type = lib.types.str;
+          description = "Path to the Rclone config file";
+        };
+      };
+    };
+    cfg = {
+      # TODO  Set up systemd service that backups gitlab data into a restic repo on disk
+      #   Then (if set) upload everything to google drive via rclone
+    };
+  }
 ]
