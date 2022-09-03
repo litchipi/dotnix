@@ -139,10 +139,10 @@ libconf.create_common_confs [
         default = {};
       };
 
-      pathsFromFile = lib.mkOption {
+      userbackup_dir = lib.mkOption {
         type = lib.types.str;
         description = "File to read to get the paths to save";
-        default = "/var/userbackup/backup_paths";
+        default = "/var/userbackup/";
       };
     };
     home_cfg.programs.bash.shellAliases = let
@@ -154,20 +154,20 @@ libconf.create_common_confs [
     home_cfg.programs.bash.initExtra = ''
       function addbackup() {
         fname=$(realpath $1)
-        if ! grep "$fname" ${cfg.to_remote.pathsFromFile} > /dev/null; then
-          echo "$fname" >> ${cfg.to_remote.pathsFromFile}
+        if ! grep "$fname" ${cfg.to_remote.userbackup_dir}/backup_paths > /dev/null; then
+          echo "$fname" >> ${cfg.to_remote.userbackup_dir}/backup_paths
         fi
       }
     '';
     cfg = {
       base.secrets.store.restic_password = restic_secret "password";
       boot.postBootCommands = ''
-        mkdir -p ${cfg.to_remote.pathsFromFile}
-        chown -R ${config.base.user}:${config.base.user} ${cfg.to_remote.pathsFromFile}
+        mkdir -p ${cfg.to_remote.userbackup_dir}
+        chown -R ${config.base.user}:${config.base.user} ${cfg.to_remote.userbackup_dir}
       '';
       services.restic.backups.${config.base.hostname} = {
         initialize = true;
-        dynamicFilesFrom = "cat ${cfg.to_remote.pathsFromFile}";
+        dynamicFilesFrom = "cat ${cfg.to_remote.userbackup_dir}/backup_paths";
         passwordFile = config.base.secrets.store.restic_password.dest;
         timerConfig.OnCalendar = "daily";
       } // cfg.to_remote.resticConfig;
