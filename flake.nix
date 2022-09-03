@@ -72,21 +72,27 @@
       );
 
     # Prepare the nixpkgs for a specific system;
+    common_overlays = [
+      inputs.rust-overlay.overlays.default
+      (prev: final: (import ./overlays/overlays.nix final))
+    ];
+
+    pkgs_unstable = system: import nixpkgs_unstable {
+      inherit system;
+      config.allowUnfree = true;
+      overlays = common_overlays;
+    };
+
     pkgsForSystem = system: let
-      pkgs_unstable = import nixpkgs_unstable {
-        inherit system;
-      };
+      unst = pkgs_unstable system;
       packages_on_unstable = [
-        pkgs_unstable.protonvpn-cli
-        pkgs_unstable.gitFull
-        pkgs_unstable.neovim
-        pkgs_unstable.rust-analyzer
-        pkgs_unstable.vimPlugins.coc-rust-analyzer
+        unst.protonvpn-cli
+        unst.gitFull
+        unst.neovim
+        unst.rust-analyzer
       ];
     in import nixpkgs {
-      overlays = [
-        inputs.rust-overlay.overlay
-        (prev: final: (import ./overlays/overlays.nix final))
+      overlays = common_overlays ++ [
         (prev: final: builtins.listToAttrs (builtins.map (pkg: {
           name = pkg.name;
           value = pkg;
@@ -114,6 +120,7 @@
       {
         _module.args = {
           inherit inputs system;
+          pkgs_unstable = pkgs_unstable system;
         };
       }
     ];
