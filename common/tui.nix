@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, pkgs_unstable, ... }:
 let
   libconf = import ../lib/commonconf.nix {inherit config lib pkgs;};
   libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
@@ -79,15 +79,9 @@ libconf.create_common_confs [
     ];
     add_opts = {
       add_plugins = lib.mkOption {
-        type = with lib.types; listOf str;
+        type = with lib.types; listOf package;
         default = [];
         description = "List of plugins to add to the configuration";
-      };
-
-      coc-plugins = lib.mkOption {
-        type = with lib.types; listOf str;
-        default = [];
-        description = "Plugins to install for coc-nvim";
       };
 
       vimcfg = lib.mkOption {
@@ -120,7 +114,7 @@ libconf.create_common_confs [
 
         coc = {
           enable = true;
-          package = pkgs.vimUtils.buildVimPluginFrom2Nix {
+          package = pkgs_unstable.vimUtils.buildVimPluginFrom2Nix {
             pname = "coc.nvim";
             version = "2022-05-21";
             src = pkgs.fetchFromGitHub {
@@ -181,7 +175,7 @@ libconf.create_common_confs [
           coc-lists
           coc-vimtex
           coc-markdownlint
-        ];
+        ] ++ cfg.neovim.add_plugins;
 
         extraConfig = builtins.concatStringsSep "\n" ([
           "call plug#begin()"

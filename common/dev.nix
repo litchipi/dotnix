@@ -1,20 +1,31 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, pkgs_unstable, ... }:
 let
   libconf = import ../lib/commonconf.nix {inherit config lib pkgs;};
   libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.software.dev;
 
-  lang_profile = {name, initExtra ? "", shellAliases ? {}, add_pkgs ? [], vimplugs ? [], coc-settings ? {}, vimcfg ? ""}:
+  lang_profile = {
+    name,
+    initExtra ? "",
+    shellAliases ? {},
+    add_pkgs ? [],
+    vimplugs ? [],
+    coc-settings ? {},
+    vimcfg ? ""
+  }:
     {
       inherit name add_pkgs;
       parents = ["software" "dev"];
       home_cfg.programs.bash = {
         inherit initExtra shellAliases;
       };
-      cfg.cmn.software.tui.neovim.vimcfg = [
-        (libdata.read_data_else_empty ["config" "nvim" "${name}.vim"])
-      ] ++ [vimcfg];
+      cfg.cmn.software.tui.neovim = {
+        vimcfg = [
+          (libdata.read_data_else_empty ["config" "nvim" "${name}.vim"])
+        ] ++ [vimcfg];
+        add_plugins = vimplugs;
+      };
       home_cfg.programs.neovim = {
         plugins = vimplugs;
         coc.settings = coc-settings;
@@ -44,17 +55,15 @@ libconf.create_common_confs [
 
   (lang_profile {
     name = "rust";
-    add_pkgs = with pkgs; [
+    add_pkgs = with pkgs_unstable; [
+      gcc
       (rust-bin.stable.latest.default.override {
         extensions = [ "rust-src" ];
       })
-      rust-analyzer
-      gcc
-
       cargo-watch
       clippy
     ];
-    vimplugs = with pkgs.vimPlugins; [
+    vimplugs = with pkgs_unstable.vimPlugins; [
       rust-vim
       coc-rust-analyzer
     ];
@@ -63,7 +72,7 @@ libconf.create_common_confs [
       inlayHints.refreshOnInsertMode = true;
       cargo.loadOutDirsFromCheck = true;
       procMacro.enable = true;
-      serverPath = pkgs.rust-analyzer;
+      serverPath = "${pkgs_unstable.rust-analyzer}/bin/rust-analyzer";
     };
     shellAliases = {
       cargo2nix = "nix run github:cargo2nix/cargo2nix --";
@@ -99,10 +108,10 @@ libconf.create_common_confs [
 
   (lang_profile {
     name = "nix";
-    add_pkgs = with pkgs; [
+    add_pkgs = with pkgs_unstable; [
       rnix-lsp
     ];
-    vimplugs = with pkgs.vimPlugins; [
+    vimplugs = with pkgs_unstable.vimPlugins; [
       vim-nix
     ];
     coc-settings.languageserver.nix = {
