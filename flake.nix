@@ -37,7 +37,7 @@
     };
 
     persowebsite = {
-      url = "/home/op/webdev_portfolio_personnal_website?ref=dev";
+      url = "git+ssh://gitlab@git.orionstar.cyou/litchi.pi/dotnix.git?ref=main";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
