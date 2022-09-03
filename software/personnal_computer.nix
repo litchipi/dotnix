@@ -15,15 +15,15 @@ in {
   networking.firewall.allowedTCPPorts = [ 4444 4445 4446 4447 4448 ];
 
   colors.palette = {
-    primary = libcolors.fromhex "b967ff";
-    secondary = libcolors.fromhex "01cdfe";
-    tertiary = libcolors.fromhex "05ffa1";
-    highlight = libcolors.fromhex "DD25E9";
-    dark = libcolors.fromhex "4A1D48";
-    light = libcolors.fromhex "FBEEBF";
-    active = libcolors.fromhex "85E9FF";
-    inactive = libcolors.fromhex "85B2BC";
-    dimmed = libcolors.fromhex "AB7776";
+    primary = libcolors.fromhex "#b967ff";
+    secondary = libcolors.fromhex "#01cdfe";
+    tertiary = libcolors.fromhex "#05ffa1";
+    highlight = libcolors.fromhex "#DD25E9";
+    dark = libcolors.fromhex "#4A1D48";
+    light = libcolors.fromhex "#FBEEBF";
+    active = libcolors.fromhex "#85E9FF";
+    inactive = libcolors.fromhex "#85B2BC";
+    dimmed = libcolors.fromhex "#AB7776";
   };
 
   console.font = "Monaco";
