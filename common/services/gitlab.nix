@@ -29,6 +29,7 @@ libconf.create_common_confs [
       '';
 
       users.users."${config.base.user}".extraGroups = [ "gitlab" ];
+      users.extraUsers.gitlab.extraGroups = [ "nginx" ];
 
       base.secrets.store = {
         gitlab_secretFile = gitlab_secret "secretfile";
@@ -44,8 +45,12 @@ libconf.create_common_confs [
         virtualHosts."git.${config.base.networking.domain}" = {
           locations."/".proxyPass = "http://unix:/run/gitlab/gitlab-workhorse.socket";
         };
+        virtualHosts."git.localhost" = {
+          locations."/".proxyPass = "http://unix:/run/gitlab/gitlab-workhorse.socket";
+        };
       };
 
+      # TODO  Modify the default database port to postgresql in nixpkgs (upstream)
       services.gitlab = rec {
         enable = true;
         packages.gitlab = pkgs.gitlab-ee;
@@ -62,11 +67,7 @@ libconf.create_common_confs [
         # https://nixos.org/manual/nixos/stable/#module-security-acme-nginx
         # https://nixos.wiki/wiki/Nginx
         https = false; #true;
-        smtp = {
-          enable = true;
-          address = "smtp.${config.base.networking.domain}";
-          port = 25;
-        };
+        smtp.enable = true;
         secrets = {
           dbFile = config.base.secrets.store.gitlab_dbFile.dest;
           secretFile = config.base.secrets.store.gitlab_secretFile.dest;
