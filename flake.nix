@@ -2,7 +2,7 @@
   description = "NixOs config builder";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/22.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-22.05";
     nixpkgs_unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     flake-utils = {
@@ -30,14 +30,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-
     shix = {
       url = "github:litchipi/shix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     persowebsite = {
-      url = "git+ssh://gitlab@git.orionstar.cyou/litchi.pi/dotnix.git?ref=main";
+      url = "git+ssh://gitlab@git.orionstar.cyou/litchi.pi/personnal_website.git?ref=main";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
