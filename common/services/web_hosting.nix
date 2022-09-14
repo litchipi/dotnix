@@ -91,6 +91,13 @@ libconf.create_common_confs [
         (_: app: app.initScript) cfg.applications
       );
 
+      networking.extraHosts = builtins.concatStringsSep "\n" ((
+            lib.attrsets.mapAttrsToList (sub: _: "localhost ${sub}.${config.base.networking.domain}")
+        cfg.applications) ++ (
+            lib.attrsets.mapAttrsToList (sub: _: "localhost ${sub}.${config.base.networking.domain}")
+        cfg.websites)
+      );
+
       users.extraUsers = lib.attrsets.mapAttrs' (_: app: {
         name = app.service_user;
         value = {

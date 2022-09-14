@@ -103,6 +103,10 @@ libconf.create_common_confs ([
         https= { from = "host"; host.port = 40443; guest.port = 443; };
       };
 
+      networking.extraHosts = ''
+        127.0.0.1 ${config.services.nextcloud.hostName}
+      '';
+
       users.users."${config.base.user}".extraGroups = [ "nextcloud" "postgres" ];
       users.users.nextcloud.extraGroups = [ "postgres" ];
 

@@ -28,6 +28,10 @@ libconf.create_common_confs [
       networking.firewall.allowedTCPPorts = [ 80 443 8448 ];
       users.users."${config.base.user}".extraGroups = [ "conduit" ];
       
+      networking.extraHosts = ''
+        127.0.0.1 ${fqdn}
+      '';
+
       cmn.services.nextcloud.riotchat.enable = true;
 
       services.matrix-conduit = {

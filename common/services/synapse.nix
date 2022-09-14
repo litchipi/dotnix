@@ -35,6 +35,10 @@ libconf.create_common_confs [
       networking.firewall.allowedTCPPorts = [ 80 443 ];
       users.users."${config.base.user}".extraGroups = [ "synapse" "postgres" ];
 
+      networking.extraHosts = ''
+        127.0.0.1 ${fqdn}
+      '';
+
       cmn.services.nextcloud.riotchat.enable = true;
 
       services.postgresql.enable = true;
