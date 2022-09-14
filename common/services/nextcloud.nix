@@ -118,6 +118,10 @@ libconf.create_common_confs ([
         auth_method = "trust";
       };
 
+      cmn.services.restic.global.backup_paths = [
+        "/var/nextcloud/data"
+      ];
+
       services.nextcloud = {
         enable = true;
         package = pkgs.nextcloud24;

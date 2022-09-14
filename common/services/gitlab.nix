@@ -82,35 +82,64 @@ libconf.create_common_confs [
             default_projects_features = { builds = false; };
           };
         };
+        backup.path = "/var/gitlab/backup/";
       };
-    };
-  }
 
-  {
-    name = "restic_backup";
-    parents = ["services", "gitlab"];
-    add_opts = {
-      repo_path = lib.mkOption {
-        type = lib.types.str;
-        description = "Path of the restic repo on the disk";
-        default = "/var/userbackup/gitlab/";
+      cmn.services.restic.global = {
+        prepare_script = let 
+          gitlab_unpack_backup = pkgs.writeShellScript "gitlab_unpack_backup" ''
+            extract_part() {
+                name=$1
+                echo "Extracting part \"$name\""
+                mkdir -p ./$name
+                tar xf "$name.tar" -C ./$name
+                rm "$name.tar"
+            }
+
+            if [ $# -ne 2 ]; then
+                echo "Usage: $0 <gitlab backup archive path> <output directory>"
+                exit 1;
+            fi
+
+            SOURCE=$1
+            OUTPUT=$2
+
+            echo "Extract the archive"
+            rm -rf $OUTPUT && mkdir $OUTPUT
+            tar xf $SOURCE --directory $OUTPUT
+
+            echo "Decompress the parts"
+            find $OUTPUT -name "*.gz" | xargs gunzip
+            pushd $OUTPUT 1>/dev/null
+
+            extract_part "artifacts"
+            extract_part "builds"
+            extract_part "lfs"
+            extract_part "packages"
+            extract_part "pages"
+            extract_part "terraform_state"
+            extract_part "uploads"
+            popd 1>/dev/null
+            echo "Done"
+          '';
+        in [''
+          export PATH="/run/current-system/sw/bin/"
+          export BACKUP=restic
+          export RAILS_ENV=production
+          export CRON=1
+          mkdir -p /var/gitlab/backup
+          gitlab-rake gitlab:backup:create
+
+          cd /var/gitlab/backup
+          ${gitlab_unpack_backup} ./restic_gitlab_backup.tar ./unpacked
+          rm ./restic_gitlab_backup.tar
+        ''];
+        cleanup_script = [''
+          rm -r /var/gitlab/backup/unpacked
+        ''];
+        backup_paths = [ "/var/gitlab/backup/unpacked" ];
+        groups = ["gitlab"];
       };
-      timerConfig = lib.mkOption {
-        type = lib.attrs;
-        description = "Timer configuration in the format of systemd.time";
-        default = { OnCalendar = "daily"; };
-      };
-      gdrive = lib.types.submodule {
-        options.enable = lib.mkEnableOption { description = "Enable google drive backup" };
-        options.rcloneConfigFile = lib.mkOption {
-          type = lib.types.str;
-          description = "Path to the Rclone config file";
-        };
-      };
-    };
-    cfg = {
-      # TODO  Set up systemd service that backups gitlab data into a restic repo on disk
-      #   Then (if set) upload everything to google drive via rclone
     };
   }
 ]

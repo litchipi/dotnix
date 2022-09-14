@@ -29,6 +29,12 @@ in
   cmn.wm.enable = false;
 
   cmn.services.gitlab.enable = true;
+  cmn.services.restic.global = {
+    enable = true;
+    gdrive = true;
+    timerConfig.OnCalendar = "05/14:00";
+    backup_paths = [ "/home/${config.base.user}/" ];
+  };
   cmn.services.conduit.enable = true;
   cmn.services.nextcloud = {
     enable = true;

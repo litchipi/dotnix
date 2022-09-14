@@ -132,19 +132,92 @@ libconf.create_common_confs [
   }
 
   {
-    name = "to_remote";
-    parents = [ "services" "restic" ];
-    add_opts = {
-      resticConfig = lib.mkOption {
-        type = lib.types.attrs;
-        description = "Attrset of options to pass to the restic service";
-        default = {};
+    name = "global";
+    parents = ["services" "restic"];
+    add_opts = with lib.types; {
+      groups = lib.mkOption {
+        type = listOf str;
+        default = [];
+        description = "Groups to add the backup user to";
       };
+      paths = lib.mkOption {
+        type = listOf str;
+        default = [];
+        description = "Paths to save in the repository";
+      };
+      prepare_script = lib.mkOption {
+        type = listOf str;
+        default = [];
+        description = "Scripts to execute before the backup process";
+      };
+      cleanup_script = lib.mkOption {
+        type = listOf str;
+        default = [];
+        description = "Scripts to execute after the backup process";
+      };
+      timerConfig = lib.mkOption {
+        type = attrsOf anything;
+        description = "Timer configuration to set for the backup";
+        default = { OnCalendar = "daily"; };
+      };
+      gdrive = lib.mkOption {
+        type = bool;
+        description = "Wether to enable google drive remote backup";
+        default = false;
+      };
+      repo_path = lib.mkOption {
+        type = str;
+        description = "Path to the restic repository";
+        default = "/var/backup/restic";
+      };
+      backup_paths = lib.mkOption {
+        type = listOf str;
+        description = "Paths to backup on the repository";
+        default = [];
+      };
+      forget_opts = lib.mkOption {
+        type = listOf str;
+        description = "Options of snapshots forget";
+        default = ["-y 10" "-m 12" "-w 4" "-d 30" "-l 5"];
+      };
+      dynamicFilesListPath = lib.mkOption {
+        type = str;
+        default = "/var/backup/paths";
+        description = "Path to the file containing all paths to backup";
+      };
+    };
+    cfg = {
+      users.extraUsers.restic = {
+        isSystemUser = true;
+        extraGroups = cfg.global.groups;
+        group = "restic";
+      };
+    users.extraGroups = { restic = {}; };
+      base.secrets.store.restic_global_backup_repo_pwd = restic_secret "password";
+      base.secrets.store.restic_global_backup_gdrive_conf = lib.mkIf cfg.global.gdrive (restic_secret "gdrive.conf");
 
-      userbackup_dir = lib.mkOption {
-        type = lib.types.str;
-        description = "File to read to get the paths to save";
-        default = "/var/userbackup/";
+      services.restic.backups.global = {
+        initialize = true;
+        dynamicFilesFrom = "cat ${cfg.global.dynamicFilesListPath}";
+        passwordFile = config.base.secrets.store.restic_global_backup_repo_pwd.dest;
+        repository = cfg.global.repo_path;
+        timerConfig = {
+          Persistent = true;
+        } // cfg.global.timerConfig;
+        pruneOpts = cfg.global.forget_opts;
+        paths = cfg.global.backup_paths;
+        user = "restic";
+        rcloneOptions.drive-use-trash = "false";
+        rcloneConfigFile = lib.mkIf cfg.global.gdrive config.base.secrets.store.restic_global_backup_gdrive_conf.dest;
+
+        backupPrepareCommand = builtins.concatStringsSep "\n" cfg.global.prepare_script;
+        backupCleanupCommand = (if cfg.global.gdrive then ''
+          mkdir -p /tmp/rclone
+          cp ${config.base.secrets.store.restic_global_backup_gdrive_conf.dest} /tmp/rclone/gdrive.conf
+          chmod 600 -R /tmp/rclone
+          rclone -q --config /tmp/rclone/gdrive.conf sync ${cfg.global.repo_path} gdrive:${config.base.hostname}_backup
+          rm /tmp/rclone/*
+        '' else "") + "\n" + (builtins.concatStringsSep "\n" cfg.global.cleanup_script);
       };
     };
     home_cfg.programs.bash.shellAliases = let
@@ -155,41 +228,15 @@ libconf.create_common_confs [
     };
     home_cfg.programs.bash.initExtra = ''
       function addbackup() {
-        fname=$(realpath $1)
-        if ! grep "$fname" ${cfg.to_remote.userbackup_dir}/backup_paths > /dev/null; then
-          echo "$fname" >> ${cfg.to_remote.userbackup_dir}/backup_paths
-        fi
+        mkdir -p $(basename ${cfg.global.dynamicFilesListPath})
+        for file in $@; do
+          fname=$(realpath $file)
+          touch ${cfg.global.dynamicFilesListPath}
+          if ! grep "$fname" ${cfg.global.dynamicFilesListPath} > /dev/null; then
+            echo "$fname" >> ${cfg.global.dynamicFilesListPath}
+          fi
+        done
       }
     '';
-    cfg = {
-      base.secrets.store.restic_password = restic_secret "password";
-      boot.postBootCommands = ''
-        mkdir -p ${cfg.to_remote.userbackup_dir}
-        chown -R ${config.base.user}:${config.base.user} ${cfg.to_remote.userbackup_dir}
-      '';
-      services.restic.backups.${config.base.hostname} = {
-        initialize = true;
-        dynamicFilesFrom = "cat ${cfg.to_remote.userbackup_dir}/backup_paths";
-        passwordFile = config.base.secrets.store.restic_password.dest;
-        timerConfig.OnCalendar = "daily";
-      } // cfg.to_remote.resticConfig;
-    };
-  }
-
-  # TODO  Create shell alias "gdrive_mnt_lastsnp" to mount the last snapshot
-  {
-    name = "gdrive";
-    parents = ["services" "restic" "to_remote"];
-    cfg = {
-      cmn.services.restic.to_remote.enable = true;
-      base.secrets.store.restic_rclone_conf = restic_secret "gdrive.conf";
-      services.restic.backups.${config.base.hostname} = {
-        rcloneOptions = {
-          drive-use-trash = "false";
-        };
-        rcloneConfigFile = config.base.secrets.store.restic_rclone_conf.dest;
-        repository = "rclone:gdrive:restic/";
-      };
-    };
   }
 ]
