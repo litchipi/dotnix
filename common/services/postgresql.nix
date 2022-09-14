@@ -4,7 +4,6 @@ let
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.services.postgresql;
-  psql_secret = name: libdata.set_secret "psql" ["services" "psql" config.base.hostname name] {};
 
   dbuser = lib.types.submodule {
     options.databases = lib.mkOption {

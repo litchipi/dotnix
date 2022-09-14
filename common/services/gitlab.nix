@@ -4,7 +4,10 @@ let
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.services.gitlab;
-  gitlab_secret = name: libdata.set_secret "gitlab" ["services" "gitlab" config.base.hostname name] {};
+  gitlab_secret = name: libdata.set_secret {
+    user = "gitlab";
+    path = ["services" "gitlab" config.base.hostname name];
+  };
 in
 libconf.create_common_confs [
   {

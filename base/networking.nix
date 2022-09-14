@@ -42,11 +42,14 @@ in
     ssh_ident = "${config.base.user}@${config.base.hostname}";
     ssh_privk_secret_k = "${ssh_ident}_ssh_privk";
   in {
-    base.secrets.store.${ssh_privk_secret_k} = libdata.set_secret config.base.user ["keys" config.base.hostname "ssh_${config.base.user}_privk"] {};
-    boot.postBootCommands = ''
-        ln -s ${config.base.secrets.store.${ssh_privk_secret_k}.dest} /home/${config.base.user}/.ssh/id_rsa
-    '';
+    base.secrets.store.${ssh_privk_secret_k} = libdata.set_secret {
+      user = config.base.user;
+      path = ["keys" config.base.hostname "ssh_${config.base.user}_privk"];
+      symlink = "/home/${config.base.user}/.ssh/id_rsa";
+    };
     base.home_cfg.home.file.".ssh/id_rsa.pub".source = libdata.get_data_path ["ssh_pubkeys" "${ssh_ident}.pub"];
+    boot.postBootCommands = ''
+    '';
 
     networking = {
       firewall.enable = true;

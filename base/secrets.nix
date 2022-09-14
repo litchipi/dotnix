@@ -36,6 +36,12 @@ let
         type = types.str;
         description = "Permissions expressed as octal.";
       };
+
+      symlink = mkOption {
+        default = null;
+        type = types.nullOr types.str;
+        description = "Symlink to create of this secret on the filesystem";
+      };
     };
   };
 
@@ -54,7 +60,7 @@ let
     };
 
   mkService = name:
-    { source, dest, owner, group, permissions, ... }: {
+    { source, dest, owner, group, permissions, symlink, ... }: {
       path = [ pkgs.rage ];
       description = "Decrypt secret for ${name}";
       wantedBy = [ "multi-user.target" ];
@@ -71,6 +77,8 @@ let
 
         chown '${owner}':'${group}' '${dest}'
         chmod '${permissions}' '${dest}'
+
+        ${lib.strings.optionalString (!builtins.isNull symlink) "rm -f ${symlink} && ln -s ${dest} ${symlink}"}
       '';
     };
 in {

@@ -30,10 +30,10 @@ in
       ) assets
     );
 
-  set_secret = user: path: { group ? user, permissions ? "0400" }: {
+  set_secret = { user, path, group ? user, permissions ? "0400", symlink ? null }: {
     source = get_data_path (["secrets"] ++ path);
     dest = "/run/nixos-secrets/${builtins.concatStringsSep "/" path}";
     owner = user;
-    inherit group permissions;
+    inherit group permissions symlink;
   };
 }

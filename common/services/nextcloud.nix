@@ -7,7 +7,10 @@ let
 
   cfg = config.cmn.services.nextcloud;
 
-  nextcloud_secret = name: libdata.set_secret "nextcloud" ["services" "nextcloud" config.base.hostname name] {};
+  nextcloud_secret = name: libdata.set_secret {
+    user = "nextcloud";
+    path = ["services" "nextcloud" config.base.hostname name];
+  };
 
   nextcloud_apps = (lib.attrsets.mapAttrsToList (name: value:
     {

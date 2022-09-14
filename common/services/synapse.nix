@@ -9,7 +9,6 @@ let
   cfg = config.cmn.services.synapse;
 
   fqdn = "chat.${config.base.networking.domain}";
-  synapse_secret = name: libdata.set_secret "synapse" ["services" "synapse" config.base.hostname name] {};
   synapse_db_password = "synapse"; # TODO  Use secrets to handle this
 
   help_message = ''

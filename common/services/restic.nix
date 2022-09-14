@@ -5,8 +5,10 @@ let
 
   cfg = config.cmn.services.restic;
   service_name = "restic_backup_from_remote";
-  restic_secret = name: libdata.set_secret "root"
-    ["services" "restic" config.base.hostname name] {};
+  restic_secret = name: libdata.set_secret {
+    user = "restic"; 
+    path = ["services" "restic" config.base.hostname name];
+  };
 
   # TODO Add option to copy the backup made to different locations
   target_type = lib.types.submodule {
