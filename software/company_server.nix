@@ -9,7 +9,7 @@ let
     user = "op_persowebsite";
     port = 8095;
     dbname = "persowebsite";
-    dir = "/www/posts";
+    dir = "/var/www/persowebsite";
   };
 in
 {
@@ -77,7 +77,7 @@ in
         command = let
           startup = inputs.persowebsite.packages.${system}.prepare {
             port = persowebsite.port;
-            posts_dir = persowebsite.dir;
+            posts_dir = "${persowebsite.dir}/posts";
             spawnDatabase = false;
             database = {
               user = persowebsite.user;
@@ -86,16 +86,16 @@ in
             };
           };
         in "${startup}";
-        initScript = ''
-          mkdir -p ${persowebsite.dir}
-          chown -R ${persowebsite.user}:${persowebsite.user} ${persowebsite.dir}
-        '';
         service_user = persowebsite.user;
         wait_service = [ "postgresql.service" ];
         port = persowebsite.port;
       };
     };
   };
+
+  setup.directories = [
+    { path = persowebsite.dir; owner = persowebsite.user; }
+  ];
 
   # Services to check
   # - syncstorage-rs

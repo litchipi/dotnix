@@ -52,10 +52,9 @@ libconf.create_common_confs [
       };
     };
     cfg = {
-      boot.postBootCommands = ''
-        mkdir -p ${cfg.dir}
-        chown -R postgres:postgres ${cfg.dir}
-      '';
+      setup.directories = [
+        { path = cfg.dir; owner = "postgres"; }
+      ];
 
       services.postgresql = {
         enable = true;
