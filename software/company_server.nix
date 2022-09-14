@@ -15,14 +15,12 @@ in
 {
   base.user = "op";
   base.email = "litchi.pi@proton.me";
-  # TODO  Add backup server once ready
   base.networking.ssh_auth_keys = [ "john@sparta" "tim@diamond" ];
-  base.networking.connect_wifi = [ "SFR_11EF" ];
 
   base.networking.domain = "orionstar.cyou";
 
   base.add_pkgs = with pkgs; [
-    htop
+    glances
   ];
 
   cmn.server.enable = true;
@@ -39,7 +37,6 @@ in
   cmn.services.nextcloud = {
     enable = true;
 
-    # TODO      FIXME   Theme doesn't load
     theme = {
       name = company_name;
       logo = libnc.theme "logo.svg";
