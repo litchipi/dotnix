@@ -49,7 +49,11 @@ in
     };
     base.home_cfg.home.file.".ssh/id_rsa.pub".source = libdata.get_data_path ["ssh_pubkeys" "${ssh_ident}.pub"];
     boot.postBootCommands = ''
+        if [ -d /var/cache/nginx ]; then
+            chown -R nginx:nginx /var/cache/nginx
+        fi
     '';
+    # TODO      Report nginx cache dir misconfiguration to nixpkgs
 
     networking = {
       firewall.enable = true;
