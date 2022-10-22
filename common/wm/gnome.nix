@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, pkgs_unstable, ... }:
 let
   utils_lib = import ../../lib/utils.nix {inherit config lib pkgs;};
   conf_lib = import ../../lib/commonconf.nix {inherit config lib pkgs;};
@@ -106,18 +106,19 @@ conf_lib.create_common_confs [
       };
     };
 
-    add_pkgs = (with pkgs.gnomeExtensions; [
+    add_pkgs = (with pkgs_unstable.gnomeExtensions; [
       caffeine
-      current-screen-only-for-alternate-tab
       bluetooth-quick-connect
       bring-out-submenu-of-power-offlogout-button
       disconnect-wifi
       hide-activities-button
-      night-light-slider  # Hopefully will be compatible one day
+      toggle-night-light
       runcat
       tray-icons-reloaded
       static-background-in-overview
       dash-to-dock
+      audio-output-switcher
+      gsconnect
     ] ++ cfg.add_extensions) ++ (with pkgs; [
       gnome.gnome-tweaks
     ]) ++ (if builtins.isNull cfg.theme then [] else [ cfg.theme.package ]);
