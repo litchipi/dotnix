@@ -144,23 +144,7 @@ conf_lib.create_common_confs [
           user-enabled = true;
         };
 
-        # TODO  Find replacement for night light slider
         "org/gnome/shell" = {
-          enabled-extensions = [
-            "caffeine@patapon.info"
-            "bluetooth-quick-connect@bjarosze.gmail.com"
-            "freon@UshakovVasilii_Github.yahoo.com"
-            "disconnect-wifi@kgshank.net"
-            "runcat@kolesnikov.se"
-            "BringOutSubmenuOfPowerOffLogoutButton@pratap.fastmail.fm"
-            "Hide_Activities@shay.shayel.org"
-            "trayIconsReloaded@selfmade.pl"
-            "unite@hardpixel.eu"
-            "user-theme@gnome-shell-extensions.gcampax.github.com"
-            "gnome-ui-tune@itstime.tech"
-            "dash-to-dock@micxgx.gmail.com"
-            "static-background@denizaksimsek.com"
-          ];
           had-bluetooth-devices-setup = true;
           remember-mount-password = true;
           welcome-dialog-last-shown-version = "40.5";
