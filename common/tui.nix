@@ -47,7 +47,6 @@ libconf.create_common_confs [
     parents = ["software" "tui"];
     add_pkgs = with pkgs; [
       du-dust
-      irssi
       wkhtmltopdf
       youtube-dl
       ffmpeg
@@ -368,7 +367,7 @@ libconf.create_common_confs [
           bind-key ç select-window -t 7
           bind-key à select-window -t 8
           bind-key ) select-window -t 9
-          
+
           set -g @urlview-key 'u'
           set -g monitor-activity on
           set -g default-terminal "tmux"
@@ -461,6 +460,9 @@ libconf.create_common_confs [
     # TODO  Add custom keybindings to Irssi
     name = "irssi";
     parents = [ "software" "tui" ];
+    add_pkgs = with pkgs; [
+      irssi
+    ];
     add_opts = {
       extraConfig = lib.mkOption {
         type = lib.types.str;
@@ -480,7 +482,19 @@ libconf.create_common_confs [
     };
     home_cfg.programs.irssi = {
       enable = true;
-      extraConfig = cfg.irssi.extraConfig;
+      extraConfig = cfg.irssi.extraConfig + ''
+        settings = {
+          core = {
+            real_name = "${cfg.irssi.default_nick}";
+            nick = "${cfg.irssi.default_nick}";
+          };
+          "fe-common/core" = { theme = "nixos"; };
+        };
+        keyboard = (
+          { key = "meta-e"; id = "next_window"; data = ""; },
+          { key = "meta-a"; id = "previous_window"; data=""; }
+        );
+      '';
       networks = {
         libera = {
           nick = cfg.irssi.default_nick;
@@ -488,6 +502,12 @@ libconf.create_common_confs [
             address = "irc.libera.chat";
             port = 6697;
           };
+          autoCommands = if builtins.hasAttr "libera_${cfg.irssi.default_nick}" libdata.plain_secrets.irssi
+          then [
+            "/msg NickServ identify ${cfg.irssi.default_nick} ${
+              libdata.plain_secrets.irssi."libera_${cfg.irssi.default_nick}"
+            }"
+          ] else [];
         };
       };
     };

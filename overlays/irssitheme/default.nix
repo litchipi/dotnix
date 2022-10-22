@@ -7,8 +7,10 @@
     /set trackbar_style %r
   '';
 
+  rev = "a3ad360011dc2b9093ff070ecfcbefd0a58c3d02";
+
   fetchscript = name: sha: pkgs.fetchurl {
-    url = "https://raw.githubusercontent.com/irssi/scripts.irssi.org/master/scripts/${name}.pl";
+    url = "https://raw.githubusercontent.com/irssi/scripts.irssi.org/${rev}/scripts/${name}.pl";
     sha256 = sha;
   };
 
@@ -20,6 +22,13 @@
     trackbar = fetchscript "trackbar" "sha256-lCiWkFcVMvQ+OjQkbShYBn03xBk4imddI7Tq2rfQEMI=";
     usercount = fetchscript "usercount" "sha256-6397b0UOKYavdHJa6MSNkstEYGRHCz+pHo9YnrEriJ8=";
     revolve = fetchscript "revolve" "sha256-362JMTSdUomfEDQBkob68ENzov3NLJT4hsXKnXNQa4E=";
+    tmux-nicklist = fetchscript "tmux-nicklist-portable" "sha256-dnFaw5TETmJTA2DagaExr/mQCaYKFnyzvoJ3Mlho8mY";
+    ignore_join_blob = fetchscript "ignore_join_blob" "sha256-kfNLvTiv1A+JtmiVhx13c/i3i8rFHw3ok0302TP33i8";
+    urlwindow = fetchscript "urlwindow" "sha256-7lyNcEFUQcEY+OZrsBHoK0YVo9m3ZmiKvd0n2d54dc8";
+    # chansearch = fetchscript "chansearch" "sha256-bTpU4DrXk1maGgkbWeFuGtRWdG8agaZWZGeUw5SbnVo=";
+    complete_at = fetchscript "complete_at" "sha256-EEYThqwNV/NyXzYvohm7y4VqYCRSfbncefyNHd01WYE";
+    history_search = fetchscript "history_search" "sha256-GfYypLHtzwbRvR+1yi5n0gIeXjrglaqwsIlhH0uLUow";
+    colorswap = fetchscript "colorswap" "sha256-vmPcwwFFkrgv/V0Tl9Kdoad8GOb29d53I6OYyRu0tvI";
   };
 
 in stdenv.mkDerivation rec {
