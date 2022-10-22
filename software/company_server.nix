@@ -36,7 +36,7 @@ in
   cmn.services.restic.global = {
     enable = true;
     gdrive = true;
-    timerConfig.OnCalendar = "05/14:00";
+    timerConfig.OnCalendar = "05/7:00:00";
     backup_paths = [ "/home/${config.base.user}/" ];
   };
   cmn.services.conduit.enable = true;
