@@ -144,6 +144,7 @@ in
     };
 
     environment.systemPackages = with pkgs; [
+      complete-alias
       coreutils-full
       git git-crypt pass-git-helper
       gnupg pinentry pinentry-curses
@@ -154,12 +155,28 @@ in
     nix.settings = {
       auto-optimise-store = true;
       experimental-features = [ "nix-command" "flakes" "ca-derivations" ];
+      trusted-users = [ config.base.user ];
     };
     nix.extraOptions = ''
       keep-outputs = true
       keep-derivations = true
     '';
-    # TODO  Set flake registry
-    # global flake:nixpkgs github:NixOS/nixpkgs/nixpkgs-unstable
+
+    # unlock gpg keys with my login password
+    security.pam.services.login.gnupg.enable = true;
+    security.pam.services.login.gnupg.noAutostart = true;
+    security.pam.services.login.gnupg.storeOnly = true;
+
+    # Hardware-accelerated video decoding
+    hardware.opengl.extraPackages = builtins.attrValues {
+      inherit (pkgs)
+        vaapiVdpau
+      ;
+    };
+
+    zramSwap = {
+      enable = true;
+      algorithm = "zstd";
+    };
   };
 }
