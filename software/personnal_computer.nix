@@ -117,19 +117,11 @@ in {
 
   services.flatpak.enable = true;
 
-  cmn.services.restic.to_remote = {
-    gdrive.enable = true;
-    resticConfig = {
-      pruneOpts = [
-        "--keep-daily 6"
-        "--keep-weekly 4"
-        "--keep-monthly 15"
-        "--keep-yearly 50"
-      ];
-      timerConfig = {
-        OnCalendar="00/1:00";
-      };
-    };
+  cmn.services.restic.global = {
+    enable = true;
+    gdrive = true;
+    forget_opts = [ "-y 50" "-m 15" "-w 4" "-d 6" "-l 10" ];
+    timerConfig.OnCalendar = "2/5:00:00";
   };
 
   # TODO    Set up firefox configuration

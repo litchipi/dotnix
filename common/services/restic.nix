@@ -136,11 +136,6 @@ libconf.create_common_confs [
         default = [];
         description = "Groups to add the backup user to";
       };
-      paths = lib.mkOption {
-        type = listOf str;
-        default = [];
-        description = "Paths to save in the repository";
-      };
       prepare_script = lib.mkOption {
         type = listOf str;
         default = [];
@@ -164,7 +159,12 @@ libconf.create_common_confs [
       repo_path = lib.mkOption {
         type = str;
         description = "Path to the restic repository";
-        default = "/var/backup/restic";
+        default = "/var/backup/global/restic";
+      };
+      lists_basedir = lib.mkOption {
+        type = str;
+        description = "Path where to store the backup lists";
+        default = "/var/backup/global/lists";
       };
       backup_paths = lib.mkOption {
         type = listOf str;
@@ -176,13 +176,10 @@ libconf.create_common_confs [
         description = "Options of snapshots forget";
         default = ["-y 10" "-m 12" "-w 4" "-d 30" "-l 5"];
       };
-      dynamicFilesListPath = lib.mkOption {
-        type = str;
-        default = "/var/backup/paths";
-        description = "Path to the file containing all paths to backup";
-      };
     };
-    cfg = {
+    cfg = let
+      dynamicFilesListPath = "${cfg.global.lists_basedir}/${config.base.user}_list";
+    in {
       users.extraUsers.restic = {
         isSystemUser = true;
         extraGroups = cfg.global.groups;
@@ -192,9 +189,15 @@ libconf.create_common_confs [
       base.secrets.store.restic_global_backup_repo_pwd = restic_secret "password";
       base.secrets.store.restic_global_backup_gdrive_conf = lib.mkIf cfg.global.gdrive (restic_secret "gdrive.conf");
 
+      setup.directories = [
+        { path = cfg.global.repo_path; perms = "700"; owner = "root"; }
+        { path = cfg.global.lists_basedir; perms = "700"; owner = config.base.user; }
+      ];
       services.restic.backups.global = {
         initialize = true;
-        dynamicFilesFrom = "cat ${cfg.global.dynamicFilesListPath}";
+        dynamicFilesFrom = ''
+          cat ${dynamicFilesListPath}
+        '';
         passwordFile = config.base.secrets.store.restic_global_backup_repo_pwd.dest;
         repository = cfg.global.repo_path;
         timerConfig = {
@@ -202,37 +205,37 @@ libconf.create_common_confs [
         } // cfg.global.timerConfig;
         pruneOpts = cfg.global.forget_opts;
         paths = cfg.global.backup_paths;
-        user = "restic";
-        rcloneOptions.drive-use-trash = "false";
-        rcloneConfigFile = lib.mkIf cfg.global.gdrive config.base.secrets.store.restic_global_backup_gdrive_conf.dest;
-
         backupPrepareCommand = builtins.concatStringsSep "\n" cfg.global.prepare_script;
-        backupCleanupCommand = (if cfg.global.gdrive then ''
-          mkdir -p /tmp/rclone
-          cp ${config.base.secrets.store.restic_global_backup_gdrive_conf.dest} /tmp/rclone/gdrive.conf
-          chmod 600 -R /tmp/rclone
-          rclone -q --config /tmp/rclone/gdrive.conf sync ${cfg.global.repo_path} gdrive:${config.base.hostname}_backup
-          rm /tmp/rclone/*
-        '' else "") + "\n" + (builtins.concatStringsSep "\n" cfg.global.cleanup_script);
+        backupCleanupCommand = (builtins.concatStringsSep "\n" cfg.global.cleanup_script) + (
+          if cfg.global.gdrive then let
+            rclone = "${pkgs.rclone}/bin/rclone -q --config /tmp/rclone_global/gdrive.conf";
+          in ''
+            mkdir -p /tmp/rclone_global
+            cp ${config.base.secrets.store.restic_global_backup_gdrive_conf.dest} /tmp/rclone_global/gdrive.conf
+            chmod 700 -R /tmp/rclone_global
+            ${rclone} sync ${cfg.global.repo_path} gdrive:${config.base.hostname}_global_backup
+            rm -r /tmp/rclone_global
+          ''
+          else ""
+        );
       };
+      environment.shellAliases = let
+        service_name = "restic-backups-${config.base.hostname}.service";
+      in {
+        forcebackup = "sudo systemctl start ${service_name}";
+        lastbackup = "systemctl status ${service_name}|grep 'since'|awk -F \"since \" '{print $2}'";
+      };
+      environment.interactiveShellInit= ''
+        addbackup() {
+          for file in $@; do
+            fname=$(realpath $file)
+            touch ${dynamicFilesListPath}
+            if ! grep "$fname" ${dynamicFilesListPath} > /dev/null; then
+              echo "$fname" >> ${dynamicFilesListPath}
+            fi
+          done
+        }
+      '';
     };
-    home_cfg.programs.bash.shellAliases = let
-      service_name = "restic-backups-${config.base.hostname}.service";
-    in {
-      forcebackup = "sudo systemctl start ${service_name}";
-      lastbackup = "systemctl status ${service_name}|grep 'since'|awk -F \"since \" '{print $2}'";
-    };
-    home_cfg.programs.bash.initExtra = ''
-      function addbackup() {
-        mkdir -p $(basename ${cfg.global.dynamicFilesListPath})
-        for file in $@; do
-          fname=$(realpath $file)
-          touch ${cfg.global.dynamicFilesListPath}
-          if ! grep "$fname" ${cfg.global.dynamicFilesListPath} > /dev/null; then
-            echo "$fname" >> ${cfg.global.dynamicFilesListPath}
-          fi
-        done
-      }
-    '';
   }
 ]
