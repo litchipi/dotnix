@@ -145,7 +145,7 @@ in
 
     environment.systemPackages = with pkgs; [
       coreutils-full
-      git git-crypt
+      git git-crypt pass-git-helper
       gnupg pinentry pinentry-curses
       file
     ] ++ cfg.add_pkgs
