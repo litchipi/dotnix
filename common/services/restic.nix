@@ -6,7 +6,7 @@ let
   cfg = config.cmn.services.restic;
   service_name = "restic_backup_from_remote";
   restic_secret = name: libdata.set_secret {
-    user = "restic"; 
+    user = "restic";
     path = ["services" "restic" config.base.hostname name];
   };
 
@@ -46,7 +46,7 @@ let
     fname_host = builtins.replaceStrings ["." "-"] ["_" "_"] target.host;
     tmpdir = "/tmp/${fname_host}";
     sshfs_options = "-oIdentityFile=$(realpath ${config.base.secrets.store.restic_ssh_privk.dest}) -oStrictHostKeyChecking=yes";
-  in { 
+  in {
     "${service_name}_${fname_host}" = {
         serviceConfig = {
           Type = "oneshot";

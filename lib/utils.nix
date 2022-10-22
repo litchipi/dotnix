@@ -5,7 +5,7 @@ rec {
   capitalizeWord = word: let
     letters = lib.strings.stringToCharacters word;
   in
-    (lib.strings.toUpper  (builtins.elemAt letters 0)) + 
+    (lib.strings.toUpper  (builtins.elemAt letters 0)) +
     (lib.strings.toLower (lib.strings.removePrefix (builtins.elemAt letters 0) word));
 
   email_to_name = email: let

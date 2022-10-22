@@ -65,6 +65,7 @@ conf_lib.create_common_confs [
     cfg = {
       xdg.portal.enable = true;
       xdg.portal.gtkUsePortal = true;
+
       programs.dconf.enable = true;
       cmn.dconf.apps.enable = true;
       cmn.software.infosec = lib.mkIf config.cmn.software.infosec.enable { gui.enable = true; };

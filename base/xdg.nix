@@ -10,16 +10,14 @@ let
 in
 {
   config = {
-    home-manager.users."${config.base.user}" = {
-      xdg.userDirs = {
-        download = "\$HOME/${cfg.dirs.download}";
-        desktop = "\$HOME";
-        documents = "\$HOME/${cfg.dirs.documents}";
-        music = "\$HOME/${cfg.dirs.music}";
-        pictures = "\$HOME/${cfg.dirs.pictures}";
-        templates = "\$HOME";
-        videos = "\$HOME/${cfg.dirs.videos}";
-      };
+    base.home_cfg.xdg.userDirs = {
+      download = "\$HOME/${cfg.dirs.download}";
+      desktop = "\$HOME";
+      documents = "\$HOME/${cfg.dirs.documents}";
+      music = "\$HOME/${cfg.dirs.music}";
+      pictures = "\$HOME/${cfg.dirs.pictures}";
+      templates = "\$HOME";
+      videos = "\$HOME/${cfg.dirs.videos}";
     };
   };
 
