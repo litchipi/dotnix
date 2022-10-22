@@ -16,7 +16,32 @@ libconf.create_common_confs [
     add_pkgs = [
       pkgs.nginx
     ];
+    add_opts.backup = {
+      repo_path = lib.mkOption {
+        type = lib.types.str;
+        description = "Path to the restic repository";
+        default = "/var/backup/gitlab";
+      };
+      timerConfig = lib.mkOption {
+        type = lib.types.anything;
+        description = "Timer config for the systemd service";
+        default = { OnCalendar = "daily"; };
+      };
+      pruneOpts = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        description = "Options of snapshots forget";
+        default = ["-y 10" "-m 12" "-w 4" "-d 30" "-l 5"];
+      };
+      gdrive = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Enable saving the backup to Google Drive";
+      };
+    };
     cfg = {
+      setup.directories = [
+        { path = cfg.backup.repo_path; perms = "700"; owner = "gitlab"; }
+      ];
       base.networking.vm_forward_ports = {
         http = { from = "host"; host.port = 40080; guest.port = 80; };
         https= { from = "host"; host.port = 40443; guest.port = 443; };
@@ -38,6 +63,7 @@ libconf.create_common_confs [
         gitlab_dbFile = gitlab_secret "db";
         gitlab_dbpwd = gitlab_secret "dbpwd";
         gitlab_initialrootpwd = gitlab_secret "initial_root_pwd";
+        gitlab_restic_repo_pwd = gitlab_secret "restic_repo_pwd";
       };
 
       services.nginx = {
@@ -86,61 +112,70 @@ libconf.create_common_confs [
         backup.path = "/var/gitlab/backup/";
       };
 
-      cmn.services.restic.global = {
-        prepare_script = let 
-          gitlab_unpack_backup = pkgs.writeShellScript "gitlab_unpack_backup" ''
-            extract_part() {
-                name=$1
-                echo "Extracting part \"$name\""
-                mkdir -p ./$name
-                tar xf "$name.tar" -C ./$name
-                rm "$name.tar"
-            }
-
-            if [ $# -ne 2 ]; then
-                echo "Usage: $0 <gitlab backup archive path> <output directory>"
-                exit 1;
-            fi
-
-            SOURCE=$1
-            OUTPUT=$2
-
-            echo "Extract the archive"
-            rm -rf $OUTPUT && mkdir $OUTPUT
-            tar xf $SOURCE --directory $OUTPUT
-
-            echo "Decompress the parts"
-            find $OUTPUT -name "*.gz" | xargs gunzip
-            pushd $OUTPUT 1>/dev/null
-
-            extract_part "artifacts"
-            extract_part "builds"
-            extract_part "lfs"
-            extract_part "packages"
-            extract_part "pages"
-            extract_part "terraform_state"
-            extract_part "uploads"
-            popd 1>/dev/null
-            echo "Done"
-          '';
-        in [''
+      services.restic.backups.gitlab = {
+        initialize = true;
+        passwordFile = config.base.secrets.store.gitlab_restic_repo_pwd.dest;
+        repository = cfg.backup.repo_path;
+        timerConfig = {
+          Persistent = true;
+        } // cfg.backup.timerConfig;
+        pruneOpts = cfg.backup.pruneOpts;
+        user = "gitlab";
+        paths = [ "/tmp/gitlab_backup_restic/" ];
+        backupPrepareCommand = ''
+          set -e
           export PATH="/run/current-system/sw/bin/"
-          export BACKUP=restic
-          export RAILS_ENV=production
           export CRON=1
-          mkdir -p /var/gitlab/backup
+          export RAILS_ENV="production"
+          export BACKUP="restic"
           gitlab-rake gitlab:backup:create
 
-          cd /var/gitlab/backup
-          ${gitlab_unpack_backup} ./restic_gitlab_backup.tar ./unpacked
-          rm ./restic_gitlab_backup.tar
-        ''];
-        cleanup_script = [''
-          rm -r /var/gitlab/backup/unpacked
-        ''];
-        backup_paths = [ "/var/gitlab/backup/unpacked" ];
-        groups = ["gitlab"];
-      };
+          extract_part() {
+              name=$1
+              echo "Extracting part \"$name\""
+              mkdir -p ./$name
+              tar xf "$name.tar" -C ./$name
+              rm "$name.tar"
+          }
+
+          SOURCE=/var/gitlab/backup/restic_gitlab_backup.tar
+          OUTPUT=/tmp/gitlab_backup_restic/
+
+          echo "Extract the archive"
+          rm -rf $OUTPUT && mkdir $OUTPUT
+          tar xf $SOURCE --directory $OUTPUT
+
+          echo "Decompress the parts"
+          find $OUTPUT -name "*.gz" | xargs gunzip
+          pushd $OUTPUT 1>/dev/null
+
+          extract_part "artifacts"
+          extract_part "builds"
+          extract_part "lfs"
+          extract_part "packages"
+          extract_part "pages"
+          extract_part "terraform_state"
+          extract_part "uploads"
+          popd 1>/dev/null
+
+          rm $SOURCE
+      '';
+      } // (if (builtins.isNull cfg.backup.gdrive) then {} else {
+        rcloneOptions.drive-use-trash = "false";
+        rcloneConfigFile = config.base.secrets.store.gitlab_rclone_conf.dest;
+        backupCleanupCommand = let
+          rclone = "${pkgs.rclone}/bin/rclone -q --config /tmp/rclone_gitlab/gdrive.conf";
+        in ''
+          mkdir -p /tmp/rclone_gitlab
+          cp ${config.base.secrets.store.gitlab_rclone_conf.dest} /tmp/rclone_gitlab/gdrive.conf
+          chmod 700 -R /tmp/rclone_gitlab
+          ${rclone} sync ${cfg.backup.repo_path} gdrive:${config.base.hostname}_gitlab_backup
+          rm -r /tmp/rclone_gitlab
+        '';
+      });
+      base.secrets.store.gitlab_rclone_conf = lib.mkIf cfg.backup.gdrive (
+        gitlab_secret "gdrive.conf"
+      );
     };
   }
 ]

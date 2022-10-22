@@ -26,7 +26,13 @@ in
   cmn.server.enable = true;
   cmn.wm.enable = false;
 
-  cmn.services.gitlab.enable = true;
+  cmn.services.gitlab = {
+    enable = true;
+    backup = {
+      gdrive = true;
+      timerConfig.OnCalendar = "05/7:00:00";
+    };
+  };
   cmn.services.restic.global = {
     enable = true;
     gdrive = true;
