@@ -56,12 +56,10 @@ libconf.create_common_confs [
 
       # Custom TUI tools
       litchipi.pomodoro
-      litchipi.memory
     ];
     cfg = {
       cmn.shell.aliases = {
         music.enable = lib.mkDefault true;
-        memory.enable = lib.mkDefault true;
       };
     };
   }
@@ -96,12 +94,9 @@ libconf.create_common_confs [
         description = "Theme to apply over the default one";
       };
     };
+    cfg.environment.variables.EDITOR = "nvim";
     home_cfg = {
       home.file.".local/share/nvim/site/autoload/plug.vim".source = libdata.get_data_path ["config" "nvim" "plug.vim"];
-
-      programs.bash.sessionVariables = {
-        EDITOR = "nvim";
-      };
 
       programs.neovim = {
         enable = true;

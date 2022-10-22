@@ -17,14 +17,15 @@ let
     {
       inherit name add_pkgs;
       parents = ["software" "dev"];
-      home_cfg.programs.bash = {
-        inherit initExtra shellAliases;
-      };
-      cfg.cmn.software.tui.neovim = {
-        vimcfg = [
-          (libdata.read_data_else_empty ["config" "nvim" "${name}.vim"])
-        ] ++ [vimcfg];
-        add_plugins = vimplugs;
+      cfg = {
+        environment.interactiveShellInit = initExtra;
+        environment.shellAliases = shellAliases;
+        cmn.software.tui.neovim = {
+          vimcfg = [
+            (libdata.read_data_else_empty ["config" "nvim" "${name}.vim"])
+          ] ++ [vimcfg];
+          add_plugins = vimplugs;
+        };
       };
       home_cfg.programs.neovim = {
         plugins = vimplugs;

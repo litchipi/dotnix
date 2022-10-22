@@ -97,18 +97,14 @@ libconf.create_common_confs [
     add_pkgs = with pkgs; [
       restic
     ];
-
-    home_cfg.programs.bash = {
-      enable = true;
-      shellAliases = {
-        rbck = "${pkgs.restic}/bin/restic -p ${config.base.secrets.restic_repo_pwd.dest} -r ${cfg.restic_repo_dir}";
-      };
-    };
-
     cfg = {
       base.secrets.store = {
         restic_ssh_privk = restic_secret "ssh_privk";
         restic_repo_pwd = restic_secret "repo_pwd";
+      };
+
+      environment.shellAliases = {
+        rbck = "${pkgs.restic}/bin/restic -p ${config.base.secrets.restic_repo_pwd.dest} -r ${cfg.restic_repo_dir}";
       };
 
       base.extraGroups = [ service_name ];

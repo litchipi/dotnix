@@ -54,7 +54,7 @@
         chown -R ${dir.owner}:${if builtins.isNull dir.group then dir.owner else dir.group} ${dir.path}
         ${lib.strings.optionalString (!builtins.isNull dir.perms) "chmod -R ${dir.perms} ${dir.path}"}
     '') config.setup.directories);
-    base.home_cfg.programs.bash.shellAliases = lib.mkIf config.setup.is_nixos {
+    environment.shellAliases = {
       upgrade = "sudo nixos-rebuild switch --flake ${config.setup.config_repo_path} $@ && echo 'Success'";
     };
   };
