@@ -42,13 +42,20 @@ libconf.create_common_confs [
       scripts = ["python"];
       software = ["rust" "python"];
       functionnal = ["ocaml" "haskell"];
+      system = ["c" "nix" "python"];
     };
     add_pkgs = with pkgs; [
       pkg-config
       binutils
       bintools
+
+      openssl.dev
+      openssl_3.dev
+      dbus.dev
     ];
     cfg = {
+      environment.variables.OPENSSL_DEV = "${pkgs.openssl.dev}";
+      environment.variables.PKG_CONFIG_PATH = "$PKG_CONFIG_PATH:${pkgs.openssl.dev}/lib/pkgconfig";
       cmn.software.tui.enable = true;
       cmn.software.tui.git.enable = true;
     };
@@ -121,18 +128,35 @@ libconf.create_common_confs [
     };
   })
 
-  # TODO  Python dev
-  (lang_profile {
+  (let
+      pythonpkg = pkgs.python310.withPackages (p: with p; [
+        pip
+        virtualenv
+      ]);
+  in lang_profile {
     name = "python";
-    add_pkgs = with pkgs; [
-      python310
-      python310Packages.pip
-      virtualenv
+    add_pkgs = let
+    in with pkgs; [
+      pythonpkg
       poetry
+      black
     ];
-    vimplugs = with pkgs.vimPlugins; [
+    vimplugs = with pkgs_unstable.vimPlugins; [
+      coc-pyright
     ];
-    # coc-settings.languageserver.python = {
-    # };
+    coc-settings.python = {
+      pythonPath = "${pythonpkg}/bin/python3";
+      pyright.server = "${pkgs.nodePackages.pyright}/bin/pyright";
+    };
+  })
+
+  (lang_profile {
+    name = "c";
+    add_pkgs = with pkgs_unstable; [
+      clang-tools
+    ];
+    vimplugs = with pkgs_unstable.vimPlugins; [
+      coc-clangd
+    ];
   })
 ]
