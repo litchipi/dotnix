@@ -92,9 +92,9 @@ libconf.create_common_confs [
       );
 
       networking.extraHosts = builtins.concatStringsSep "\n" ((
-            lib.attrsets.mapAttrsToList (sub: _: "localhost ${sub}.${config.base.networking.domain}")
+            lib.attrsets.mapAttrsToList (sub: _: "127.0.0.1 ${sub}.${config.base.networking.domain}")
         cfg.applications) ++ (
-            lib.attrsets.mapAttrsToList (sub: _: "localhost ${sub}.${config.base.networking.domain}")
+            lib.attrsets.mapAttrsToList (sub: _: "127.0.0.1 ${sub}.${config.base.networking.domain}")
         cfg.websites)
       );
 
