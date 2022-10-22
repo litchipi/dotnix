@@ -111,4 +111,11 @@ in
   # - ethercalc
   # - invoceplane
   # - vikunja
+
+  services.teeworlds = {
+    enable = true;
+    openPorts = true;
+    name = "Suzie";
+    motd = "Je suis une truite";
+  };
 }
