@@ -19,7 +19,7 @@ in {
     secondary = libcolors.fromhex "#01cdfe";
     tertiary = libcolors.fromhex "#05ffa1";
     highlight = libcolors.fromhex "#DD25E9";
-    dark = libcolors.fromhex "#4A1D48";
+    dark = libcolors.fromhex "#6A3D68";
     light = libcolors.fromhex "#FBEEBF";
     active = libcolors.fromhex "#85E9FF";
     inactive = libcolors.fromhex "#85B2BC";
@@ -29,7 +29,7 @@ in {
   console.font = "Monaco";
 
   cmn.wm = {
-    boot.theme = "hexagon_2";   # TODO  Test splash screen
+    boot.theme = "glowing"; #hexagon_2";   # TODO  Test splash screen
     autologin = true;
     bck-img = "galaxy_amongus.png";
     cursorTheme = {
@@ -44,11 +44,10 @@ in {
       name = "Flat-Remix-GTK-Orange-Dark";
       package = pkgs.flat-remix-gtk;
     };
-    # TODO  Custom font
-    # font = {
-    #   name = "Cantarell 11";
-    #   package = pkgs.cantarell;
-    # };
+    font = {
+      name = "Cantarell 11";
+      package = pkgs.cantarell-fonts;
+    };
   };
 
   cmn.wm.gnome = {
@@ -61,7 +60,16 @@ in {
     user_icon = libdata.get_data_path ["assets" "desktop" "user_icons" "litchi.jpg"];
   };
 
-  cmn.software.tui.irssi.theme = pkgs.litchipi.irssitheme;
+  cmn.software.tui.irssi = {
+    theme = pkgs.litchipi.irssitheme;
+    default_nick = "stixp";
+  };
+  base.home_cfg.programs.irssi.networks.libera.channels = {
+    rust.autoJoin = true;
+    nixos.autoJoin = true;
+    esperanto.autoJoin = true;
+  };
+
   cmn.software.protonvpn = {
     enable = true;
     username = "litchipi";
@@ -73,13 +81,10 @@ in {
 
   cmn.software.musicprod.all = true;
   cmn.software.dev.basic = true;
-
-  cmn.remote.gogs.enable = true;
-  cmn.remote.gogs.ipaddr = "185.167.99.178";
+  cmn.software.dev.system = true;
 
   base.full_pkgs = with pkgs; [
     # Communication
-    signal-desktop
     cawbird # Twitter reader
     newsflash # RSS reader
 
@@ -90,7 +95,7 @@ in {
 
     # Writing
     apostrophe  # Markdown editor
-    marp # Markdown to PDF
+    # marp # Markdown to PDF  # Insecure
 
     # Music
     blanket # Play relaxing sound
@@ -105,16 +110,12 @@ in {
 
     # System
     authenticator # 2FA TOTP app
-    blueman     # Bluetooth manager
 
     # Games
     teeworlds
-
-    # Dev libraries
-    openssl
-    openssl.dev
   ];
 
+  services.blueman.enable = true;
   services.flatpak.enable = true;
 
   cmn.services.restic.global = {
@@ -124,6 +125,5 @@ in {
     timerConfig.OnCalendar = "2/5:00:00";
   };
 
-  # TODO    Set up firefox configuration
-  # TODO    Add elements in fstab to auto-mount stuff
+  # TODO  Add builder nix settings
 }
