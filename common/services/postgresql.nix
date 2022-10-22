@@ -53,7 +53,7 @@ libconf.create_common_confs [
     };
     cfg = {
       setup.directories = [
-        { path = cfg.dir; owner = "postgres"; }
+        { path = cfg.dir; owner = "postgres"; perms = "750"; }
       ];
 
       services.postgresql = {
