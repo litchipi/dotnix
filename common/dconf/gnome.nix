@@ -167,6 +167,18 @@ conf_lib.create_common_confs [
         "org/gnome/desktop/applications/terminal" = {
           exec="${lib.strings.getName config.cmn.software.default_terminal_app}";
         };
+
+        "org/gnome/shell/window-switcher" = {
+          current-workspace-only = false;
+        };
+
+        "org/gnome/shell/app-switcher" = {
+          current-workspace-only = true;
+        };
+
+        "org/gnome/desktop/wm/keybindings" = {
+          switch-windows = "['<Alt>Tab']";
+        };
       };
     };
   }
