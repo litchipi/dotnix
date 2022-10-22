@@ -1,3 +1,8 @@
+" Whitespace
+autocmd BufWritePre * StripWhitespace
+
+" Git
+autocmd BufWritePost * GitGutter
 
 " IndentLine
 let g:indentLine_setColors = 1
@@ -31,7 +36,7 @@ let g:NERDDefaultAlign = 'left'
 let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhitespace = 1
 
-" Enable NERDCommenterToggle to check all selected lines is commented or not 
+" Enable NERDCommenterToggle to check all selected lines is commented or not
 let g:NERDToggleCheckAllLines = 1
 
 " Add your own custom formats or override the defaults

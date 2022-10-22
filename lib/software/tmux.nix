@@ -77,13 +77,13 @@ in {
     "status-left" = sidebar { char = ""; left = true;} [
       {
         bg = pal.primary;
-        fg = libcolors.contrast_text pal.primary;
+        fg = libcolors.contrast_text pal.primary {};
         txt = vars.status.left.left;
         add="bold";
       }
       {
         bg = pal.secondary;
-        fg = libcolors.contrast_text pal.secondary;
+        fg = libcolors.contrast_text pal.secondary {};
         txt = vars.status.left.mid;
       }
       {
@@ -102,13 +102,13 @@ in {
       }
       {
         bg = pal.secondary;
-        fg = libcolors.contrast_text pal.secondary;
+        fg = libcolors.contrast_text pal.secondary {};
         txt = vars.status.right.mid;
         add="bold";
       }
       {
         bg = pal.primary;
-        fg = libcolors.contrast_text pal.primary;
+        fg = libcolors.contrast_text pal.primary {};
         txt = vars.status.right.right;
       }
     ];

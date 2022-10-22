@@ -34,9 +34,9 @@ in {
     TermCursor.bg = pal.primary;
     TermCursorNC.bg = libcolors.basic.gray 80;
 
-    Search.fg = libcolors.contrast_text pal.primary;
+    Search.fg = libcolors.contrast_text pal.primary {};
     Search.bg = pal.primary;
-    Substitute.fg = libcolors.contrast_text pal.primary;
+    Substitute.fg = libcolors.contrast_text pal.primary {};
     Substitute.bg = pal.primary;
 
     Normal.fg = libcolors.basic.white;
@@ -44,7 +44,7 @@ in {
 
     Todo = {
       bg = pal.secondary;
-      fg = libcolors.contrast_text pal.secondary;
+      fg = libcolors.contrast_text pal.secondary {};
       style = "bold,underline";
     };
     CocHintSign.fg = pal.dark;
@@ -109,79 +109,95 @@ in {
       bg = "none";
       style = "bold";
     };
+  };
 
-    # TODO  Airline theme
+  generate_airline_theme = theme: let
+    name = "custom_airline_theme_${config.base.hostname}";
+    get_color_def = {guifg, guibg, termfg, termbg}: "[ " + (builtins.concatStringsSep ", " [
+      "'#${libcolors.tohex guifg}'"
+      "'#${libcolors.tohex guibg}'"
+      "'${builtins.toString termfg}'"
+      "'${builtins.toString termbg}'"
+    ]) + " ]";
+    theme_dir = let
+      head = ''
+        let g:airline#themes#${name}#palette = {}
+      '';
+      tail = ''
+        if get(g:, 'loaded_ctrlp', 0)
+        let g:airline#themes#dark#palette.ctrlp = airline#extensions#ctrlp#generate_color_map(
+          \ ${get_color_def theme.CP1},
+          \ ${get_color_def theme.CP2},
+          \ ${get_color_def theme.CP3})
+        endif
+      '';
+    in pkgs.writeTextDir "autoload/airline/themes/${name}.vim" (
+        head + (
+          builtins.concatStringsSep "\n" (lib.attrsets.mapAttrsToList (type: prefix: ''
+            let g:airline#themes#${name}#palette.${type} = airline#themes#generate_color_map(
+              \ ${get_color_def theme."${prefix}1"},
+              \ ${get_color_def theme."${prefix}2"},
+              \ ${get_color_def theme."${prefix}3"})
+          '') {
+          normal = "N";
+          insert = "I";
+          replace = "R";
+          visual = "V";
+          inactive = "IA";
+        })
+      ) + tail
+    );
+  in ''
+      let &runtimepath.=','.escape('${theme_dir}', '\,')
+      let g:airline_theme='${name}'
+    '';
+
+  airline_default_theme = rec {
+    N1 = {
+      guibg = pal.primary;
+      guifg = libcolors.contrast_text pal.primary {};
+      termbg = 90; termfg = 15;
+    };
+    I1 = {
+      guibg = pal.secondary;
+      guifg = libcolors.contrast_text pal.secondary {};
+      termbg = 105; termfg = 0;
+    };
+    R1 = {
+      guibg = pal.tertiary;
+      guifg = libcolors.contrast_text pal.tertiary {};
+      termbg = 202; termfg = 0;
+    };
+    V1 = {
+      guibg = pal.highlight;
+      guifg = libcolors.contrast_text pal.highlight {};
+      termbg = 220; termfg = 0;
+    };
+    IA1 = {
+      guibg = pal.inactive;
+      guifg = libcolors.contrast_text pal.inactive {};
+      termbg = 241; termfg = 248;
+    };
+    N2 = {
+      guibg = libcolors.basic.gray 60;
+      guifg = libcolors.basic.gray 150;
+      termbg = 244; termfg = 251;
+    };
+    N3 = {
+      guibg = libcolors.basic.gray 40;
+      guifg = libcolors.basic.gray 150;
+      termbg = 239; termfg = 244;
+    };
+    I2 = N2;
+    I3 = N3;
+    R2 = N2;
+    R3 = N3;
+    V2 = N2;
+    V3 = N3;
+    IA2 = N2;
+    IA3 = N3;
+    CP1 = V1;
+    CP2 = V2;
+    CP3 = V3;
   };
 }
-
-# Airline theme
-# " Color palette
-# let s:gui_dark_gray = '#303030'
-# let s:cterm_dark_gray = 236
-# let s:gui_med_gray_hi = '#444444'
-# let s:cterm_med_gray_hi = 238
-# let s:gui_med_gray_lo = '#3a3a3a'
-# let s:cterm_med_gray_lo = 237
-# let s:gui_light_gray = '#b2b2b2'
-# let s:cterm_light_gray = 249
-# let s:gui_green = '#afd787'
-# let s:cterm_green = 150
-# let s:gui_blue = '#87afd7'
-# let s:cterm_blue = 110
-# let s:gui_purple = '#afafd7'
-# let s:cterm_purple = 146
-# let s:gui_orange = '#d7af5f'
-# let s:cterm_orange = 179
-# let s:gui_red = '#d78787'
-# let s:cterm_red = 174
-# let s:gui_pink = '#d7afd7'
-# let s:cterm_pink = 182
-#
-# let g:airline#themes#bubblegum#palette = {}
-#
-# " Normal mode
-# let s:N1 = [s:gui_dark_gray, s:gui_green, s:cterm_dark_gray, s:cterm_green]
-# let s:N2 = [s:gui_light_gray, s:gui_med_gray_lo, s:cterm_light_gray, s:cterm_med_gray_lo]
-# let s:N3 = [s:gui_green, s:gui_med_gray_hi, s:cterm_green, s:cterm_med_gray_hi]
-# let g:airline#themes#bubblegum#palette.normal = airline#themes#generate_color_map(s:N1, s:N2, s:N3)
-# let g:airline#themes#bubblegum#palette.normal_modified = {
-#       \ 'airline_c': [s:gui_orange, s:gui_med_gray_hi, s:cterm_orange, s:cterm_med_gray_hi, ''],
-#       \ }
-#
-# " Insert mode
-# let s:I1 = [s:gui_med_gray_hi, s:gui_blue, s:cterm_med_gray_hi, s:cterm_blue]
-# let s:I3 = [s:gui_blue, s:gui_med_gray_hi, s:cterm_blue, s:cterm_med_gray_hi]
-# let g:airline#themes#bubblegum#palette.insert = airline#themes#generate_color_map(s:I1, s:N2, s:I3)
-# let g:airline#themes#bubblegum#palette.insert_modified = copy(g:airline#themes#bubblegum#palette.normal_modified)
-# let g:airline#themes#bubblegum#palette.insert_paste = {
-#       \ 'airline_a': [s:gui_dark_gray, s:gui_orange, s:cterm_dark_gray, s:cterm_orange, ''],
-#       \ }
-#
-# " Replace mode
-# let g:airline#themes#bubblegum#palette.replace = {
-#       \ 'airline_a': [s:gui_dark_gray, s:gui_red, s:cterm_dark_gray, s:cterm_red, ''],
-#       \ 'airline_c': [s:gui_red, s:gui_med_gray_hi, s:cterm_red, s:cterm_med_gray_hi, ''],
-#       \ }
-# let g:airline#themes#bubblegum#palette.replace_modified = copy(g:airline#themes#bubblegum#palette.insert_modified)
-#
-# " Visual mode
-# let s:V1 = [s:gui_dark_gray, s:gui_pink, s:cterm_dark_gray, s:cterm_pink]
-# let s:V3 = [s:gui_pink, s:gui_med_gray_hi, s:cterm_pink, s:cterm_med_gray_hi]
-# let g:airline#themes#bubblegum#palette.visual = airline#themes#generate_color_map(s:V1, s:N2, s:V3)
-# let g:airline#themes#bubblegum#palette.visual_modified = copy(g:airline#themes#bubblegum#palette.insert_modified)
-#
-# " Inactive window
-# let s:IA = [s:gui_light_gray, s:gui_med_gray_hi, s:cterm_light_gray, s:cterm_med_gray_hi, '']
-# let g:airline#themes#bubblegum#palette.inactive = airline#themes#generate_color_map(s:IA, s:IA, s:IA)
-# let g:airline#themes#bubblegum#palette.inactive_modified = {
-#       \ 'airline_c': [s:gui_orange, '', s:cterm_orange, '', ''],
-#       \ }
-#
-# " CtrlP
-# if !get(g:, 'loaded_ctrlp', 0)
-#   finish
-# endif
-# let g:airline#themes#bubblegum#palette.ctrlp = airline#extensions#ctrlp#generate_color_map(
-#       \ [ s:gui_orange, s:gui_med_gray_hi, s:cterm_orange, s:cterm_med_gray_hi, '' ] ,
-#       \ [ s:gui_orange, s:gui_med_gray_lo, s:cterm_orange, s:cterm_med_gray_lo, '' ] ,
-#       \ [ s:gui_dark_gray, s:gui_green, s:cterm_dark_gray, s:cterm_green, 'bold' ] )

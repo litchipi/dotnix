@@ -93,9 +93,16 @@ libconf.create_common_confs [
         default = {};
         description = "Theme to apply over the default one";
       };
+
+      airlineThemeOverride = lib.mkOption {
+        type = lib.types.attrs;
+        default = {};
+        description = "Theme to override on the Airline plugin";
+      };
     };
     cfg.environment.variables.EDITOR = "nvim";
     home_cfg = {
+      # TODO  Fetch file from remote source
       home.file.".local/share/nvim/site/autoload/plug.vim".source = libdata.get_data_path ["config" "nvim" "plug.vim"];
 
       programs.neovim = {
@@ -145,24 +152,27 @@ libconf.create_common_confs [
         plugins = with pkgs.vimPlugins; [
           tagbar
 
-          nerdtree
+          vim-airline
+          vim-airline-themes
           nerdcommenter
           neoformat
           fzf-vim
           zoomwintab-vim
           vim-bbye
           indentLine
-          haskell-vim
-          vim-toml
-          vimtex
-          vim-latex-live-preview
           vim-plug
           nvim-colorizer-lua
           vim-better-whitespace
 
-          # Theme
-          vim-airline
-          vim-airline-themes
+          # TODO  Telescope nvim setup
+          # Telescope
+          telescope-nvim
+
+          # TODO  Langage setup to migrate to specialized sections
+          vimtex
+          vim-toml
+          haskell-vim
+          vim-latex-live-preview
 
           # Coc
           coc-fzf
@@ -189,6 +199,7 @@ libconf.create_common_confs [
 
           # Setting the base colors for the theme
           (libnvim.generate_theme (libnvim.default_theme // cfg.neovim.themeOverride))
+          (libnvim.generate_airline_theme (libnvim.airline_default_theme // cfg.neovim.airlineThemeOverride))
         ] ++ cfg.neovim.vimcfg);
       };
 

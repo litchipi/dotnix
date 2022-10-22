@@ -1,13 +1,8 @@
-
-" let g:session_default_name = fnamemodify(getenv('PWD'), ':p')
-" let g:session_autosave = 'yes'
-" let g:session_autoload = 'yes'
-
 set sessionoptions-=help
 set sessionoptions-=options
 set sessionoptions-=blank
 
-if argc() == 0 
+if argc() == 0
     let createdir = system('mkdir -p $HOME/.cache/nvim/sessions')
     let g:sessionf = expand('$HOME/.cache/nvim/sessions/'.trim(system('echo "$PWD"|sha256sum|cut -d " " -f 1')))
     if filereadable(sessionf)
@@ -20,6 +15,5 @@ end
 autocmd InsertLeave * write
 autocmd BufWinEnter * filetype detect
 autocmd VimEnter * filetype detect
-autocmd BufWritePost * GitGutter
 
-autocmd User CocOpenFloat call nvim_win_set_config(g:coc_last_float_win, {'relative': 'editor', 'row': 1, 'col': 130})
+" autocmd User CocOpenFloat call nvim_win_set_config(g:coc_last_float_win, {'relative': 'editor', 'row': 1, 'col': 130})
