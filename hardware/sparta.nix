@@ -6,6 +6,12 @@
 
   powerManagement.cpuFreqGovernor = "performance";
 
+  environment.shellAliases = {
+    setbrightness = "${pkgs.brightnessctl}/bin/brightnessctl -d amdgpu_bl1 set";
+  };
+
+  services.xserver.videoDrivers = [ "amdgpu" "nvidia" ];
+
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
     loader = {
