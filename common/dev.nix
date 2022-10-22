@@ -118,6 +118,7 @@ libconf.create_common_confs [
     name = "nix";
     add_pkgs = with pkgs_unstable; [
       rnix-lsp
+      manix
     ];
     vimplugs = with pkgs_unstable.vimPlugins; [
       vim-nix
