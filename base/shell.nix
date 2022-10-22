@@ -17,6 +17,7 @@ in
     users.users.${config.base.user}.shell = cfg.shellPackage;
     home-manager.users.${config.base.user} = {
       programs.bash = lib.mkIf ((lib.strings.getName cfg.shellPackage) == "bash-interactive") {
+        enable = true;
         sessionVariables.COLORTERM="truecolor";
         initExtra = ''
           source ${libdata.get_data_path [ "shell" "git-prompt.sh" ]}
