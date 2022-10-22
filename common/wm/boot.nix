@@ -2,19 +2,6 @@
 let
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
   conf_lib = import ../../lib/commonconf.nix {inherit config lib pkgs;};
-  theme_type = lib.types.submodule {
-    options = {
-      name = lib.mkOption {
-        type = lib.types.str;
-        description = "Name to use when enabling the theme";
-      };
-      package = lib.mkOption {
-        type = lib.types.package;
-        description = "Package to use to install the theme on the system";
-      };
-    };
-  };
-
   cfg = config.cmn.wm.boot;
 
   plymouth_themes = pkgs.stdenv.mkDerivation rec {
@@ -61,6 +48,8 @@ conf_lib.create_common_confs [
         theme = cfg.theme;
         themePackages = [ plymouth_themes ];
         extraConfig = ''
+          UseFirmwareBackground=false
+          ShowDelay=1
         '';
       };
     };
