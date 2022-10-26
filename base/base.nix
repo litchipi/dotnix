@@ -55,6 +55,12 @@ in
       description = "Additionnal home-manager configurations for this machine";
     };
 
+    add_fonts = lib.mkOption {
+      type = with lib.types; listOf package;
+      default = [];
+      description = "Additional fonts to add to the system";
+    };
+
     add_pkgs = lib.mkOption {
       type = with lib.types; listOf package;
       default = [];
@@ -178,5 +184,15 @@ in
       enable = true;
       algorithm = "zstd";
     };
+
+    fonts = {
+      fontDir.enable = true;
+      fontconfig.enable = true;
+      enableDefaultFonts = true;
+      fonts = with pkgs; [
+        pkgs.nerdfonts
+        pkgs.powerline-fonts
+        pkgs.ubuntu_font_family
+      ] ++ cfg.add_fonts;
   };
 }

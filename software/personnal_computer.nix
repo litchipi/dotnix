@@ -11,6 +11,16 @@ in {
     "SFR-a0e0"
   ];
 
+  base.add_fonts = let
+    libdafont = import ../lib/fetchers/dafont.nix { inherit config lib pkgs; };
+  in [
+    pkgs.aileron
+    (libdafont.package_font "vogue" "sha256-1J05Xc9l4E+ULIyojHvz+Tiadw23JyxauTjs3tgMIyA=")
+    (libdafont.package_font "cinzel" "sha256-Nse+mygWb8XC7m6tRvxpiXItKL26CI/xPeCyjxyTaKk=")
+    (libdafont.package_font "avenue" "sha256-17vQU7/jZHOrVDsbExTOnjGwGpyRQ5O3/xcBStjYG6o=")
+    (libdafont.package_font "butler" "sha256-rOnmVSII9qhEIMIpYOAv0giwKW5lJrj+Qjdg1cs3frY=")
+  ];
+
   # Open a bunch of ports for fun things
   networking.firewall.allowedTCPPorts = [ 4444 4445 4446 4447 4448 ];
 

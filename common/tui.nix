@@ -115,17 +115,18 @@ libconf.create_common_confs [
 
         coc = {
           enable = true;
-          package = pkgs_unstable.vimUtils.buildVimPluginFrom2Nix {
-            pname = "coc.nvim";
-            version = "2022-05-21";
-            src = pkgs.fetchFromGitHub {
-              owner = "neoclide";
-              repo = "coc.nvim";
-              rev = "791c9f673b882768486450e73d8bda10e391401d";
-              sha256 = "sha256-MobgwhFQ1Ld7pFknsurSFAsN5v+vGbEFojTAYD/kI9c=";
-            };
-            meta.homepage = "https://github.com/neoclide/coc.nvim/";
-          };
+          package = pkgs_unstable.vimPlugins.coc-nvim;
+          # vimUtils.buildVimPluginFrom2Nix {
+          #   pname = "coc.nvim";
+          #   version = "2022-05-21";
+          #   src = pkgs.fetchFromGitHub {
+          #     owner = "neoclide";
+          #     repo = "coc.nvim";
+          #     rev = "791c9f673b882768486450e73d8bda10e391401d";
+          #     sha256 = "sha256-MobgwhFQ1Ld7pFknsurSFAsN5v+vGbEFojTAYD/kI9c=";
+          #   };
+          #   meta.homepage = "https://github.com/neoclide/coc.nvim/";
+          # };
 
           settings = {
             diagnostic = {
@@ -154,6 +155,7 @@ libconf.create_common_confs [
           vim-airline
           vim-airline-themes
           nerdcommenter
+          nerdtree
           neoformat
           fzf-vim
           zoomwintab-vim
@@ -292,11 +294,6 @@ libconf.create_common_confs [
         description = "Override theme variables over default ones";
       };
     };
-
-    cfg.fonts.fonts = [
-      pkgs.nerdfonts
-      pkgs.powerline-fonts
-    ];
 
     home_cfg.programs = {
       bash.shellAliases = {
