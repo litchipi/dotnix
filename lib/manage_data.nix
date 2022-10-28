@@ -30,6 +30,16 @@ in
       ) assets
     );
 
+  write_secret_file = {
+    user, filename, text,
+    group ? user, permissions ? "0400", symlink ? null
+  }: {
+    source = pkgs.writeText filename text;
+    dest = "/run/nixos-secrets/${user}_secret_files/${filename}";
+    owner = user;
+    inherit group permissions symlink;
+  };
+
   set_secret = { user, path, group ? user, permissions ? "0400", symlink ? null }: {
     source = get_data_path (["secrets"] ++ path);
     dest = "/run/nixos-secrets/${builtins.concatStringsSep "/" path}";

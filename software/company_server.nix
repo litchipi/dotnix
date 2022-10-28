@@ -32,13 +32,20 @@ in
       gdrive = true;
       timerConfig.OnCalendar = "05/7:00:00";
     };
+    runners = {
+      enable = true;
+      services.buster.runnerOpts.dockerImage = "debian:stable-20221024-slim";
+      add_nix_service = true;
+    };
   };
+
   cmn.services.restic.global = {
     enable = true;
     gdrive = true;
     timerConfig.OnCalendar = "05/7:00:00";
     backup_paths = [ "/home/${config.base.user}/" ];
   };
+
   cmn.services.conduit.enable = true;
   cmn.services.nextcloud = {
     enable = true;

@@ -178,4 +178,91 @@ libconf.create_common_confs [
       );
     };
   }
+
+  {
+    name = "runners";
+    parents = [ "services" "gitlab" ];
+    add_opts = {
+      nb_jobs = lib.mkOption {
+        type = lib.types.int;
+        default = 1;
+        description = "Number of jobs to start in parallel";
+      };
+      services = lib.mkOption {
+        type = lib.types.attrsOf lib.types.anything;
+        default = {};
+        description = "Images to use for services";
+      };
+      add_nix_service = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Wether to add a service to build using the host's nix store";
+      };
+    };
+    cfg = {
+      virtualisation.docker.enable = true;
+      base.secrets.store.gitlab_runner_registrationConfigFile = libdata.write_secret_file {
+        user = "root";
+        filename = "gitlab_runner_registrationConfigFile";
+        text = let
+          vars = {
+            CI_SERVER_URL="http://git.${config.base.networking.domain}";
+            REGISTRATION_TOKEN=builtins.readFile (libdata.get_data_path
+              [ "secrets" "services" "gitlab" config.base.hostname "runner_registration_token"]
+            );
+          } // (if config.cmn.services.gitlab.enable then {
+            DOCKER_NETWORK_MODE="host";
+          } else {});
+        in (builtins.concatStringsSep "\n"
+          (lib.attrsets.mapAttrsToList (name: var: "${name}=\"${var}\"") vars));
+        };
+
+        services.gitlab-runner = {
+          enable = true;
+          concurrent = cfg.runners.nb_jobs;
+          services = (builtins.mapAttrs (name:
+            { runnerOpts ? {}, runnerEnvs ? {}, ...} : lib.attrsets.recursiveUpdate {
+            registrationConfigFile =
+                config.base.secrets.store.gitlab_runner_registrationConfigFile.dest;
+            environmentVariables = runnerEnvs;
+          } runnerOpts) cfg.runners.services) // (if cfg.runners.add_nix_service then
+          { nix = {
+            registrationConfigFile = config.base.secrets.store.gitlab_runner_registrationConfigFile.dest;
+            dockerImage = "alpine";
+            dockerVolumes = [
+              "/nix/store:/nix/store:ro"
+              "/nix/var/nix/db:/nix/var/nix/db:ro"
+              "/nix/var/nix/daemon-socket:/nix/var/nix/daemon-socket:ro"
+            ];
+            dockerDisableCache = true;
+            preBuildScript = pkgs.writeScript "setup-container" ''
+              mkdir -p -m 0755 /nix/var/log/nix/drvs
+              mkdir -p -m 0755 /nix/var/nix/gcroots
+              mkdir -p -m 0755 /nix/var/nix/profiles
+              mkdir -p -m 0755 /nix/var/nix/temproots
+              mkdir -p -m 0755 /nix/var/nix/userpool
+              mkdir -p -m 1777 /nix/var/nix/gcroots/per-user
+              mkdir -p -m 1777 /nix/var/nix/profiles/per-user
+              mkdir -p -m 0755 /nix/var/nix/profiles/per-user/root
+              mkdir -p -m 0700 "$HOME/.nix-defexpr"
+
+              . ${pkgs.nix}/etc/profile.d/nix.sh
+
+              ${pkgs.nix}/bin/nix-env -i ${builtins.concatStringsSep " " (with pkgs; [ nix cacert git openssh ])}
+
+              ${pkgs.nix}/bin/nix-channel --add https://nixos.org/channels/nixpkgs-unstable
+              ${pkgs.nix}/bin/nix-channel --update nixpkgs
+            '';
+            environmentVariables = {
+              ENV = "/etc/profile";
+              USER = "root";
+              NIX_REMOTE = "daemon";
+              PATH = "/nix/var/nix/profiles/default/bin:/nix/var/nix/profiles/default/sbin:/bin:/sbin:/usr/bin:/usr/sbin";
+              NIX_SSL_CERT_FILE = "/nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt";
+            };
+            tagList = [ "nix" ];
+          };} else {});
+        };
+    };
+  }
 ]
