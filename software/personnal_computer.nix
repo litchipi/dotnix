@@ -15,6 +15,7 @@ in {
     libdafont = import ../lib/fetchers/dafont.nix { inherit config lib pkgs; };
   in [
     pkgs.aileron
+    pkgs.league-of-moveable-type
     (libdafont.package_font "vogue" "sha256-1J05Xc9l4E+ULIyojHvz+Tiadw23JyxauTjs3tgMIyA=")
     (libdafont.package_font "cinzel" "sha256-Nse+mygWb8XC7m6tRvxpiXItKL26CI/xPeCyjxyTaKk=")
     (libdafont.package_font "avenue" "sha256-17vQU7/jZHOrVDsbExTOnjGwGpyRQ5O3/xcBStjYG6o=")
@@ -123,6 +124,8 @@ in {
 
     # Games
     teeworlds
+    mari0
+    superTuxKart
   ];
 
   services.blueman.enable = true;
