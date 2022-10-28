@@ -194,5 +194,6 @@ in
         pkgs.powerline-fonts
         pkgs.ubuntu_font_family
       ] ++ cfg.add_fonts;
+    };
   };
 }
