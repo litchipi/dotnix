@@ -89,6 +89,7 @@
         unst.gitFull
         unst.neovim
         unst.rust-analyzer
+        unst.displaylink
       ];
     in import nixpkgs {
       overlays = common_overlays ++ [
