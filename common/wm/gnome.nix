@@ -1,7 +1,8 @@
 { config, lib, pkgs, pkgs_unstable, ... }:
 let
-  utils_lib = import ../../lib/utils.nix {inherit config lib pkgs;};
-  conf_lib = import ../../lib/commonconf.nix {inherit config lib pkgs;};
+  libutils = import ../../lib/utils.nix {inherit config lib pkgs;};
+  libcmnconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
+  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.wm.gnome;
   gnome_theme_type = lib.types.submodule {
@@ -21,7 +22,7 @@ let
     };
   };
 in
-conf_lib.create_common_confs [
+libcmnconf.create_common_confs [
   {
     name = "gnome";
     minimal.gui = true;
@@ -43,9 +44,21 @@ conf_lib.create_common_confs [
         description = "Gnome Shell theme to set";
         default = null;
       };
+      mutter_dynamic_buffering = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Wether to add the dynamic buffering patch";
+      };
     };
 
     cfg = {
+      nixpkgs.overlays = lib.mkIf cfg.mutter_dynamic_buffering [ (self: super: {
+        gnome.mutter = pkgs_unstable.gnome.mutter.overrideAttrs (old: {
+          patches = (old.patches or []) ++ [
+            (libdata.pkg_patch "gnome.mutter" "dynamic_buffering")
+          ];
+        });
+      })];
       cmn.wm.enable = true;
       cmn.wm.boot.enable = true;
       programs.dconf.enable = true;

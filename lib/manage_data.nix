@@ -36,4 +36,6 @@ in
     owner = user;
     inherit group permissions symlink;
   };
+
+  pkg_patch = package: patchname: get_data_path ["patches" package "${patchname}.patch"];
 }
