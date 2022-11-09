@@ -223,13 +223,13 @@
         inputs.nixos-hardware.nixosModules.lenovo-legion-15arh05h
       ];
     }
-    # {
-    #   name="diamond";
-    #   software=./software/work_computer.nix;
-    #   hardware=./hardware/diamond.nix;
-    #   add_modules = [
-    #     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
-    #   ];
-    # }
+    {
+      name="diamond";
+      software=./software/work_computer.nix;
+      hardware=./hardware/diamond.nix;
+      add_modules = [
+        inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
+      ];
+    }
   ]);
 }
