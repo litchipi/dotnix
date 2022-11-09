@@ -59,7 +59,6 @@ conf_lib.create_common_confs [
       };
     };
     add_pkgs = with pkgs; [
-      alacritty
       glxinfo
     ] ++ (if builtins.isNull cfg.cursorTheme then [] else [ cfg.cursorTheme.package ]);
     cfg = {
