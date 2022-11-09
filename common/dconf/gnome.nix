@@ -17,6 +17,10 @@ conf_lib.create_common_confs [
     minimal.gui = true;
     home_cfg = {
       dconf.settings = {
+        "org/gnome/desktop/privacy" = {
+          remember-recent-files = false;
+        };
+
         "org/gnome/login-screen" = {
           logo="${gdm_logo_path}";
         };
@@ -74,10 +78,6 @@ conf_lib.create_common_confs [
         "org/gnome/desktop/sound" = {
           allow-volume-above-100-percent = false;
           event-sounds = true;
-        };
-
-        "org/gnome/desktop/wm/preferences" = {
-          button-layout = ":close";
         };
 
         "org/gnome/shell/extensions/unite" = {
@@ -144,14 +144,6 @@ conf_lib.create_common_confs [
           user-enabled = true;
         };
 
-        "org/gnome/shell/extensions/dash-to-dock" = {
-          apply-custom-theme=false;
-          dock-position="BOTTOM";
-          scroll-action="switch-workspace";
-          transparency-mode="FIXED";
-          background-opacity=0.0;
-        };
-
         "org/gnome/shell" = {
           had-bluetooth-devices-setup = true;
           remember-mount-password = true;
@@ -185,8 +177,23 @@ conf_lib.create_common_confs [
         };
 
         "org/gnome/desktop/wm/keybindings" = {
-          switch-windows = "['<Alt>Tab']";
+          switch-windows = "['<Super>Tab']";
+          switch-applications = "['<Alt>Tab']";
         };
+
+        # Theming
+        "org/gnome/desktop/wm/preferences" = {
+          button-layout = ":close";
+        };
+
+        "org/gnome/shell/extensions/dash-to-dock" = {
+          apply-custom-theme=false;
+          dock-position="BOTTOM";
+          scroll-action="switch-workspace";
+          transparency-mode="FIXED";
+          background-opacity=0.0;
+        };
+
       };
     };
   }
