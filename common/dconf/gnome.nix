@@ -144,6 +144,14 @@ conf_lib.create_common_confs [
           user-enabled = true;
         };
 
+        "org/gnome/shell/extensions/dash-to-dock" = {
+          apply-custom-theme=false;
+          dock-position="BOTTOM";
+          scroll-action="switch-workspace";
+          transparency-mode="FIXED";
+          background-opacity=0.0;
+        };
+
         "org/gnome/shell" = {
           had-bluetooth-devices-setup = true;
           remember-mount-password = true;
