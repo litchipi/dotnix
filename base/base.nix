@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, pkgs_unstable, ... }:
 let
   cfg = config.base;
   libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
@@ -190,9 +190,11 @@ in
       fontconfig.enable = true;
       enableDefaultFonts = true;
       fonts = with pkgs; [
-        pkgs.nerdfonts
-        pkgs.powerline-fonts
+        pkgs_unstable.nerdfonts
+        pkgs_unstable.powerline-fonts
         pkgs.ubuntu_font_family
+        pkgs.fira-code
+        pkgs.fira-code-symbols
       ] ++ cfg.add_fonts;
     };
   };

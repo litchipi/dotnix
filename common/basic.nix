@@ -2,6 +2,7 @@
 let
   conf_lib = import ../lib/commonconf.nix {inherit config lib pkgs;};
   libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
+  libcolors = import ../lib/colors.nix {inherit config lib pkgs;};
 in
 conf_lib.create_common_confs [
   {
@@ -25,7 +26,46 @@ conf_lib.create_common_confs [
       };
     };
     home_cfg = {
-      home.file.".alacritty.yml".source = libdata.get_data_path ["config" "alacritty.yml"];
+      programs.alacritty = {
+        enable = config.cmn.software.default_terminal_app.pname == "alacritty";
+        settings = {
+          env.TERM = "xterm-256color";
+          window = {
+            decorations = "none";
+            opacity = 0.85;
+            padding = {
+              x = 15;
+              y = 15;
+            };
+          };
+          scrolling = {
+            history = 10000;
+            multiplier = 3;
+          };
+          mouse.hide_when_typing = false;
+          font.use_thin_strokes = false; #true;
+          font.normal = {
+            family = "Fira Code";
+            style = "Regular";
+          };
+          font.bold = {
+            family = "Fira Code";
+            style = "Bold";
+          };
+          font.italic = {
+            family = "Fira Code";
+            style = "Italic";
+          };
+          cursor.unfocused_hollow = true;
+          colors = {
+            primary = {
+              background = "0x000000";
+              foreground = "0xffffff";
+            };
+            dim.black  = "0x333333";
+          };
+        };
+      };
     };
   }
   {
