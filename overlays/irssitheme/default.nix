@@ -16,7 +16,7 @@
 
   scripts = {
     dim_nicks = fetchscript "dim_nicks" "sha256-U0R0MT2lMIQSfrWpUgtBbPsS7KIXdENFBSj4aJxW6gQ=";
-    adv_windowlist = fetchscript "adv_windowlist" "sha256-LgkNeHaOWONBPtUfCRFXyUalfpHpZHTeYFDuGN0GZHE=";
+    adv_windowlist = fetchscript "adv_windowlist" "sha256-qkVNH6vsEfra1ovQfwEdswuGK0VKuSxh+4sZ+TGwfME=";
     nickcolor = fetchscript "nickcolor" "sha256-Ice18JORQiAdQ72T4c6f1A0U87fSM+SjaEci3H0WtsY=";
     openurl = fetchscript "openurl" "sha256-ak4PGs+AVI9I4srFlulm8uJ/4vRQFVNYCRR3klGVuKA=";
     trackbar = fetchscript "trackbar" "sha256-lCiWkFcVMvQ+OjQkbShYBn03xBk4imddI7Tq2rfQEMI=";
