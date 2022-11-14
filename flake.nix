@@ -120,6 +120,7 @@
         _module.args = {
           inherit inputs system;
           pkgs_unstable = pkgs_unstable system;
+          home-manager-lib = inputs.home-manager.lib.hm;
         };
       }
     ];

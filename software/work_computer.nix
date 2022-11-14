@@ -109,7 +109,6 @@ in {
   # - Fixup USB screen
   cmn.hardware.displaylink.enable = false;
   # - Fixup Nerdfont too small in shix
-  # - Set up AZERTY keyboard on QWERTY
   # - Restore projects dir
   # - Allow diamond on gitlab
 }

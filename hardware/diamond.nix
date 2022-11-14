@@ -6,11 +6,11 @@ in {
 
   powerManagement.cpuFreqGovernor = "performance";
 
-  # Set up AZERTY layout on the QWERTY keyboard
-  services.xserver.extraLayouts.azerty_on_qwerty = {
+  cmn.hardware.keyboard.enable = true;
+  cmn.hardware.keyboard.layout = {
+    name = "azerty_on_qwerty";
+    languages = ["fr"];
     description = "AZERTY layout on a QWERTY keyboard";
-    languages = [ "fr" ];
-    symbolsFile = libdata.get_data_path [ "config" "xkb_azerty_on_qwerty" ];
   };
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "sd_mod" "ahci" "nvme" ];
