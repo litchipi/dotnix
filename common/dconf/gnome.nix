@@ -172,10 +172,6 @@ conf_lib.create_common_confs [
           current-workspace-only = false;
         };
 
-        "org/gnome/shell/app-switcher" = {
-          current-workspace-only = true;
-        };
-
         "org/gnome/desktop/wm/keybindings" = {
           switch-windows = "['<Super>Tab']";
           switch-applications = "['<Alt>Tab']";
