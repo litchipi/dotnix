@@ -64,21 +64,6 @@ in {
 
   cmn.software.dev.basic = true;
 
-  base.full_pkgs = with pkgs; [
-    # Writing
-    apostrophe  # Markdown editor
-    # marp # Markdown to PDF  # Insecure
-
-    # Music
-    blanket # Play relaxing sound
-    shortwave # Listen Internet radio
-    gnome-podcasts # Listen to podcasts
-
-    # System
-    authenticator # 2FA TOTP app
-    blueman     # Bluetooth manager
-  ];
-
   services.flatpak.enable = true;
 
   cmn.services.restic.global = {
@@ -112,4 +97,22 @@ in {
   # - Fixup Nerdfont too small in shix
   # - Restore projects dir
   # - Allow diamond on gitlab
+
+  base.full_pkgs = with pkgs; [
+    # Writing
+    apostrophe  # Markdown editor
+    # marp # Markdown to PDF  # Insecure
+
+    # Music
+    blanket # Play relaxing sound
+    shortwave # Listen Internet radio
+    gnome-podcasts # Listen to podcasts
+
+    # System
+    authenticator # 2FA TOTP app
+    blueman     # Bluetooth manager
+
+    # Dev
+    cmake
+  ];
 }
