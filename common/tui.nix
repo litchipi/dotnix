@@ -101,8 +101,14 @@ libconf.create_common_confs [
     };
     cfg.environment.variables.EDITOR = "nvim";
     home_cfg = {
-      # TODO  Fetch file from remote source
-      home.file.".local/share/nvim/site/autoload/plug.vim".source = libdata.get_data_path ["config" "nvim" "plug.vim"];
+      home.file.".local/share/nvim/site/autoload/plug.vim".source = let
+        src = pkgs.fetchFromGitHub {
+          owner = "junegunn";
+          repo = "vim-plug";
+          rev = "8fdabfba0b5a1b0616977a32d9e04b4b98a6016a";
+          sha256 = "sha256-jAr/xyQAYM9a1Heh1nw1Rsf2dKGRhlXs0Z4ETTAT0hA=";
+        };
+      in "${src}/plug.vim";
 
       programs.neovim = {
         enable = true;
