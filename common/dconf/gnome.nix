@@ -157,7 +157,6 @@ conf_lib.create_common_confs [
 
         "org/gnome/desktop/input-sources" = {
           per-window = false;
-          sources = [ (mkTuple [ "xkb" "fr+oss" ]) ];
         };
 
         "org/gnome/desktop/calendar" = {
