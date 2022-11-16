@@ -1,7 +1,7 @@
 { config, lib, pkgs, pkgs_unstable, ... }:
 let
-  libconf = import ../lib/commonconf.nix {inherit config lib pkgs;};
-  libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
+  libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
+  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.software.dev;
 

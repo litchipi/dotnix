@@ -1,15 +1,14 @@
 { config, lib, pkgs, ... }:
 let
-  conf_lib = import ../lib/commonconf.nix {inherit config lib pkgs;};
-  libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
-
-  colors = import ../lib/colors.nix {inherit config lib pkgs;};
+  libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
+  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
+  libcolors = import ../../lib/colors.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.shell.aliases;
-  cfg_memory = cfg.memory;
+
   # TODO  Create standardized functions definition for aliases, with variable shell
 in
-conf_lib.create_common_confs [
+libconf.create_common_confs [
   {
     name = "filesystem";
     minimal.cli = true;
@@ -84,7 +83,7 @@ conf_lib.create_common_confs [
         __git_complete gload _git_checkout
 
         function __gh() {
-                echo -e "${colors.fg.palette.primary} $1:   ${colors.reset} $2"
+                echo -e "${libcolors.fg.palette.primary} $1:   ${libcolors.reset} $2"
         }
 
         function ghelp() {
@@ -205,8 +204,8 @@ conf_lib.create_common_confs [
     };
     cfg.environment.shellAliases = {
       pingt=''ping -c 1 -W 1 ${cfg.network.pingtest_website} '' +
-        ''1> /dev/null 2> /dev/null && echo -e "${colors.fg.palette.ok}Connected${colors.reset}" '' +
-        ''|| echo -e "${colors.fg.palette.bad}No connection${colors.reset}" '';
+        ''1> /dev/null 2> /dev/null && echo -e "${libcolors.fg.palette.ok}Connected${libcolors.reset}" '' +
+        ''|| echo -e "${libcolors.fg.palette.bad}No connection${libcolors.reset}" '';
     };
   }
 

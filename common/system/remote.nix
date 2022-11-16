@@ -1,12 +1,12 @@
 { config, lib, pkgs, ... }:
 let
-  conf_lib = import ../lib/commonconf.nix {inherit config lib pkgs;};
-  libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
-  netw_lib = import ../lib/networking.nix {inherit config lib pkgs;};
+  libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
+  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
+  libnet = import ../../lib/networking.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.remote.gogs;
 in
-conf_lib.create_common_confs [
+libconf.create_common_confs [
   {
     name = "gogs";
     parents = [ "remote" ];
@@ -27,7 +27,7 @@ conf_lib.create_common_confs [
 
     assertions = [
       {
-        assertion = (builtins.tryEval (netw_lib.IpFromString cfg.ipaddr)).success;
+        assertion = (builtins.tryEval (libnet.IpFromString cfg.ipaddr)).success;
         message = "IP address not valid, please check cmn.remote.gogs.ipaddr config";
       }
     ];

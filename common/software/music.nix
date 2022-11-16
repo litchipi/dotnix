@@ -1,8 +1,8 @@
 { config, lib, pkgs, ... }:
-let 
-  conf_lib = import ../lib/commonconf.nix {inherit config lib pkgs;};
+let
+  libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
 in
-conf_lib.create_common_confs [
+libconf.create_common_confs [
   {
     name = "musicprod";
     chain_enable_opts  = {

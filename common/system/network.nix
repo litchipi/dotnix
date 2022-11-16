@@ -1,12 +1,11 @@
 { config, lib, pkgs, ... }:
 let
-  conf_lib = import ../lib/commonconf.nix {inherit config lib pkgs;};
-  libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
+  libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
+  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
 
   vpncfg = config.cmn.software.protonvpn;
-  vpncreds = libdata.plain_secrets.creds.proton_vpn;
 in
-conf_lib.create_common_confs [
+libconf.create_common_confs [
   {
     name = "protonvpn";
     parents = [ "software" ];

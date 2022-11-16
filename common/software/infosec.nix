@@ -1,10 +1,10 @@
 { config, lib, pkgs, ... }:
 let
-  conf_lib = import ../lib/commonconf.nix {inherit config lib pkgs;};
+  libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.infosec;
 in
-conf_lib.create_common_confs [
+libconf.create_common_confs [
   {
     name = "infosec";
     parents = ["software"];
