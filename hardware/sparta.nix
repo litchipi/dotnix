@@ -12,8 +12,8 @@
 
   services.xserver.videoDrivers = [ "amdgpu" "nvidia" ];
 
+  base.kernel.package = pkgs.linuxPackages_zen;
   boot = {
-    kernelPackages = pkgs.linuxPackages_zen;
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;

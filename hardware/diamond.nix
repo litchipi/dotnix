@@ -2,7 +2,7 @@
   libdata = import ../lib/manage_data.nix { inherit config lib pkgs; };
 in {
   base.hostname = "diamond";
-  boot.kernelPackages = pkgs_unstable.linuxPackages_zen;
+  base.kernel.package = pkgs_unstable.linuxPackages_zen;
 
   powerManagement.cpuFreqGovernor = "performance";
 

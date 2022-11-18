@@ -2,6 +2,7 @@
   libdata = import ../lib/manage_data.nix { inherit config pkgs lib; };
 in {
   base.hostname = "suzie";
+  base.kernel.package = pkgs.linuxPackages;
 
   # Hardware configuration auto-detected
   boot.loader.systemd-boot.enable = true;
