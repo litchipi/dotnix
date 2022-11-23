@@ -2,10 +2,11 @@
 {
   # The name of the main user of the system
   base.user = "nx";
+  base.hostname = "nixostest";
 
   # What SSH key to allow for remote login
   #   (has to be a file in data/ssh/pubkeys/<name>.pub)
-  base.networking.ssh_auth_keys = ["john" "tim"];
+  base.networking.ssh_auth_keys = ["john@sparta" "tim@diamond"];
 
   # Load the wifi password for the SSID "nixostest"
   base.networking.connect_wifi = [ "nixostest" ];
@@ -27,11 +28,7 @@
   cmn.software.musicprod.enable = true;
   cmn.software.musicprod.electro.enable = true;
 
-  cmn.remote.gogs.enable = true;
-  cmn.remote.gogs.ipaddr = "185.167.99.178";
-
-  cmn.software.dev.enable = true;
-  cmn.software.dev.all = true;
+  cmn.software.dev.basic = true;
 
   # Custom configuration for the user "nx" of the system
   base.home_cfg = {
