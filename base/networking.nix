@@ -47,7 +47,8 @@ in
       path = ["keys" config.base.hostname "ssh_${config.base.user}_privk"];
       symlink = "/home/${config.base.user}/.ssh/id_rsa";
     };
-    base.home_cfg.home.file.".ssh/id_rsa.pub".source = libdata.get_data_path ["ssh_pubkeys" "${ssh_ident}.pub"];
+    base.home_cfg.home.file.".ssh/id_rsa.pub".source = libdata.get_data_path
+      ["pubkeys" "ssh" "${ssh_ident}.pub"];
     boot.postBootCommands = ''
         if [ -d /var/cache/nginx ]; then
             chown -R nginx:nginx /var/cache/nginx
