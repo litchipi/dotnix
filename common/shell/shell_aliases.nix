@@ -171,7 +171,7 @@ libconf.create_common_confs [
       };
     };
     cfg.environment.shellAliases = let
-      ytdl_args = "-x --add-metadata -o '~/${config.xdg.dirs.music}/%(title)s.%(ext)s'";
+      ytdl_args = "-x --add-metadata";
     in
     rec {
       dl_mp3="youtube-dl ${ytdl_args} --audio-format mp3";
