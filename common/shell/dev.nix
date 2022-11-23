@@ -133,11 +133,12 @@ libconf.create_common_confs [
       pythonpkg = pkgs.python310.withPackages (p: with p; [
         pip
         virtualenv
+        requests
       ]);
   in lang_profile {
     name = "python";
-    add_pkgs = let
-    in with pkgs; [
+    # TODO    Add an alias that generate a virtualenv with some packages automatically installed
+    add_pkgs = with pkgs; [
       pythonpkg
       poetry
       black
