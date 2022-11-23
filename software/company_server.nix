@@ -39,6 +39,8 @@ in
     };
   };
 
+  cmn.services.cachix.server.enable = true;
+
   cmn.services.restic.global = {
     enable = true;
     gdrive = true;

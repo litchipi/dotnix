@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }: let
   libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
   libcolors = import ../lib/colors.nix {inherit config lib pkgs;};
+  libcachix = import ../lib/services/cachix.nix {inherit config lib pkgs; };
 in {
   base.user = "tim";
   base.email = "litchi.pi@proton.me";
@@ -115,4 +116,10 @@ in {
     # Dev
     cmake
   ];
+  cmn.services.cachix.client = {
+    enable = true;
+    servers = libcachix.set_servers [
+      { fqdn = "cachix.orionstar.cyou"; }
+    ];
+  };
 }
