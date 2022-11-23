@@ -3,14 +3,14 @@
 
   pal = config.colors.palette;
   col = c: if c == "default" then c else "#${libcolors.tohex c}";
-  
+
   tmuxstyle = {fg ? null, bg ? null, add ? null, ...}: builtins.concatStringsSep ","
       ((if (builtins.isNull fg) then [] else [ "fg=${col fg}" ]) ++
       (if (builtins.isNull bg) then [] else [ "bg=${col bg}" ]) ++
       (if (builtins.isNull add) then [] else [ add ]));
-      
+
   tmuxfmts = cnt: builtins.concatStringsSep "" (builtins.map tmuxfmt cnt);
-  
+
   tmuxfmt = { txt, ...}@fmt: let
     all_styles = tmuxstyle fmt;
     style = if all_styles == "" then "" else "#[${all_styles}]";

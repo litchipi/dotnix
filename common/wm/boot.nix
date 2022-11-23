@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
-  conf_lib = import ../../lib/commonconf.nix {inherit config lib pkgs;};
+  libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   cfg = config.cmn.wm.boot;
 
   plymouth_themes = pkgs.stdenv.mkDerivation rec {
@@ -31,7 +31,7 @@ let
     '';
   };
 in
-conf_lib.create_common_confs [
+libconf.create_common_confs [
   {
     name = "boot";
     parents = ["wm"];
