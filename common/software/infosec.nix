@@ -20,7 +20,7 @@ libconf.create_common_confs [
     cfg = {
       cmn.software.basic.enable = true;
       cmn.software.tui.enable = true;
-      cmn.software.dev.scripts.enable = true;
+      cmn.software.dev.scripts = true;
     };
 
     add_pkgs = with pkgs; [

@@ -1,0 +1,20 @@
+build:
+  tags:
+    - nix # Run on the shared /nix/store builder
+
+  script:
+    - mkdir -p /etc/nix/
+    - echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
+    - nix-env -i git-crypt
+    - echo "$GITCRYPT_KEY" | base64 -d > /tmp/gitcrypt.key
+    - echo "$(sha512sum /tmp/gitcrypt.key)"
+    - git-crypt unlock /tmp/gitcrypt.key
+    - export ALL_MACHINES=$(cat flake.nix|grep "name="|awk -F "\"" '{print $2}')
+    - |+
+      for machine in $ALL_MACHINES
+      do
+        echo "[*] Building machine $machine"
+        nix build .#$machine.guivm
+        echo "Done"
+        echo ""
+      done

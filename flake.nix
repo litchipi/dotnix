@@ -200,22 +200,15 @@
       ));
     };
 
-  # TODO    Set up Gitlab CI to check eval of all the targets
   in inputs.flake-utils.lib.eachDefaultSystem (system: declare_machines system [
     {
       name="nixostest";
       software=./software/nixostest.nix;
     }
-
     {
       name="suzie";
       software=./software/company_server.nix;
       hardware=./hardware/suzie.nix;
-    }
-
-    {
-      name="dumbo";
-      software=./software/backup_server.nix;
     }
     {
       name="sparta";
