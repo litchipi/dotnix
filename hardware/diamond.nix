@@ -4,6 +4,14 @@ in {
   base.hostname = "diamond";
   base.kernel.package = pkgs_unstable.linuxPackages_zen;
 
+  base.add_pkgs = with pkgs; [
+    intel-media-driver
+  ];
+
+  boot.kernelParams = [
+    "snd_hda_intel.dmic_detect=0"
+  ];
+
   powerManagement.cpuFreqGovernor = "performance";
 
   cmn.hardware.keyboard.enable = true;

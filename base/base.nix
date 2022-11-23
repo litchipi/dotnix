@@ -149,14 +149,22 @@ in
        enableSSHSupport = true;
     };
 
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = let
+      base_full_pkgs = with pkgs; [
+        # Firmwares
+        linux-firmware
+        sof-firmware
+        alsa-firmware
+      ];
+    in with pkgs; [
       complete-alias
       coreutils-full
       git git-crypt pass-git-helper
       gnupg pinentry pinentry-curses
       file
     ] ++ cfg.add_pkgs
-    ++ (if (config.base.minimal.cli || config.base.minimal.gui) then [] else cfg.full_pkgs);
+    ++ (if (config.base.minimal.cli || config.base.minimal.gui) then [] else
+      (cfg.full_pkgs ++ base_full_pkgs));
 
     nix.settings = {
       auto-optimise-store = true;
