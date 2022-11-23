@@ -32,7 +32,6 @@ libconf.create_common_confs [
         jrnl.enable = lib.mkDefault true;
         irssi.enable = lib.mkDefault true;
       };
-      cmn.software.moc.enable = lib.mkDefault true;
 
       cmn.shell.aliases = {
         filesystem.enable = lib.mkDefault true;
@@ -49,6 +48,8 @@ libconf.create_common_confs [
       du-dust
       wkhtmltopdf
       youtube-dl
+      yt-dlp
+      termusic
       ffmpeg
       neofetch
       bat
