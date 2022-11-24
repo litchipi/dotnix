@@ -83,8 +83,6 @@ in
     };
   };
 
-  # TODO        Add an option to define what is the behaviour of the nginx server
-  #             Without any subdomain, default would be to raise "404 not found"
   cmn.services.web_hosting = {
     enable = true;
     websites."static".package = pkgs.litchipi.tyf_website;

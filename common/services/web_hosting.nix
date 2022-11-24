@@ -124,6 +124,14 @@ libconf.create_common_confs [
               locations."/".proxyPass = "http://0.0.0.0:${builtins.toString app.port}";
             };
           }) cfg.applications)
+          {
+            "_" = {
+              default = true;
+              extraConfig = ''
+                return 404;
+              '';
+            };
+          }
         ];
       };
 
