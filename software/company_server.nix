@@ -78,8 +78,7 @@ in
     users.${persowebsite.user} = {
       databases = [ persowebsite.dbname ];
       permissions.${persowebsite.dbname} = "ALL PRIVILEGES";
-      # TODO  Find anothing thing than "trust" to put there
-      auth_method = "trust";
+      auth_method = "peer";
     };
   };
 

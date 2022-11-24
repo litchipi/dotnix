@@ -78,10 +78,12 @@ libconf.create_common_confs [
           '' + (builtins.concatStringsSep "\n" (
               lib.lists.flatten (
                 lib.attrsets.mapAttrsToList (user: val:
-                  builtins.map (db: ''
-                    local ${db} ${user} ${val.auth_method}
-                    host ${db} ${user} localhost ${val.auth_method}
-                  '') val.databases
+                  builtins.map (db: builtins.concatStringsSep "\n" [
+                    "local ${db} ${user} ${val.auth_method}"
+                    (if val.auth_method == "peer" then ""
+                        else "host ${db} ${user} 127.0.0.1/32 ${val.auth_method}"
+                    )
+                  ]) val.databases
                 ) cfg.users
               )
             )
@@ -94,7 +96,7 @@ libconf.create_common_confs [
         value = {
           isSystemUser = true;
           group = user;
-          extraGroups = [ "postgresql" ]; # TODO  See if necessary
+          extraGroups = [ "postgres" ]; # TODO  See if necessary
         };
       }) cfg.users;
 
