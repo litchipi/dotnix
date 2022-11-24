@@ -92,7 +92,6 @@ libcmnconf.create_common_confs [
         geary
       ];
 
-      # TODO  FIXME User icon not set for gnome session
       boot.postBootCommands = if builtins.isNull cfg.user_icon then "" else let
         gdm_user_conf = ''
           [User]
