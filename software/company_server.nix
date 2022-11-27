@@ -95,9 +95,10 @@ in
             posts_dir = "${persowebsite.dir}/posts";
             spawnDatabase = false;
             database = {
-              user = persowebsite.user;
-              dbname = persowebsite.dbname;
               inherit (config.cmn.services.postgresql) port dir;
+              user = persowebsite.user;
+              host = "/var/run/postgresql/";
+              dbname = persowebsite.dbname;
             };
           };
         in "${startup}";
