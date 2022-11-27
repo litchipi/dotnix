@@ -116,7 +116,7 @@ libconf.create_common_confs [
         }
       ) cfg.targets;
 
-      boot.postBootCommands = ''
+      system.activationScripts.initResicRepo = ''
         if [ ! -f ${cfg.restic_repo_dir}/config ]; then
           ${pkgs.restic}/bin/restic init -q -p ${config.base.secrets.store.restic_repo_pwd.dest} -r ${cfg.restic_repo_dir}
         fi

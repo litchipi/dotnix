@@ -108,7 +108,7 @@ in {
       }) cfg.store;
     in units;
 
-    boot.postBootCommands = (if cfg.encrypted_master_key then ''
+    system.activationScripts.decrypt_machine_secret_key = (if cfg.encrypted_master_key then ''
       function decrypt_key() {
         echo "Decrypting provision key..."
 

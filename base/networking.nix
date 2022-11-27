@@ -49,7 +49,7 @@ in
     };
     base.home_cfg.home.file.".ssh/id_rsa.pub".source = libdata.get_data_path
       ["pubkeys" "ssh" "${ssh_ident}.pub"];
-    boot.postBootCommands = ''
+    system.activationScripts.chown_nginx_dir = ''
         if [ -d /var/cache/nginx ]; then
             chown -R nginx:nginx /var/cache/nginx
         fi

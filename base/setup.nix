@@ -49,7 +49,7 @@
   };
 
   config = {
-    boot.postBootCommands = lib.strings.concatStringsSep "\n" (builtins.map (dir: ''
+    system.activationScripts.create_setup_dirs = lib.strings.concatStringsSep "\n" (builtins.map (dir: ''
         mkdir -p ${dir.path}
         chown -R ${dir.owner}:${if builtins.isNull dir.group then dir.owner else dir.group} ${dir.path}
         ${lib.strings.optionalString (!builtins.isNull dir.perms) "chmod -R ${dir.perms} ${dir.path}"}

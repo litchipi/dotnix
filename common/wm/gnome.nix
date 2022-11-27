@@ -92,7 +92,7 @@ libcmnconf.create_common_confs [
         geary
       ];
 
-      boot.postBootCommands = if builtins.isNull cfg.user_icon then "" else let
+      system.activationScripts.setup_gnome_user_icon = if builtins.isNull cfg.user_icon then "" else let
         gdm_user_conf = ''
           [User]
           Session=

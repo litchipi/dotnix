@@ -87,7 +87,7 @@ libconf.create_common_confs [
     # TODO  Asserts that applications and websites do not overlap subdomain
     cfg = {
       networking.firewall.allowedTCPPorts = [ 80 443 ];
-      boot.postBootCommands = builtins.concatStringsSep "\n" (lib.attrsets.mapAttrsToList
+      system.activationScripts.webapp_init_scripts = builtins.concatStringsSep "\n" (lib.attrsets.mapAttrsToList
         (_: app: app.initScript) cfg.applications
       );
 
