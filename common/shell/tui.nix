@@ -231,6 +231,7 @@ libconf.create_common_confs [
     minimal.cli = true;
     parents = [ "software" "tui" ];
     add_pkgs = [
+      # TODO  IMPORTANT   Fixup
       (if config.cmn.wm.enable then pkgs.gitFull else pkgs.git)
     ];
     add_opts = {
