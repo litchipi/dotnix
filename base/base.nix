@@ -168,7 +168,7 @@ in
 
     nix.settings = {
       auto-optimise-store = true;
-      experimental-features = [ "nix-command" "flakes" "ca-derivations" ];
+      experimental-features = [ "nix-command" "flakes" ];
       trusted-users = [ config.base.user ];
     };
     nix.extraOptions = ''
