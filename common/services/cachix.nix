@@ -32,10 +32,10 @@ libconf.create_common_confs [
         description = "Add default servers to list as well";
       };
     };
-    cfg.nix = {
-      binaryCaches = (if cfg.client.add_default_servers then default_servers.server else [])
+    cfg.nix.settings = {
+      substituters = (if cfg.client.add_default_servers then default_servers.server else [])
         ++ (lib.attrsets.mapAttrsToList (server: _: server) cfg.client.servers);
-      binaryCachePublicKeys =
+      trusted-public-keys =
         (if cfg.client.add_default_servers then default_servers.pubkey else [])
         ++ (lib.attrsets.mapAttrsToList (_: pubkey:
           if builtins.isString pubkey then pubkey

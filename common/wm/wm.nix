@@ -63,7 +63,6 @@ conf_lib.create_common_confs [
     ] ++ (if builtins.isNull cfg.cursorTheme then [] else [ cfg.cursorTheme.package ]);
     cfg = {
       xdg.portal.enable = true;
-      xdg.portal.gtkUsePortal = true;
 
       programs.dconf.enable = true;
       cmn.dconf.apps.enable = true;

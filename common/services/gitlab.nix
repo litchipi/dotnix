@@ -219,7 +219,7 @@ libconf.create_common_confs [
 
         services.gitlab-runner = {
           enable = true;
-          concurrent = cfg.runners.nb_jobs;
+          settings.concurrent = cfg.runners.nb_jobs;
           services = (builtins.mapAttrs (name:
             { runnerOpts ? {}, runnerEnvs ? {}, ...} : lib.attrsets.recursiveUpdate {
             registrationConfigFile =

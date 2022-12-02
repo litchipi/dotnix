@@ -43,7 +43,6 @@ libconf.create_common_confs [
             multiplier = 3;
           };
           mouse.hide_when_typing = false;
-          font.use_thin_strokes = false; #true;
           font.normal = {
             family = "Fira Code";
             style = "Regular";
