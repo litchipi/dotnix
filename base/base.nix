@@ -162,6 +162,7 @@ in
       git git-crypt pass-git-helper
       gnupg pinentry pinentry-curses
       file
+      srm
     ] ++ cfg.add_pkgs
     ++ (if (config.base.minimal.cli || config.base.minimal.gui) then [] else
       (cfg.full_pkgs ++ base_full_pkgs));

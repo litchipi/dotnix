@@ -47,6 +47,7 @@ let
 
   provision_privk = libdata.get_data_path ["secrets" "provision_key" "${config.base.hostname}.gpg"];
   provision_pubk = libdata.get_data_path ["secrets" "provision_key" "${config.base.hostname}.pub"];
+  provision_shasum = libdata.get_data_path ["secrets" "provision_key" "${config.base.hostname}.sha512sum"];
 
   mkSecretOnDisk = name:
     { source, ... }:
@@ -93,11 +94,6 @@ in {
       description = "secret configuration";
       default = { };
     };
-    encrypted_master_key = mkOption {
-      type = types.bool;
-      default = config.setup.is_vm;
-      description = "Wether to store a master key encrypted with a password or not";
-    };
   };
 
   config = {
@@ -108,29 +104,34 @@ in {
       }) cfg.store;
     in units;
 
-    system.activationScripts.decrypt_machine_secret_key = (if cfg.encrypted_master_key then ''
+    system.activationScripts.decrypt_machine_secret_key = ''
+      export PATH=$PATH:${pkgs.gnupg}/bin/
+
       function decrypt_key() {
         echo "Decrypting provision key..."
 
+        echo "Password hint: ${builtins.readFile ../.passwordhint}"
         read -p "Enter password: " -s password
-        export PATH=$PATH:${pkgs.gnupg}/bin/
         gpg -q --batch --passphrase "$password" --output ${cfg.machine_secret_key_fname} -d ${provision_privk}
       }
 
-      while [ ! -f ${cfg.machine_secret_key_fname} ]; do
+      while true; do
+        if [ -f ${cfg.machine_secret_key_fname} ]; then
+          key_shasum=$(sha512sum ${cfg.machine_secret_key_fname} | cut -d " " -f 1)
+          if [[ "$key_shasum" == "$(cat ${provision_shasum})" ]]; then
+            echo "Found matching secret key"
+            break
+          fi
+          rm -f ${cfg.machine_secret_key_fname}
+        fi
+
         if ! decrypt_key; then
           echo "Failed to decrypt key"
+          echo ""
           continue;
         fi
         echo "Success"
       done
-    '' else ''
-      if [ ! -f ${cfg.machine_secret_key_fname} ]; then
-        echo "ERROR: ${cfg.machine_secret_key_fname} is not provided"
-        echo "Please populate key to ${cfg.machine_secret_key_fname} in order to decrypt machine secrets"
-        exit 1;
-      fi
-    '') + ''
 
     chmod 0400 ${cfg.machine_secret_key_fname}
     chown root:root ${cfg.machine_secret_key_fname}

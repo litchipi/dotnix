@@ -192,12 +192,44 @@
           );
       };
 
-      apps = builtins.listToAttrs (
+      apps = (builtins.listToAttrs (
         (builtins.map (machine: rec {
           name = machine.name;
           value = build_machine_scripts machine system;
         }) machines
-      ));
+        ))) // {
+          generate_provision_key = let
+            pkgs = pkgsForSystem system;
+          in simple_script pkgs "generate_provision_key" (''
+            export PATH="$PATH:${pkgs.srm}/bin:${pkgs.gnupg}/bin"
+            KEYPATH=./data/secrets/provision_key/
+            echo "Hint: $(cat ${./.passwordhint})"
+            echo "Enter password:"
+            read -s password
+            passwordshasum=$(echo $password | sha512sum | cut -d " " -f 1)
+            if [ ! -f .passwordshasum ]; then
+                echo "$passwordshasum" > .passwordshasum
+                echo "Re-enter password:"
+                read -s password_verif
+                passwordshasum=$(echo $password_verif | sha512sum | cut -d " " -f 1)
+            fi
+            if [[ "$passwordshasum" != "$(cat .passwordshasum)" ]]; then
+                echo "Wrong password"
+                exit 1;
+            fi
+            generate_key() {
+                KEY=$KEYPATH/$1
+                echo "Generate key for host $1"
+                rm -f $KEY.pub $KEY.gpg $KEY
+                ssh-keygen -P "" -f $KEY -t ed25519 -C "$1"
+                sha512sum $KEY | cut -d " " -f 1 > $KEY.sha512sum
+                gpg -q --batch --passphrase "$password" -c $KEY
+                srm $KEY
+            }
+          '' + builtins.concatStringsSep "\n" (builtins.map (machine: ''
+            generate_key ${machine.name}
+          '') machines));
+        };
     };
 
   in inputs.flake-utils.lib.eachDefaultSystem (system: declare_machines system [
