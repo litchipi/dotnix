@@ -106,12 +106,22 @@ in {
 
     system.activationScripts.decrypt_machine_secret_key = if config.setup.is_ci_run then "" else ''
       export PATH=$PATH:${pkgs.gnupg}/bin/
+      mkdir -p /root/.gnupg
+      chown root:root /root/.gnupg
+      chmod -R 400 /root/.gnupg
 
       function decrypt_key() {
+        echo ""
+        echo ""
+        echo ""
         echo "Decrypting provision key..."
 
         echo "Password hint: ${builtins.readFile ../.passwordhint}"
         read -p "Enter password: " -s password
+        echo ""
+        echo "Expected: ${builtins.readFile provision_shasum}"
+        echo "Got:      $(echo "$password" | sha512sum | cut -d " " -f 1)"
+        echo ""
         gpg -q --batch --passphrase "$password" --output ${cfg.machine_secret_key_fname} -d ${provision_privk}
       }
 
