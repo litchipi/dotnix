@@ -1,5 +1,6 @@
-{ config, lib, pkgs, ... }:
-{
+{ config, lib, pkgs, ... }: let
+  libdata = import ../lib/manage_data.nix { inherit config lib pkgs; };
+in {
   # The name of the main user of the system
   base.user = "nx";
   base.hostname = "nixostest";
