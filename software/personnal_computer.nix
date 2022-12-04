@@ -43,7 +43,10 @@ in {
   cmn.wm = {
     boot.theme = "glowing"; #hexagon_2";   # TODO  Test splash screen
     autologin = true;
-    bck-img = "galaxy_amongus.png";
+    bck-img = pkgs.fetchurl {
+      url = "https://wallpapershome.com/images/wallpapers/river-1920x1080-forest-sky-evening-hd-15669.jpg";
+      sha256 = "sha256-/THwmWhPqf1g8l0mMd8Uh2Lt+2GWJ/TZUROAWim48kc";
+    };
     cursorTheme = {
       name = "Qogir-dark";
       package = pkgs.qogir-icon-theme;

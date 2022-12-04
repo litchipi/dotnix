@@ -23,9 +23,12 @@ conf_lib.create_common_confs [
     name = "wm";
     minimal.gui = true;
     add_opts = {
+      # TODO  Rework:   Get a path instead, change libdata to a "getwallpaper" function
+      #                 Allow for fetching wallpaper from remote
       bck-img = lib.mkOption {
-        type = lib.types.str;
+        type = lib.types.path;
         description = "The background image to set";
+        default = libdata.get_wallpaper "forest.jpg";
       };
       iconTheme = lib.mkOption {
         type = lib.types.nullOr theme_type;
@@ -63,7 +66,6 @@ conf_lib.create_common_confs [
     ] ++ (if builtins.isNull cfg.cursorTheme then [] else [ cfg.cursorTheme.package ]);
     cfg = {
       xdg.portal.enable = true;
-      xdg.portal.gtkUsePortal = true;
 
       programs.dconf.enable = true;
       cmn.dconf.apps.enable = true;

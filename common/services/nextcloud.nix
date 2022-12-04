@@ -19,11 +19,10 @@ let
       default_enabled = if (builtins.elem name cfg.disable_apps)
         then false
         else (value.enable or true);
-      cfg.services.nextcloud.extraApps."${name}" = pkgs.fetchNextcloudApp {
+      cfg.services.nextcloud.extraApps."${name}" = pkgs.fetchzip {
         inherit name;
-        sha256 = value.sha256;
-        url = value.url;
-        version = value.version;
+        url = value.url value.version;    # URL is a function of the version
+        sha256 = value.sha256 or lib.fakeSha256;
       };
     }));
 
@@ -124,7 +123,7 @@ libconf.create_common_confs ([
 
       services.nextcloud = {
         enable = true;
-        package = pkgs.nextcloud24;
+        package = pkgs.nextcloud25;
         hostName = "nextcloud.${config.base.networking.domain}";
         home = "/var/nextcloud/";
         appstoreEnable = true;
@@ -165,126 +164,124 @@ libconf.create_common_confs ([
   }
 ] ++ (nextcloud_apps {
   breezedark = {
-    sha256 = "sha256-NHgeCqnOrwtLuxXWSZ4ThBRkQHZmbya5DVfYRolztG8=";
-    url = "https://github.com/mwalbeck/nextcloud-breeze-dark/releases/download/v24.0.2/breezedark.tar.gz";
+    sha256 = "sha256-2tBm45gh5VRKh+w5YcBGyuNB7EGIdBh67jSLfrq+4R4";
+    url = v: "https://github.com/mwalbeck/nextcloud-breeze-dark/releases/download/v${v}/breezedark.tar.gz";
     version = "24.0.2";
   };
 
   files_readmemd = {
-    sha256 = "sha256-WQpSGdZLUoChfwB48Pe3MfesWtJEvIDM6ADI3IGF704=";
-    url = "https://gitlab.univ-nantes.fr/uncloud/files_readmemd/-/wikis/uploads/7cc2ee379111ac18df99d674676dda98/files_readmemd.tar.gz";
+    sha256 = "sha256-/Cc8UCAXJH2F1ozOwh5jaG9xRJCllvvaZ9nvzmxXuvU";
+    url = v: "https://gitlab.univ-nantes.fr/uncloud/files_readmemd/-/wikis/uploads/7cc2ee379111ac18df99d674676dda98/files_readmemd.tar.gz";
     version = "1.2.2";
   };
 
   mail = {
-    sha256 = "sha256-469nRFdKIW0e+CO1Py5l/guTZ2dhH+F1cknJZ4Pt3gg=";
-    url = "https://github.com/nextcloud-releases/mail/releases/download/v1.11.7/mail-v1.11.7.tar.gz";
-    version = "1.11.7";
+    sha256 = "sha256-945krvn6LNFSiOO5SEfVAnTKCSd+UoGhjvJ57cNq7bg";
+    url = v: "https://github.com/nextcloud-releases/mail/releases/download/v${v}/mail-v${v}.tar.gz";
+    version = "2.1.4";
   };
 
   tasks = {
-    sha256 = "sha256-kXXUzzODi/qRi2NqtJyiS1GmLTx0kFAwtH1p0rCdnRM=";
-    url = "https://github.com/nextcloud/tasks/releases/download/v0.14.4/tasks.tar.gz";
-    version = "0.14.4";
+    sha256="sha256-pbcw6bHv1Za+F351hDMGkMqeaAw4On8E146dak0boUo";
+    url = v: "https://github.com/nextcloud/tasks/releases/download/v${v}/tasks.tar.gz";
+    version = "0.14.5";
   };
 
   files_mindmap = {
-    sha256 = "sha256-GcJqn90n9+3VDndNuiohLMDx9fmmMyMkNVNb/bB7ksM=";
-    url = "https://github.com/ACTom/files_mindmap/releases/download/v0.0.26/files_mindmap-0.0.26.tar.gz";
-    version = "0.0.26";
+    sha256 = "sha256-/u1H2QvyKfdGjelFAkLc3rRGQlm3T+OajAbpUF0+cdY";
+    url = v: "https://github.com/ACTom/files_mindmap/releases/download/v${v}/files_mindmap-${v}.tar.gz";
+    version = "0.0.27";
   };
 
   files_markdown = {
-    sha256 = "sha256-6vrPNKcPmJ4DuMXN8/oRMr/B/dTlJn2GGi/w4t2wimk=";
-    url = "https://github.com/icewind1991/files_markdown/releases/download/v2.3.6/files_markdown.tar.gz";
+    sha256 = "sha256-vv/PVDlQOm7Rjhzv8KXxkGpEnyidrV2nsl+Z2fdAFLY";
+    url = v: "https://github.com/icewind1991/files_markdown/releases/download/v${v}/files_markdown.tar.gz";
     version = "2.3.6";
   };
 
   calendar = {
-    sha256 = "sha256-jVJERWFPKj1ygFde+SSySdaRKSM67Rx2G9SQJBDbs5E=";
-    url = "https://github.com/nextcloud-releases/calendar/releases/download/v3.2.2/calendar-v3.2.2.tar.gz";
-    version = "3.2.2";
+    sha256 = "sha256-KALFhCNjofFQMntv3vyL0TJxqD/mBkeDpxt8JV4CPAM";
+    url = v: "https://github.com/nextcloud-releases/calendar/releases/download/v${v}/calendar-v${v}.tar.gz";
+    version = "4.1.0";
   };
 
   twofactor_totp = {
-    sha256 = "sha256-cRtpRs1s31l8xG84YkZIuR3C3pg2kQFNlrY2f5NTSBo=";
-    url = "https://github.com/nextcloud-releases/twofactor_totp/releases/download/v6.4.0/twofactor_totp-v6.4.0.tar.gz";
-    version = "6.4.0";
+    sha256 = "sha256-zAPNugbvngXcpgWJLD78YAg4G1QtGaphx1bhhg7mLKE";
+    url = v: "https://github.com/nextcloud-releases/twofactor_totp/releases/download/v${v}/twofactor_totp-v${v}.tar.gz";
+    version = "6.4.1";
   };
 
   unsplash = {
     enable = false;
-    sha256 = "sha256-UHdRoVpZvIDFiNrssuV1E9suzty0Aa1yIrseNh19xZI=";
-    url = "https://github.com/nextcloud/unsplash/releases/download/v1.2.4/unsplash.tar.gz";
-    version = "1.2.4";
+    url = v: "https://github.com/nextcloud/unsplash/releases/download/v${v}/unsplash.tar.gz";
+    version = "2.1.1";
   };
 
   files_downloadactivity = {
-    sha256 = "sha256-JMJM0GL5zpaNUHIGl1J37JdZlhrdL0TBXD9++bB6nvM=";
-    url = "https://github.com/nextcloud-releases/files_downloadactivity/releases/download/v1.13.0/files_downloadactivity-v1.13.0.tar.gz";
-    version = "1.13.0";
+    sha256 = "sha256-YTJG4OSRN6cgRdHfQ3qsTcjQ998Znf7hKYkXY8GaXz8";
+    url = v: "https://github.com/nextcloud-releases/files_downloadactivity/releases/download/v${v}/files_downloadactivity-v${v}.tar.gz";
+    version = "1.15.0";
   };
 
   integration_gitlab = {
-    sha256 = "sha256-KSoBZmq/OzEcrKyifARVDR/9iEQwyrJhbqbmav0TOqk=";
-    url = "https://github.com/nextcloud/integration_gitlab/releases/download/v1.0.3/integration_gitlab-1.0.3.tar.gz";
-    version = "1.0.3";
+    sha256 = "sha256-OY/eZ+WJlazfHyNozPcccB6CSzmn/4ZK2fB1IAeXs4I";
+    url = v: "https://github.com/nextcloud/integration_gitlab/releases/download/v${v}/integration_gitlab-${v}.tar.gz";
+    version = "1.0.10";
   };
 
   # TODO FIXME
   # jitsi = {
-  #   sha256 = "sha256-aFwYQpb2WrPD00qPtCu5zGu0LlKFYdwZYTAmvX2li4o=";
-  #   url = "https://pubcode.weimann.digital/downloads/projects/nextcloud-jitsi/builds/48/artifacts/nextcloud-jitsi.tar.gz";
+  #   url = v: "https://pubcode.weimann.digital/downloads/projects/nextcloud-jitsi/builds/48/artifacts/nextcloud-jitsi.tar.gz";
   #   version = "0.15.0";
   # };
 
   approval = {
-    sha256 = "sha256-SkkmWJbCSuJGav5BBP7yzvu1oV3r1UvNQQYyUEoDQXg=";
-    url = "https://github.com/nextcloud/approval/releases/download/v1.0.9/approval-1.0.9.tar.gz";
-    version = "1.0.9";
+    sha256 = "sha256-FJYMquvrsj6pZyVzhH+twC6YcQXlbnrILmckXUzZisw";
+    url = v: "https://github.com/nextcloud/approval/releases/download/v${v}/approval-${v}.tar.gz";
+    version = "1.0.10";
   };
 
   external = {
-    sha256 = "sha256-iDROokpqcxZY4DnNRO+BYsCJ55OMabQ+RrS7nOQOBlU=";
-    url = "https://github.com/nextcloud-releases/external/releases/download/v4.0.0/external.tar.gz";
-    version = "4.0.0";
+    sha256 = "sha256-EdlF4BU0/VbJ0HoMmC8jO0YZz1QM13s3xISYIyKfqMs";
+    url = v: "https://github.com/nextcloud-releases/external/releases/download/v${v}/external-v${v}.tar.gz";
+    version = "5.0.0";
   };
 
   polls = {
-    sha256 = "sha256-bdKOfYcPqAqyrGkEAOjq6hrsfGLmxZ16p621dfN8tyM=";
-    url = "https://github.com/nextcloud/polls/releases/download/v3.5.4/polls.tar.gz";
-    version = "3.5.4";
+    sha256 = "sha256-OTCv4vy3yuyEBU8EuljiHamt925i+tDKgGER+2HiTB4";
+    url = v: "https://github.com/nextcloud/polls/releases/download/v${v}/polls.tar.gz";
+    version = "4.0.0";
   };
 
   collectives = {
-    sha256 = "sha256-RO8iMzAMMa4aWMcKZ6U7datN+QP0wUolR+zB5COliXw=";
-    url = "https://gitlab.com/collectivecloud/collectives/uploads/564c569f8832f344d44111aa0707ccc0/collectives-1.0.0.tar.gz";
-    version = "1.0.0";
+    sha256 = "sha256-LsIH+7XdoidKfg7hCVX4ugJye0axvYj7HdspVCgLXNw";
+    url = v: "https://gitlab.com/collectivecloud/collectives/uploads/cfa8755adfd38e8208f4f960fca2e0a5/collectives-${v}.tar.gz";
+    version = "2.1.1";
   };
 
   riotchat = {
-  # Enabled in the configuration of the synapse service
+    # Enabled in the configuration of the synapse service
     enable = false;
-    sha256 = "sha256-hL1FbP9ZchGwqPJ1U8fohy2aKAu7D7Ojq5a7voqDqJA=";
-    url = "https://github.com/gary-kim/riotchat/releases/download/v0.13.5/riotchat.tar.gz";
-    version = "0.13.5";
+    sha256 = "sha256-1CYXXSP8f2tmHsguXWusOm2nkwF+HbazEeMvepIF0K8=";
+    url = v: "https://github.com/gary-kim/riotchat/releases/download/v${v}/riotchat.tar.gz";
+    version = "0.13.11";
   };
 
   deck = {
-    sha256 = "sha256-G4v1B5XHYuKEZxNhkd7Fu5OSbzwcS7yFaDkUkydpdPU=";
-    url = "https://github.com/nextcloud-releases/deck/releases/download/v1.7.1/deck-v1.7.1.tar.gz";
-    version = "1.7.1";
+    sha256 = "sha256-96ECROnw0qKGA3jH9YhYfOyPr6Y5iPVVnheOpHjky6Y";
+    url = v: "https://github.com/nextcloud-releases/deck/releases/download/v${v}/deck-v${v}.tar.gz";
+    version = "1.8.2";
   };
 
   gestion = {
-    sha256 = "sha256-NpMqRhL/o7RSA+79w38PMd6Ii7xkQGtzLZteTz8FXDQ=";
-    url = "https://github.com/baimard/gestion/releases/download/2.0.11/gestion.tar.gz";
-    version = "2.0.11";
+    sha256 = "sha256-MvQk5eo1p5AlMYZtNWN09iEzlSJbJ9W+Wd1zjd4XP0M";
+    url = v: "https://github.com/baimard/gestion/releases/download/${v}/gestion.tar.gz";
+    version = "2.2.2";
   };
 
   news = {
-    sha256 = "sha256-C9iM33RPYmeJZaVeaQc9+xLfFcRHgNBDsztJx7ENVWk=";
-    url = "https://github.com/nextcloud/news/releases/download/18.0.1/news.tar.gz";
-    version = "18.0.1";
+    sha256 = "sha256-Fx8QKR/UKAhcWtqBcinecE0tlPGFXG9kVBPnTdXX16k";
+    url = v: "https://github.com/nextcloud/news/releases/download/${v}/news.tar.gz";
+    version = "19.0.0";
   };
 }))

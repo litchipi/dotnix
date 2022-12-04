@@ -77,7 +77,7 @@ libcmnconf.create_common_confs [
       services.gnome = {
         core-os-services.enable = true;
         core-shell.enable = true;
-        chrome-gnome-shell.enable = true;   # TODO  FIXME   Controller not found in firefox ?
+        gnome-browser-connector.enable = true;   # TODO  FIXME   Controller not found in firefox ?
         gnome-keyring.enable = true;
         gnome-online-accounts.enable = true;
         gnome-settings-daemon.enable = true;
@@ -92,7 +92,7 @@ libcmnconf.create_common_confs [
         geary
       ];
 
-      boot.postBootCommands = if builtins.isNull cfg.user_icon then "" else let
+      system.activationScripts.setup_gnome_user_icon = if builtins.isNull cfg.user_icon then "" else let
         gdm_user_conf = ''
           [User]
           Session=
@@ -119,17 +119,24 @@ libcmnconf.create_common_confs [
     };
 
     add_pkgs = (with pkgs_unstable.gnomeExtensions; [
+      # TODO    Add gnome settings tweak extension, and setup using dconf
+      gnome-40-ui-improvements
       caffeine
       bluetooth-quick-connect
       bring-out-submenu-of-power-offlogout-button
-      disconnect-wifi
       hide-activities-button
-      toggle-night-light
       runcat
       tray-icons-reloaded
-      static-background-in-overview
+      (static-background-in-overview.overrideAttrs (old: {
+        src = pkgs.fetchFromGitHub {
+          owner = "dz4k";
+          repo = "gnome-static-background";
+          rev = "75093fbfddee8b2863f85a382baac93983e57ac8";
+          sha256 = "sha256-Y8FnqVUo59IDFCXZA2X/hN3t/upcB+6bJf3irRwt7yw=";
+        };
+      }))
       dash-to-dock
-      audio-output-switcher
+      audio-output-switcher   # TODO    Adapt or remove
       gsconnect
     ] ++ cfg.add_extensions) ++ (with pkgs; [
       gnome.gnome-tweaks

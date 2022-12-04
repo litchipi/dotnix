@@ -68,12 +68,15 @@ libconf.create_common_confs [
 
       services.nginx = {
         enable = true;
-        virtualHosts."git.${config.base.networking.domain}" = {
-          locations."/".proxyPass = "http://unix:/run/gitlab/gitlab-workhorse.socket";
-        };
-        virtualHosts."git.localhost" = {
-          locations."/".proxyPass = "http://unix:/run/gitlab/gitlab-workhorse.socket";
-        };
+        virtualHosts = {
+          "git.${config.base.networking.domain}" = {
+            locations."/".proxyPass = "http://unix:/run/gitlab/gitlab-workhorse.socket";
+          };
+        } // (if config.base.networking.domain != "localhost" then {
+          "git.localhost" = {
+            locations."/".proxyPass = "http://unix:/run/gitlab/gitlab-workhorse.socket";
+          };
+        } else {});
       };
 
       # TODO  Modify the default database port to postgresql in nixpkgs (upstream)
@@ -160,7 +163,7 @@ libconf.create_common_confs [
 
           rm $SOURCE
       '';
-      } // (if (builtins.isNull cfg.backup.gdrive) then {} else {
+      } // (if (!cfg.backup.gdrive) then {} else {
         rcloneOptions.drive-use-trash = "false";
         rcloneConfigFile = config.base.secrets.store.gitlab_rclone_conf.dest;
         backupCleanupCommand = let
@@ -219,7 +222,7 @@ libconf.create_common_confs [
 
         services.gitlab-runner = {
           enable = true;
-          concurrent = cfg.runners.nb_jobs;
+          settings.concurrent = cfg.runners.nb_jobs;
           services = (builtins.mapAttrs (name:
             { runnerOpts ? {}, runnerEnvs ? {}, ...} : lib.attrsets.recursiveUpdate {
             registrationConfigFile =

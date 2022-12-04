@@ -2,13 +2,10 @@
   description = "NixOs config builder";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-22.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-22.11";
     nixpkgs_unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    flake-utils = {
-      url = "github:numtide/flake-utils";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    flake-utils.url = "github:numtide/flake-utils";
 
     nixosgen = {
       url = "github:nix-community/nixos-generators";
@@ -20,10 +17,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixos-hardware = {
-      url = "github:NixOS/nixos-hardware/master";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     StevenBlackHosts = {
       url = "github:StevenBlack/hosts";
@@ -35,10 +29,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    persowebsite = {
-      url = "git+ssh://gitlab@git.orionstar.cyou/litchi.pi/personnal_website.git?ref=main";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    persowebsite.url = "git+ssh://gitlab@git.orionstar.cyou/litchi.pi/personnal_website.git?ref=main";
 
     nix-ld = {
       url = "github:Mic92/nix-ld";
@@ -192,12 +183,57 @@
           );
       };
 
-      apps = builtins.listToAttrs (
+      apps = (builtins.listToAttrs (
         (builtins.map (machine: rec {
           name = machine.name;
           value = build_machine_scripts machine system;
         }) machines
-      ));
+        ))) // {
+          ci = import ./ci/scripts.nix {
+            pkgs = pkgsForSystem system;
+            machines = builtins.listToAttrs (builtins.map (machine: {
+              name = machine.name;
+              value = (build_machine_nixoscfg machine system).config;
+            }) machines);
+            inherit system build_machine_deriv simple_script find_all_files;
+          };
+          build_all = simple_script (pkgsForSystem system) "build_all_machines"
+            (builtins.concatStringsSep "\n" (builtins.map (machine: ''
+              echo "${machine.name}: ${(build_machine_deriv machine system).guivm}"
+            '') machines)
+            );
+          generate_provision_key = let
+            pkgs = pkgsForSystem system;
+          in simple_script pkgs "generate_provision_key" (''
+            export PATH="$PATH:${pkgs.srm}/bin:${pkgs.gnupg}/bin"
+            KEYPATH=./data/secrets/provision_key/
+            echo "Hint: $(cat ${./.passwordhint})"
+            echo "Enter password:"
+            read -s password
+            passwordshasum=$(echo $password | sha512sum | cut -d " " -f 1)
+            if [ ! -f .passwordshasum ]; then
+                echo "$passwordshasum" > .passwordshasum
+                echo "Re-enter password:"
+                read -s password_verif
+                passwordshasum=$(echo $password_verif | sha512sum | cut -d " " -f 1)
+            fi
+            if [[ "$passwordshasum" != "$(cat .passwordshasum)" ]]; then
+                echo "Wrong password"
+                exit 1;
+            fi
+            generate_key() {
+                KEY=$KEYPATH/$1
+                echo "Generate key for host $1"
+                rm -f $KEY.pub $KEY.gpg $KEY
+                ssh-keygen -P "" -f $KEY -t ed25519 -C "$1"
+                sha512sum $KEY | cut -d " " -f 1 > $KEY.sha512sum
+                gpg -q --batch --passphrase "$password" -c $KEY
+                srm $KEY
+            }
+          '' + builtins.concatStringsSep "\n" (builtins.map (machine: ''
+            generate_key ${machine.name}
+          '') machines));
+        };
     };
 
   in inputs.flake-utils.lib.eachDefaultSystem (system: declare_machines system [

@@ -46,7 +46,6 @@ libconf.create_common_confs [
     parents = ["software" "tui"];
     add_pkgs = with pkgs; [
       du-dust
-      wkhtmltopdf
       youtube-dl
       yt-dlp
       termusic

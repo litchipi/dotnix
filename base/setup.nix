@@ -13,6 +13,12 @@
       description = "Wether to enable virtualisation config or not";
     };
 
+    is_ci_run = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Wether this build is made for CI or not";
+    };
+
     config_repo_path = lib.mkOption {
       type = lib.types.str;
       description = "Path of the git repository where the dotnix files are";
@@ -49,7 +55,7 @@
   };
 
   config = {
-    boot.postBootCommands = lib.strings.concatStringsSep "\n" (builtins.map (dir: ''
+    system.activationScripts.create_setup_dirs = lib.strings.concatStringsSep "\n" (builtins.map (dir: ''
         mkdir -p ${dir.path}
         chown -R ${dir.owner}:${if builtins.isNull dir.group then dir.owner else dir.group} ${dir.path}
         ${lib.strings.optionalString (!builtins.isNull dir.perms) "chmod -R ${dir.perms} ${dir.path}"}

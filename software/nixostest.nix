@@ -1,5 +1,6 @@
-{ config, lib, pkgs, ... }:
-{
+{ config, lib, pkgs, ... }: let
+  libdata = import ../lib/manage_data.nix { inherit config lib pkgs; };
+in {
   # The name of the main user of the system
   base.user = "nx";
   base.hostname = "nixostest";
@@ -15,7 +16,7 @@
 
   # The desktop software to use
   cmn.wm.gnome.enable = true;
-  cmn.wm.bck-img = "we-must-conquer-mars.jpg";
+  cmn.wm.bck-img = libdata.get_wallpaper "we-must-conquer-mars.jpg";
 
   # Common configuration to use
   cmn.basic.enable = true;

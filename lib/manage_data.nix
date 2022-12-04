@@ -16,7 +16,13 @@ in
     then builtins.readFile path
     else "";
 
-  plain_secrets = (lib.modules.importTOML "${data_dir_root}/secrets/plain_secrets.toml").config;
+  plain_secrets = if config.setup.is_ci_run
+    then {
+      logins.ci_ci = "nopassword";
+      irssi = {};
+    }
+    else (lib.modules.importTOML "${data_dir_root}/secrets/plain_secrets.toml").config;
+
   load_wifi_cfg = ssid: { inherit ssid; passwd = plain_secrets.wifi_keys."${ssid}" or null; };
 
   load_token = type: indent: lib.attrsets.getAttrFromPath [ type indent ] (
@@ -48,4 +54,6 @@ in
   };
 
   pkg_patch = package: patchname: get_data_path ["patches" package "${patchname}.patch"];
+
+  get_wallpaper = name: get_data_path ["assets" "desktop" "wallpapers" name ];
 }

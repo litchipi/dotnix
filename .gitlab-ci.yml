@@ -1,4 +1,21 @@
-build:
+stages:
+  - ci
+  - machines
+
+Build CI targets:
+  stage: ci
+  tags:
+    - nix
+
+  script:
+    - mkdir -p /etc/nix/
+    - echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
+    - nix run .#ci
+
+  timeout: 30 minutes
+
+Build Machine targets:
+  stage: machines
   tags:
     - nix # Run on the shared /nix/store builder
 
@@ -9,12 +26,6 @@ build:
     - echo "$GITCRYPT_KEY" | base64 -d > /tmp/gitcrypt.key
     - echo "$(sha512sum /tmp/gitcrypt.key)"
     - git-crypt unlock /tmp/gitcrypt.key
-    - export ALL_MACHINES=$(cat flake.nix|grep "name="|awk -F "\"" '{print $2}')
-    - |+
-      for machine in $ALL_MACHINES
-      do
-        echo "[*] Building machine $machine"
-        nix build .#$machine.guivm
-        echo "Done"
-        echo ""
-      done
+    - nix run .#build_all
+
+  timeout: 2h

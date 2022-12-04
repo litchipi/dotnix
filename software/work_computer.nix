@@ -25,7 +25,7 @@ in {
   cmn.wm = {
     autologin = true;
     boot.enable = true;
-    bck-img = "we-must-conquer-mars.jpg";
+    bck-img = libdata.get_wallpaper "we-must-conquer-mars.jpg";
     cursorTheme = {
       name = "Qogir-dark";
       package = pkgs.qogir-icon-theme;

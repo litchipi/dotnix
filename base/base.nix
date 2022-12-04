@@ -99,7 +99,7 @@ in
   };
 
   config = {
-    system.stateVersion = "22.05";
+    system.stateVersion = "22.11";
 
     boot.cleanTmpDir = true;
 
@@ -162,13 +162,14 @@ in
       git git-crypt pass-git-helper
       gnupg pinentry pinentry-curses
       file
+      srm
     ] ++ cfg.add_pkgs
     ++ (if (config.base.minimal.cli || config.base.minimal.gui) then [] else
       (cfg.full_pkgs ++ base_full_pkgs));
 
     nix.settings = {
       auto-optimise-store = true;
-      experimental-features = [ "nix-command" "flakes" "ca-derivations" ];
+      experimental-features = [ "nix-command" "flakes" ];
       trusted-users = [ config.base.user ];
     };
     nix.extraOptions = ''
