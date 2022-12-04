@@ -47,8 +47,13 @@ in
       path = ["keys" config.base.hostname "ssh_${config.base.user}_privk"];
       symlink = "/home/${config.base.user}/.ssh/id_rsa";
     };
-    base.home_cfg.home.file.".ssh/id_rsa.pub".source = libdata.get_data_path
-      ["pubkeys" "ssh" "${ssh_ident}.pub"];
+
+    base.home_cfg = if config.setup.is_ci_run then {} else {
+      home.file.".ssh/id_rsa.pub".source = (
+        libdata.get_data_path ["pubkeys" "ssh" "${ssh_ident}.pub"]
+      );
+    };
+
     system.activationScripts.chown_nginx_dir = ''
         if [ -d /var/cache/nginx ]; then
             chown -R nginx:nginx /var/cache/nginx
@@ -110,7 +115,6 @@ in
     # Set up  recommended settings for nginx if used
     # TODO  if no subdomain, redirect to service provided in options, or display 404
     services.nginx = {
-      enable = lib.mkDefault false;
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
       recommendedProxySettings = true;

@@ -101,10 +101,10 @@ in {
       units = mapAttrs' (name: info: {
         name = "${name}-key";
         value = (mkService name info);
-      }) cfg.store;
+      }) (if config.setup.is_ci_run then {} else cfg.store);
     in units;
 
-    system.activationScripts.decrypt_machine_secret_key = ''
+    system.activationScripts.decrypt_machine_secret_key = if config.setup.is_ci_run then "" else ''
       export PATH=$PATH:${pkgs.gnupg}/bin/
 
       function decrypt_key() {

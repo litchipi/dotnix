@@ -198,6 +198,19 @@
           value = build_machine_scripts machine system;
         }) machines
         ))) // {
+          ci = import ./ci/scripts.nix {
+            pkgs = pkgsForSystem system;
+            machines = builtins.listToAttrs (builtins.map (machine: {
+              name = machine.name;
+              value = (build_machine_nixoscfg machine system).config;
+            }) machines);
+            inherit system build_machine_deriv simple_script find_all_files;
+          };
+          build_all = simple_script (pkgsForSystem system) "build_all_machines"
+            (builtins.concatStringsSep "\n" (builtins.map (machine: ''
+              echo "${machine.name}: ${(build_machine_deriv machine system).guivm}"
+            '') machines)
+            );
           generate_provision_key = let
             pkgs = pkgsForSystem system;
           in simple_script pkgs "generate_provision_key" (''

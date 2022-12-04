@@ -16,7 +16,13 @@ in
     then builtins.readFile path
     else "";
 
-  plain_secrets = (lib.modules.importTOML "${data_dir_root}/secrets/plain_secrets.toml").config;
+  plain_secrets = if config.setup.is_ci_run
+    then {
+      logins.ci_ci = "nopassword";
+      irssi = {};
+    }
+    else (lib.modules.importTOML "${data_dir_root}/secrets/plain_secrets.toml").config;
+
   load_wifi_cfg = ssid: { inherit ssid; passwd = plain_secrets.wifi_keys."${ssid}" or null; };
 
   load_token = type: indent: lib.attrsets.getAttrFromPath [ type indent ] (

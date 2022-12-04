@@ -13,6 +13,12 @@
       description = "Wether to enable virtualisation config or not";
     };
 
+    is_ci_run = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Wether this build is made for CI or not";
+    };
+
     config_repo_path = lib.mkOption {
       type = lib.types.str;
       description = "Path of the git repository where the dotnix files are";
