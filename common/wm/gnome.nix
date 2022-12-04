@@ -120,6 +120,7 @@ libcmnconf.create_common_confs [
 
     add_pkgs = (with pkgs_unstable.gnomeExtensions; [
       # TODO    Add gnome settings tweak extension, and setup using dconf
+      gnome-40-ui-improvements
       caffeine
       bluetooth-quick-connect
       bring-out-submenu-of-power-offlogout-button
