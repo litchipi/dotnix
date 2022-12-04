@@ -23,9 +23,12 @@ conf_lib.create_common_confs [
     name = "wm";
     minimal.gui = true;
     add_opts = {
+      # TODO  Rework:   Get a path instead, change libdata to a "getwallpaper" function
+      #                 Allow for fetching wallpaper from remote
       bck-img = lib.mkOption {
         type = lib.types.str;
         description = "The background image to set";
+        default = "forest.jpg";
       };
       iconTheme = lib.mkOption {
         type = lib.types.nullOr theme_type;
