@@ -5,10 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-22.11";
     nixpkgs_unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    flake-utils = {
-      url = "github:numtide/flake-utils";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    flake-utils.url = "github:numtide/flake-utils";
 
     nixosgen = {
       url = "github:nix-community/nixos-generators";
@@ -20,10 +17,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixos-hardware = {
-      url = "github:NixOS/nixos-hardware/master";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     StevenBlackHosts = {
       url = "github:StevenBlack/hosts";
@@ -35,10 +29,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    persowebsite = {
-      url = "git+ssh://gitlab@git.orionstar.cyou/litchi.pi/personnal_website.git?ref=main";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    persowebsite.url = "git+ssh://gitlab@git.orionstar.cyou/litchi.pi/personnal_website.git?ref=main";
 
     nix-ld = {
       url = "github:Mic92/nix-ld";
