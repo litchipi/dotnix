@@ -54,4 +54,6 @@ in
   };
 
   pkg_patch = package: patchname: get_data_path ["patches" package "${patchname}.patch"];
+
+  get_wallpaper = name: get_data_path ["assets" "desktop" "wallpapers" name ];
 }

@@ -26,9 +26,9 @@ conf_lib.create_common_confs [
       # TODO  Rework:   Get a path instead, change libdata to a "getwallpaper" function
       #                 Allow for fetching wallpaper from remote
       bck-img = lib.mkOption {
-        type = lib.types.str;
+        type = lib.types.path;
         description = "The background image to set";
-        default = "forest.jpg";
+        default = libdata.get_wallpaper "forest.jpg";
       };
       iconTheme = lib.mkOption {
         type = lib.types.nullOr theme_type;

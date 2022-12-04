@@ -15,7 +15,7 @@
 
   # The desktop software to use
   cmn.wm.gnome.enable = true;
-  cmn.wm.bck-img = "we-must-conquer-mars.jpg";
+  cmn.wm.bck-img = libdata.get_wallpaper "we-must-conquer-mars.jpg";
 
   # Common configuration to use
   cmn.basic.enable = true;

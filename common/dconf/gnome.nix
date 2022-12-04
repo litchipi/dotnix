@@ -6,7 +6,6 @@ let
   conf_lib = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
 
-  bckimg_path = libdata.get_data_path ["assets" "desktop" "wallpapers" config.cmn.wm.bck-img];
   # TODO  Validate good utilisation in GDM
   gdm_logo_path = libdata.get_data_path ["assets" "desktop" "gdm_greeting_logo.png"];
 in
@@ -26,8 +25,8 @@ conf_lib.create_common_confs [
         };
 
         "org/gnome/desktop/background" = {
-          picture-uri="file://${bckimg_path}";
-          picture-uri-dark="file://${bckimg_path}";
+          picture-uri="file://${config.cmn.wm.bck-img}";
+          picture-uri-dark="file://${config.cmn.wm.bck-img}";
           picture-options="zoom";
         };
 
@@ -54,7 +53,7 @@ conf_lib.create_common_confs [
         };
 
         "org/gnome/desktop/screensaver" = {
-          picture-uri="file://${bckimg_path}";
+          picture-uri="file://${config.cmn.wm.bck-img}";
           lock-delay = mkUint32 0;
           picture-options = "zoom";
         };
