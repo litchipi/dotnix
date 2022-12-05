@@ -197,8 +197,8 @@ conf_lib.create_common_confs [
   }
 
   {
-    name = "gnome_keyboard_shortcuts";
-    parents = ["dconf"];
+    name = "keyboard_shortcuts";
+    parents = ["dconf" "gnome"];
     home_cfg.dconf.settings = {
       "org/gnome/settings-daemon/plugins/media-keys" = {
         custom-keybindings = [

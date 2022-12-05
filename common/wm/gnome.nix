@@ -69,8 +69,10 @@ libcmnconf.create_common_confs [
       };
 
       programs.dconf.enable = true;
-      cmn.dconf.gnome.enable = true;
-      cmn.dconf.gnome_keyboard_shortcuts.enable = true;
+      cmn.dconf.gnome = {
+        enable = true;
+        keyboard_shortcuts.enable = true;
+      };
 
       services.xserver = {
         displayManager.gdm.enable = true;
