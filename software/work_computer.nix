@@ -24,7 +24,7 @@ in {
 
   cmn.wm = {
     autologin = true;
-    boot.enable = true;
+    boot.style.plymouth.enable = true;
     bck-img = libdata.get_wallpaper "we-must-conquer-mars.jpg";
     cursorTheme = {
       name = "Qogir-dark";
@@ -116,6 +116,7 @@ in {
     # Dev
     cmake
   ];
+
   cmn.services.cachix.client = {
     enable = true;
     servers = libcachix.set_servers [

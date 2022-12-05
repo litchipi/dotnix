@@ -41,7 +41,7 @@ in {
   console.font = "Monaco";
 
   cmn.wm = {
-    boot.theme = "glowing"; #hexagon_2";   # TODO  Test splash screen
+    boot.style.plymouth.theme = "glowing"; #hexagon_2";   # TODO  Test splash screen
     autologin = true;
     bck-img = pkgs.fetchurl {
       url = "https://wallpapershome.com/images/wallpapers/river-1920x1080-forest-sky-evening-hd-15669.jpg";

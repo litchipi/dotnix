@@ -59,8 +59,15 @@ libcmnconf.create_common_confs [
           ];
         });
       })];
-      cmn.wm.enable = true;
-      cmn.wm.boot.enable = true;
+
+      cmn.wm = {
+        enable = true;
+        boot.style = {
+          plymouth.enable = true;
+          grub.enable = true;
+        };
+      };
+
       programs.dconf.enable = true;
       cmn.dconf.gnome.enable = true;
       cmn.dconf.gnome_keyboard_shortcuts.enable = true;
