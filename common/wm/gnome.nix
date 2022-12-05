@@ -126,13 +126,8 @@ libcmnconf.create_common_confs [
     };
 
     add_pkgs = (with pkgs_unstable.gnomeExtensions; [
-      # TODO    Add gnome settings tweak extension, and setup using dconf
-      compact-quick-settings
-      user-avatar-in-quick-settings
-      privacy-settings-menu
       gnome-40-ui-improvements
       caffeine
-      bluetooth-quick-connect
       bring-out-submenu-of-power-offlogout-button
       hide-activities-button
       runcat
@@ -146,7 +141,6 @@ libcmnconf.create_common_confs [
         };
       }))
       dash-to-dock
-      audio-output-switcher   # TODO    Adapt or remove
       gsconnect
     ] ++ cfg.add_extensions) ++ (with pkgs; [
       gnome.gnome-tweaks
