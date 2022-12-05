@@ -166,6 +166,10 @@ conf_lib.create_common_confs [
           exec="${lib.strings.getName config.cmn.software.default_terminal_app}";
         };
 
+        "org/gnome/shell/app-switcher" = {
+          current-workspace-only = true;
+        };
+
         "org/gnome/shell/window-switcher" = {
           current-workspace-only = false;
         };
