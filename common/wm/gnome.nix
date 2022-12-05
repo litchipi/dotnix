@@ -120,6 +120,9 @@ libcmnconf.create_common_confs [
 
     add_pkgs = (with pkgs_unstable.gnomeExtensions; [
       # TODO    Add gnome settings tweak extension, and setup using dconf
+      compact-quick-settings
+      user-avatar-in-quick-settings
+      privacy-settings-menu
       gnome-40-ui-improvements
       caffeine
       bluetooth-quick-connect
