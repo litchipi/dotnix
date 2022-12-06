@@ -91,9 +91,6 @@ in {
     #media-session.enable = true;
   };
 
-  # Wait for https://github.com/NixOS/nixpkgs/issues/200124 to be fixed
-  cmn.hardware.displaylink.enable = false;
-
   # TODO List
   # - Fixup Nerdfont too small in shix
   # - Restore projects dir
