@@ -52,11 +52,11 @@ in {
       package = pkgs.qogir-icon-theme;
     };
     iconTheme = {
-      name = "Tela-orange-dark";
+      name = "Tela-manjaro-dark";
       package = pkgs.tela-icon-theme;
     };
     gtkTheme = {
-      name = "Flat-Remix-GTK-Orange-Dark";
+      name = "Flat-Remix-GTK-Cyan-Dark-Solid";
       package = pkgs.flat-remix-gtk;
     };
     font = {
@@ -67,11 +67,6 @@ in {
 
   cmn.wm.gnome = {
     enable = true;
-    theme = {
-      name = "Zuki-shell";
-      package = pkgs.zuki-themes;
-      dark = true;
-    };
     user_icon = libdata.get_data_path ["assets" "desktop" "user_icons" "litchi.jpg"];
   };
 
