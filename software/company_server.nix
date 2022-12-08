@@ -125,4 +125,9 @@ in
     name = "Suzie";
     motd = "Je suis une truite";
   };
+
+  cmn.nix.builders.setup = {
+    enable = true;
+    name = "orionstar";
+  };
 }

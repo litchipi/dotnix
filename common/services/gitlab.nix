@@ -112,6 +112,7 @@ libconf.create_common_confs [
             default_projects_features = { builds = false; };
           };
         };
+        # TODO    Make this path configurable
         backup.path = "/var/gitlab/backup/";
       };
 

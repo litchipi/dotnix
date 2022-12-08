@@ -1,6 +1,4 @@
-machines: { config, lib, pkgs, ... }: let
-  libcachix = import ../../lib/services/cachix.nix { inherit config lib pkgs; };
-in {
-  # TODO  Add builder nix settings
+machines: { config, lib, pkgs, ... }: {
   cmn.services.cachix.client = machines.sparta.cmn.services.cachix.client;
+  cmn.nix.builders.remote = machines.sparta.cmn.nix.builders.remote;
 }

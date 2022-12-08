@@ -144,4 +144,9 @@ in {
       { fqdn = "cachix.orionstar.cyou"; }
     ];
   };
+
+  cmn.nix.builders.remote = {
+    enable = true;
+    machines.orionstar.enable = true;
+  };
 }
