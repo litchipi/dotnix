@@ -137,7 +137,6 @@ in {
     timerConfig.OnCalendar = "2/5:00:00";
   };
 
-  # TODO  Add builder nix settings
   cmn.services.cachix.client = {
     enable = true;
     servers = libcachix.set_servers [

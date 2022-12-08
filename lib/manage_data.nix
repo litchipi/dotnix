@@ -46,6 +46,7 @@ in
     inherit group permissions symlink;
   };
 
+  # TODO    Refuse ".." in path to avoid directory traversal attempts / errors
   set_secret = { user, path, group ? user, permissions ? "0400", symlink ? null }: {
     source = get_data_path (["secrets"] ++ path);
     dest = "/run/nixos-secrets/${builtins.concatStringsSep "/" path}";
