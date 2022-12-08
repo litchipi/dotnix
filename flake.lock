@@ -25,7 +25,7 @@
       "inputs": {
         "cargo2nix": "cargo2nix",
         "flake-utils": "flake-utils_4",
-        "nixpkgs": "nixpkgs_3"
+        "nixpkgs": "nixpkgs_2"
       },
       "locked": {
         "lastModified": 1661789398,
@@ -187,24 +187,6 @@
         "type": "github"
       }
     },
-    "grub-themes": {
-      "inputs": {
-        "nixpkgs": "nixpkgs"
-      },
-      "locked": {
-        "lastModified": 1668213765,
-        "narHash": "sha256-mTx1jAy6AOY4moWRGvCHYnUNX4qBL/ba47ZcIkhczJM=",
-        "owner": "vinceliuice",
-        "repo": "grub2-themes",
-        "rev": "c106dfb9b5b18ad092ff0f952f2b734933e8283e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "vinceliuice",
-        "repo": "grub2-themes",
-        "type": "github"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -301,22 +283,6 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1670251372,
-        "narHash": "sha256-F6Jgl0DS7Kl47XlY9C57b6MhtutMBCmO58RMNS2udi0=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "6e284c8889b3e8a70cbabb5bde478bd2b9e88347",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "master",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_2": {
-      "locked": {
         "lastModified": 1669919498,
         "narHash": "sha256-cndPLdFj2V0OchIgz1sOVKZXOi+ETgSq/OqCCbWsRoo=",
         "owner": "nixos",
@@ -331,7 +297,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_3": {
+    "nixpkgs_2": {
       "locked": {
         "lastModified": 1653936696,
         "narHash": "sha256-M6bJShji9AIDZ7Kh7CPwPBPb/T7RiVev2PAcOi4fxDQ=",
@@ -387,12 +353,11 @@
       "inputs": {
         "StevenBlackHosts": "StevenBlackHosts",
         "flake-utils": "flake-utils_2",
-        "grub-themes": "grub-themes",
         "home-manager": "home-manager",
         "nix-ld": "nix-ld",
         "nixos-hardware": "nixos-hardware",
         "nixosgen": "nixosgen",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs",
         "nixpkgs_unstable": "nixpkgs_unstable",
         "persowebsite": "persowebsite",
         "rust-overlay": "rust-overlay_2",
