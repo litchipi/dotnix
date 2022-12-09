@@ -2,6 +2,7 @@
 let
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
+  libextbk= import ../../lib/external_backup.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.services.restic;
   service_name = "restic_backup_from_remote";
@@ -9,6 +10,34 @@ let
     user = "restic";
     path = ["services" "restic" config.base.hostname name];
   };
+
+  mkMntPt = dev: opt: if builtins.isNull opt.mount_point
+    then "/backup/${dev}"
+    else opt.mount_point;
+
+  extDeviceType = lib.types.submodule {
+    options = {
+      mount_point = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        description = "Where to mount this device";
+        default = null;
+      };
+      device = lib.mkOption {
+        type = lib.types.str;
+        description = "Which device to use";
+      };
+      fsType = lib.mkOption {
+        type = lib.types.str;
+        description = "Which filesystem this device uses";
+      };
+      mnt_flags = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = ["noexec"];
+        description = "Mount flags on the device";
+      };
+    };
+  };
+
 
   # TODO Add option to copy the backup made to different locations
   target_type = lib.types.submodule {
@@ -176,6 +205,7 @@ libconf.create_common_confs [
         description = "Options of snapshots forget";
         default = ["-y 10" "-m 12" "-w 4" "-d 30" "-l 5"];
       };
+      external_copy = libextbk.mkOption;
     };
     cfg = let
       dynamicFilesListPath = "${cfg.global.lists_basedir}/${config.base.user}_list";
@@ -187,7 +217,6 @@ libconf.create_common_confs [
       };
     users.extraGroups = { restic = {}; };
       base.secrets.store.restic_global_backup_repo_pwd = restic_secret "password";
-      base.secrets.store.restic_global_backup_gdrive_conf = lib.mkIf cfg.global.gdrive (restic_secret "gdrive.conf");
 
       setup.directories = [
         { path = cfg.global.repo_path; perms = "700"; owner = "root"; }
@@ -206,25 +235,36 @@ libconf.create_common_confs [
         pruneOpts = cfg.global.forget_opts;
         paths = cfg.global.backup_paths;
         backupPrepareCommand = builtins.concatStringsSep "\n" cfg.global.prepare_script;
-        backupCleanupCommand = (builtins.concatStringsSep "\n" cfg.global.cleanup_script) + (
-          if cfg.global.gdrive then let
-            rclone = "${pkgs.rclone}/bin/rclone -q --config /tmp/rclone_global/gdrive.conf";
-          in ''
-            mkdir -p /tmp/rclone_global
-            cp ${config.base.secrets.store.restic_global_backup_gdrive_conf.dest} /tmp/rclone_global/gdrive.conf
-            chmod 700 -R /tmp/rclone_global
-            ${rclone} sync ${cfg.global.repo_path} gdrive:${config.base.hostname}_global_backup
-            rm -r /tmp/rclone_global
-          ''
-          else ""
-        );
+        backupCleanupCommand = builtins.concatStringsSep "\n" cfg.global.cleanup_script;
       };
+
+      systemd.services = (libextbk.mkSystemdService cfg.global.external_copy {
+        basename = "restic_global_copy";
+        bind = "restic-backups-global.service";
+        paths = {
+          ${cfg.global.repo_path} = "${config.base.hostname}/global";
+          ${cfg.global.lists_basedir} = "${config.base.hostname}/global/lists";
+        };
+      }) // (libextbk.mkGdriveBckService {
+        basename = "restic_global";
+        enabled = cfg.global.gdrive;
+        rclone_conf = config.base.secrets.store.restic_global_backup_gdrive_conf.dest;
+        bind = "restic-backups-global.service";
+        paths.${cfg.global.repo_path} = "${config.base.hostname}_global_backup";
+      });
+
+      fileSystems = libextbk.mkFileSystems cfg.global.external_copy;
+      base.secrets.store.restic_global_backup_gdrive_conf = lib.mkIf cfg.global.gdrive (
+        restic_secret "gdrive.conf"
+      );
+
       environment.shellAliases = let
-        service_name = "restic-backups-${config.base.hostname}.service";
+        service_name = "restic-backups-global.service";
       in {
         forcebackup = "sudo systemctl start ${service_name}";
         lastbackup = "systemctl status ${service_name}|grep 'since'|awk -F \"since \" '{print $2}'";
       };
+
       environment.interactiveShellInit= ''
         addbackup() {
           for file in $@; do

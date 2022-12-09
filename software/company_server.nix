@@ -31,6 +31,16 @@ in
     backup = {
       gdrive = true;
       timerConfig.OnCalendar = "05/7:00:00";
+      external_copy = {
+        usb_a = {
+          device = "/dev/disk/by-uuid/2da4b13f-c308-4fcf-995f-c7660401bac7";
+          fsType = "btrfs";
+        };
+        usb_b = {
+          device = "/dev/disk/by-uuid/1826cc9f-ad2b-4d7e-8076-6635478733f2";
+          fsType = "btrfs";
+        };
+      };
     };
     runners = {
       enable = true;
@@ -44,8 +54,18 @@ in
   cmn.services.restic.global = {
     enable = true;
     gdrive = true;
-    timerConfig.OnCalendar = "05/7:00:00";
+    timerConfig.OnCalendar = "02/5:00:00";
     backup_paths = [ "/home/${config.base.user}/" ];
+    external_copy = {
+      usb_a = {
+        device = "/dev/disk/by-uuid/2da4b13f-c308-4fcf-995f-c7660401bac7";
+        fsType = "btrfs";
+      };
+      usb_b = {
+        device = "/dev/disk/by-uuid/1826cc9f-ad2b-4d7e-8076-6635478733f2";
+        fsType = "btrfs";
+      };
+    };
   };
 
   cmn.services.conduit.enable = true;

@@ -105,6 +105,8 @@ in {
 
     # Writing
     apostrophe  # Markdown editor
+    gummi
+    gnome-latex
     # marp # Markdown to PDF  # Insecure
 
     # Music
