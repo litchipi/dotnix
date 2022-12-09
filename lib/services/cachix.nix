@@ -5,7 +5,7 @@ in rec {
   get_privkey_secret_pathlist = fqdn: ["services" "cachix" "${fqdn}-priv.pem" ];
   get_privkey = fqdn: libdata.get_data_path (["secrets"] ++ (get_privkey_secret_pathlist fqdn));
   get_secretKeyFile = fqdn: libdata.set_secret {
-    user = "nix";
+    user = "root";
     path = get_privkey_secret_pathlist fqdn;
   };
 
