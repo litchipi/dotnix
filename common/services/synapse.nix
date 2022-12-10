@@ -39,7 +39,9 @@ libconf.create_common_confs [
         127.0.0.1 ${fqdn}
       '';
 
-      cmn.services.nextcloud.riotchat.enable = true;
+      # TODO  Once app is compatible with NC 25;
+      # See https://github.com/gary-kim/riotchat/issues/503
+      cmn.services.nextcloud.riotchat.enable = false;
 
       services.postgresql.enable = true;
       # TODO  Use postgresql nixified configuration for this
