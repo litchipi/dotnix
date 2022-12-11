@@ -134,6 +134,7 @@ libcmnconf.create_common_confs [
       hide-activities-button
       runcat
       tray-icons-reloaded
+      bluetooth-quick-connect
       (static-background-in-overview.overrideAttrs (old: {
         src = pkgs.fetchFromGitHub {
           owner = "dz4k";
