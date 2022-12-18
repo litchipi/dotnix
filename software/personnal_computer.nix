@@ -129,6 +129,12 @@ in {
     superTuxKart
   ];
 
+  cmn.software.games = {
+    retroarch.enable = true;
+    ankama-launcher.enable = true;
+    lutris.enable = true;
+  };
+
   services.blueman.enable = true;
   services.flatpak.enable = true;
 
