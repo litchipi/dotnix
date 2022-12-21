@@ -260,7 +260,7 @@ libconf.create_common_confs ([
   };
 
   riotchat = {
-    # Enabled in the configuration of the synapse service
+    # Enabled in the configuration of the conduit service
     enable = false;
     sha256 = "sha256-1CYXXSP8f2tmHsguXWusOm2nkwF+HbazEeMvepIF0K8=";
     url = v: "https://github.com/gary-kim/riotchat/releases/download/v${v}/riotchat.tar.gz";
