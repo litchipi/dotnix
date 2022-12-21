@@ -2,6 +2,7 @@
 let
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
+  libextbk = import ../../lib/external_backup.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.services.gitlab;
   gitlab_secret = name: libdata.set_secret {
@@ -37,11 +38,13 @@ libconf.create_common_confs [
         default = false;
         description = "Enable saving the backup to Google Drive";
       };
+      external_copy = libextbk.mkOption;
     };
     cfg = {
       setup.directories = [
         { path = cfg.backup.repo_path; perms = "700"; owner = "gitlab"; }
       ];
+
       base.networking.vm_forward_ports = {
         http = { from = "host"; host.port = 40080; guest.port = 80; };
         https= { from = "host"; host.port = 40443; guest.port = 443; };
@@ -64,7 +67,9 @@ libconf.create_common_confs [
         gitlab_dbpwd = gitlab_secret "dbpwd";
         gitlab_initialrootpwd = gitlab_secret "initial_root_pwd";
         gitlab_restic_repo_pwd = gitlab_secret "restic_repo_pwd";
-      };
+      } // (if !cfg.backup.gdrive then {} else {
+        gitlab_rclone_conf = gitlab_secret "gdrive.conf";
+      });
 
       services.nginx = {
         enable = true;
@@ -112,6 +117,7 @@ libconf.create_common_confs [
             default_projects_features = { builds = false; };
           };
         };
+        # TODO    Make this path configurable
         backup.path = "/var/gitlab/backup/";
       };
 
@@ -162,23 +168,22 @@ libconf.create_common_confs [
           popd 1>/dev/null
 
           rm $SOURCE
-      '';
-      } // (if (!cfg.backup.gdrive) then {} else {
-        rcloneOptions.drive-use-trash = "false";
-        rcloneConfigFile = config.base.secrets.store.gitlab_rclone_conf.dest;
-        backupCleanupCommand = let
-          rclone = "${pkgs.rclone}/bin/rclone -q --config /tmp/rclone_gitlab/gdrive.conf";
-        in ''
-          mkdir -p /tmp/rclone_gitlab
-          cp ${config.base.secrets.store.gitlab_rclone_conf.dest} /tmp/rclone_gitlab/gdrive.conf
-          chmod 700 -R /tmp/rclone_gitlab
-          ${rclone} sync ${cfg.backup.repo_path} gdrive:${config.base.hostname}_gitlab_backup
-          rm -r /tmp/rclone_gitlab
         '';
+      };
+
+      fileSystems = libextbk.mkFileSystems cfg.backup.external_copy;
+
+      systemd.services = libextbk.mkSystemdService cfg.backup.external_copy {
+        basename = "restic_gitlab_backup";
+        bind = "restic-backups-gitlab.service";
+        paths.${cfg.backup.repo_path} = "${config.base.hostname}/gitlab";
+      } // (libextbk.mkGdriveBckService {
+        basename = "restic_gitlab_backup";
+        enabled = cfg.backup.gdrive;
+        bind = "restic-backups-gitlab.service";
+        rclone_conf = config.base.secrets.store.gitlab_rclone_conf.dest;
+        paths.${cfg.backup.repo_path} = "${config.base.hostname}_gitlab_backup";
       });
-      base.secrets.store.gitlab_rclone_conf = lib.mkIf cfg.backup.gdrive (
-        gitlab_secret "gdrive.conf"
-      );
     };
   }
 

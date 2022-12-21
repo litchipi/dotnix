@@ -62,6 +62,7 @@
       );
 
     # Prepare the nixpkgs for a specific system;
+    # TODO  Pass the libraries as an overlay
     common_overlays = [
       inputs.rust-overlay.overlays.default
       (prev: final: (import ./overlays/overlays.nix final))

@@ -2,7 +2,7 @@
 let
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
-  cfg = config.cmn.wm.boot;
+  plytheme = config.cmn.wm.boot.style.plymouth.theme;
 
   plymouth_themes = pkgs.stdenv.mkDerivation rec {
     pname = "plymouth-themes";
@@ -18,14 +18,14 @@ let
     installPhase = ''
       . $stdenv/setup
       ALL_THEMES=$(find $src -name "*.plymouth" | grep -v "template")
-      if ! echo "$ALL_THEMES" | grep "${cfg.theme}" 2>/dev/null 1>/dev/null; then
-        echo "Theme ${cfg.theme} not found"
+      if ! echo "$ALL_THEMES" | grep "${plytheme}" 2>/dev/null 1>/dev/null; then
+        echo "Theme ${plytheme} not found"
         echo ""
         echo "All themes found: "
         echo "$ALL_THEMES"
         exit 1;
       fi
-      theme=$(realpath $(echo "$ALL_THEMES" | grep "${cfg.theme}"))
+      theme=$(realpath $(echo "$ALL_THEMES" | grep "${plytheme}"))
       mkdir -p $out/share/plymouth/themes/
       cp -r $(dirname $theme) $out/share/plymouth/themes/
     '';
@@ -33,8 +33,8 @@ let
 in
 libconf.create_common_confs [
   {
-    name = "boot";
-    parents = ["wm"];
+    name = "plymouth";
+    parents = ["wm" "boot" "style"];
     add_opts = {
       theme = lib.mkOption {
         type = lib.types.str;
@@ -42,16 +42,21 @@ libconf.create_common_confs [
         default = "lone";
       };
     };
+    cfg.boot.plymouth = {
+      enable = true;
+      theme = plytheme;
+      themePackages = [ plymouth_themes ];
+      # extraConfig = ''
+      #   UseFirmwareBackground=false
+      #   ShowDelay=1
+      # '';
+    };
+  }
+  {
+    name = "grub";
+    parents = ["wm" "boot" "style"];
     cfg = {
-      boot.plymouth = {
-        enable = true;
-        theme = cfg.theme;
-        themePackages = [ plymouth_themes ];
-        extraConfig = ''
-          UseFirmwareBackground=false
-          ShowDelay=1
-        '';
-      };
+      # TODO    Customize grub boot theme
     };
   }
 ]

@@ -59,11 +59,20 @@ libcmnconf.create_common_confs [
           ];
         });
       })];
-      cmn.wm.enable = true;
-      cmn.wm.boot.enable = true;
+
+      cmn.wm = {
+        enable = true;
+        boot.style = {
+          plymouth.enable = true;
+          grub.enable = true;
+        };
+      };
+
       programs.dconf.enable = true;
-      cmn.dconf.gnome.enable = true;
-      cmn.dconf.gnome_keyboard_shortcuts.enable = true;
+      cmn.dconf.gnome = {
+        enable = true;
+        keyboard_shortcuts.enable = true;
+      };
 
       services.xserver = {
         displayManager.gdm.enable = true;
@@ -119,14 +128,13 @@ libcmnconf.create_common_confs [
     };
 
     add_pkgs = (with pkgs_unstable.gnomeExtensions; [
-      # TODO    Add gnome settings tweak extension, and setup using dconf
       gnome-40-ui-improvements
       caffeine
-      bluetooth-quick-connect
       bring-out-submenu-of-power-offlogout-button
       hide-activities-button
       runcat
       tray-icons-reloaded
+      bluetooth-quick-connect
       (static-background-in-overview.overrideAttrs (old: {
         src = pkgs.fetchFromGitHub {
           owner = "dz4k";
@@ -136,7 +144,6 @@ libcmnconf.create_common_confs [
         };
       }))
       dash-to-dock
-      audio-output-switcher   # TODO    Adapt or remove
       gsconnect
     ] ++ cfg.add_extensions) ++ (with pkgs; [
       gnome.gnome-tweaks

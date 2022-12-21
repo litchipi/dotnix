@@ -6,4 +6,5 @@ machines: { config, lib, pkgs, ... }: {
   cmn.services.nextcloud = machines.suzie.cmn.services.nextcloud // {
     theme = {};
   };
+  cmn.nix.builders.setup = machines.suzie.cmn.nix.builders.setup;
 }

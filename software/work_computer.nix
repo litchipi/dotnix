@@ -24,7 +24,7 @@ in {
 
   cmn.wm = {
     autologin = true;
-    boot.enable = true;
+    boot.style.plymouth.enable = true;
     bck-img = libdata.get_wallpaper "we-must-conquer-mars.jpg";
     cursorTheme = {
       name = "Qogir-dark";
@@ -91,9 +91,6 @@ in {
     #media-session.enable = true;
   };
 
-  # Wait for https://github.com/NixOS/nixpkgs/issues/200124 to be fixed
-  cmn.hardware.displaylink.enable = false;
-
   # TODO List
   # - Fixup Nerdfont too small in shix
   # - Restore projects dir
@@ -116,6 +113,7 @@ in {
     # Dev
     cmake
   ];
+
   cmn.services.cachix.client = {
     enable = true;
     servers = libcachix.set_servers [

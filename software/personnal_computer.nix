@@ -41,7 +41,7 @@ in {
   console.font = "Monaco";
 
   cmn.wm = {
-    boot.theme = "glowing"; #hexagon_2";   # TODO  Test splash screen
+    boot.style.plymouth.theme = "glowing"; #hexagon_2";   # TODO  Test splash screen
     autologin = true;
     bck-img = pkgs.fetchurl {
       url = "https://wallpapershome.com/images/wallpapers/river-1920x1080-forest-sky-evening-hd-15669.jpg";
@@ -52,11 +52,11 @@ in {
       package = pkgs.qogir-icon-theme;
     };
     iconTheme = {
-      name = "Tela-orange-dark";
+      name = "Tela-manjaro-dark";
       package = pkgs.tela-icon-theme;
     };
     gtkTheme = {
-      name = "Flat-Remix-GTK-Orange-Dark";
+      name = "Flat-Remix-GTK-Cyan-Dark-Solid";
       package = pkgs.flat-remix-gtk;
     };
     font = {
@@ -67,11 +67,6 @@ in {
 
   cmn.wm.gnome = {
     enable = true;
-    theme = {
-      name = "Zuki-shell";
-      package = pkgs.zuki-themes;
-      dark = true;
-    };
     user_icon = libdata.get_data_path ["assets" "desktop" "user_icons" "litchi.jpg"];
   };
 
@@ -110,6 +105,8 @@ in {
 
     # Writing
     apostrophe  # Markdown editor
+    gummi
+    gnome-latex
     # marp # Markdown to PDF  # Insecure
 
     # Music
@@ -132,6 +129,12 @@ in {
     superTuxKart
   ];
 
+  cmn.software.games = {
+    retroarch.enable = true;
+    ankama-launcher.enable = true;
+    lutris.enable = true;
+  };
+
   services.blueman.enable = true;
   services.flatpak.enable = true;
 
@@ -142,11 +145,15 @@ in {
     timerConfig.OnCalendar = "2/5:00:00";
   };
 
-  # TODO  Add builder nix settings
   cmn.services.cachix.client = {
     enable = true;
     servers = libcachix.set_servers [
       { fqdn = "cachix.orionstar.cyou"; }
     ];
+  };
+
+  cmn.nix.builders.remote = {
+    enable = true;
+    machines.orionstar.enable = true;
   };
 }

@@ -22,7 +22,7 @@ conf_lib.create_common_confs [
       };
 
       "org/gnome/nautilus/icon-view" = {
-        default-zoom-level = "larger";
+        default-zoom-level = "medium";
       };
 
       "org/gnome/gedit/preferences/editor" = {
