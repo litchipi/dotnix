@@ -1,4 +1,4 @@
-machines: { config, lib, pkgs, ... }: {
+machines: { ... }: {
   cmn.services.gitlab = machines.suzie.cmn.services.gitlab // {
     backup.gdrive = false;
   };

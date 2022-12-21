@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ...}: rec {
+{ pkgs, ...}: rec {
   all_fonts_extensions = [
     "otf"
     "ttf"

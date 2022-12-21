@@ -2,7 +2,6 @@
 let
   lib_nc = import ../../lib/services/nextcloud.nix {inherit config lib pkgs;};
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
-  libutils = import ../../lib/utils.nix {inherit config lib pkgs;};
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.services.nextcloud;
@@ -171,7 +170,7 @@ libconf.create_common_confs ([
 
   files_readmemd = {
     sha256 = "sha256-/Cc8UCAXJH2F1ozOwh5jaG9xRJCllvvaZ9nvzmxXuvU";
-    url = v: "https://gitlab.univ-nantes.fr/uncloud/files_readmemd/-/wikis/uploads/7cc2ee379111ac18df99d674676dda98/files_readmemd.tar.gz";
+    url = _: "https://gitlab.univ-nantes.fr/uncloud/files_readmemd/-/wikis/uploads/7cc2ee379111ac18df99d674676dda98/files_readmemd.tar.gz";
     version = "1.2.2";
   };
 

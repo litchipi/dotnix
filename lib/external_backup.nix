@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }: let
+{ lib, pkgs, ... }: let
 
   mkMntPt = dev: opt: if builtins.isNull opt.mount_point
     then "/backup/${dev}"

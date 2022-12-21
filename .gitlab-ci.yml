@@ -10,9 +10,12 @@ Build CI targets:
   script:
     - mkdir -p /etc/nix/
     - echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
+    - nix run github:astro/deadnix -- -h -l -f \
+        flake.nix \
+        base/ common/ ci/ format_cfg/ hardware/ lib/ software/
     - nix run .#ci
 
-  timeout: 30 minutes
+  timeout: 50 minutes
 
 Build Machine targets:
   stage: machines

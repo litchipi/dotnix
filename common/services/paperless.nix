@@ -1,7 +1,6 @@
 { config, lib, pkgs, ... }:
 let
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
-  libutils = import ../../lib/utils.nix {inherit config lib pkgs;};
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   libextbk = import ../../lib/external_backup.nix {inherit config lib pkgs;};
 

@@ -1,4 +1,4 @@
-{ config, lib, pkgs, pkgs_unstable, ... }:
+{ config, lib, pkgs, ... }:
 let
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   libcachix = import ../../lib/services/cachix.nix { inherit config lib pkgs;};

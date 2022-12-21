@@ -3,7 +3,7 @@
   pal = config.colors.palette;
 in {
   generate_theme = theme: builtins.concatStringsSep "\n" (
-    lib.attrsets.mapAttrsToList (name: {fg ? null, bg ? null, style ? null}@col: let
+    lib.attrsets.mapAttrsToList (name: {fg ? null, bg ? null, style ? null}: let
       guibg = if builtins.isNull bg then ""
         else if bg == "none" then "guibg=none"
         else "guibg='#${libcolors.tohex bg}'";

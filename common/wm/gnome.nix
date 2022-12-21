@@ -1,6 +1,5 @@
 { config, lib, pkgs, pkgs_unstable, ... }:
 let
-  libutils = import ../../lib/utils.nix {inherit config lib pkgs;};
   libcmnconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
 
@@ -52,7 +51,7 @@ libcmnconf.create_common_confs [
     };
 
     cfg = {
-      nixpkgs.overlays = lib.mkIf cfg.mutter_dynamic_buffering [ (self: super: {
+      nixpkgs.overlays = lib.mkIf cfg.mutter_dynamic_buffering [ (_: _: {
         gnome.mutter = pkgs_unstable.gnome.mutter.overrideAttrs (old: {
           patches = (old.patches or []) ++ [
             (libdata.pkg_patch "gnome.mutter" "dynamic_buffering")
@@ -135,7 +134,7 @@ libcmnconf.create_common_confs [
       runcat
       tray-icons-reloaded
       bluetooth-quick-connect
-      (static-background-in-overview.overrideAttrs (old: {
+      (static-background-in-overview.overrideAttrs (_: {
         src = pkgs.fetchFromGitHub {
           owner = "dz4k";
           repo = "gnome-static-background";

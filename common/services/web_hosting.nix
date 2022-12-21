@@ -1,7 +1,5 @@
 { config, lib, pkgs, ... }:
 let
-  libutils = import ../../lib/utils.nix {inherit config lib pkgs;};
-  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.services.web_hosting;

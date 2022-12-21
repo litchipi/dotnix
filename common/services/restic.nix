@@ -11,34 +11,6 @@ let
     path = ["services" "restic" config.base.hostname name];
   };
 
-  mkMntPt = dev: opt: if builtins.isNull opt.mount_point
-    then "/backup/${dev}"
-    else opt.mount_point;
-
-  extDeviceType = lib.types.submodule {
-    options = {
-      mount_point = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        description = "Where to mount this device";
-        default = null;
-      };
-      device = lib.mkOption {
-        type = lib.types.str;
-        description = "Which device to use";
-      };
-      fsType = lib.mkOption {
-        type = lib.types.str;
-        description = "Which filesystem this device uses";
-      };
-      mnt_flags = lib.mkOption {
-        type = lib.types.listOf lib.types.str;
-        default = ["noexec"];
-        description = "Mount flags on the device";
-      };
-    };
-  };
-
-
   # TODO Add option to copy the backup made to different locations
   target_type = lib.types.submodule {
     options = {
@@ -71,7 +43,7 @@ let
     };
   };
 
-  create_systemd_service = name: target: let
+  create_systemd_service = _: target: let
     fname_host = builtins.replaceStrings ["." "-"] ["_" "_"] target.host;
     tmpdir = "/tmp/${fname_host}";
     sshfs_options = "-oIdentityFile=$(realpath ${config.base.secrets.store.restic_ssh_privk.dest}) -oStrictHostKeyChecking=yes";

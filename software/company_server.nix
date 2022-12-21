@@ -1,9 +1,7 @@
 { config, lib, pkgs, inputs, system, ... }:
 let
-  company_name="tyf";
-
   libnc = import ../lib/services/nextcloud.nix { inherit config lib pkgs;};
-  libdata = import ../lib/manage_data.nix { inherit config lib pkgs;};
+  company_name="tyf";
 
   persowebsite = {
     user = "op_persowebsite";

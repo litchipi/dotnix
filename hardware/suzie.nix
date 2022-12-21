@@ -1,6 +1,4 @@
-{ config, lib, pkgs, ...}: let
-  libdata = import ../lib/manage_data.nix { inherit config pkgs lib; };
-in {
+{ config, lib, pkgs, ...}: {
   base.hostname = "suzie";
   base.kernel.package = pkgs.linuxPackages;
 

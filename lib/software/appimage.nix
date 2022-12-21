@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ...}: {
+{ lib, pkgs, ...}: {
 
   appimg_type = lib.types.submodule {
     options = {

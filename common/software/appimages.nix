@@ -1,10 +1,7 @@
 { config, lib, pkgs, ... }:
 let
-  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   libappimg = import ../../lib/software/appimage.nix {inherit config lib pkgs;};
-
-  cfg = config.cmn.wm.boot;
 in
 libconf.create_common_confs [
   {

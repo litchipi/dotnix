@@ -1,7 +1,5 @@
 { config, lib, pkgs, ... }:
 let
-  libutils = import ./utils.nix {inherit config lib pkgs;};
-
   data_dir_root = ../data;
 in
   rec {

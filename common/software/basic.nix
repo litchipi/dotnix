@@ -1,8 +1,6 @@
 { config, lib, pkgs, ... }:
 let
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
-  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
-  libcolors = import ../../lib/colors.nix {inherit config lib pkgs;};
 in
 libconf.create_common_confs [
   {
