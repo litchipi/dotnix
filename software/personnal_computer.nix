@@ -113,6 +113,7 @@ in {
     blanket # Play relaxing sound
     shortwave # Listen Internet radio
     gnome-podcasts # Listen to podcasts
+    audacity
 
     # Other
     wike # Wikipedia reader
