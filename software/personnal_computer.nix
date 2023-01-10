@@ -141,7 +141,7 @@ in {
   cmn.services.restic.global = {
     enable = true;
     gdrive = true;
-    forget_opts = [ "-y 50" "-m 15" "-w 4" "-d 6" "-l 10" ];
+    pruneOpts = [ "-y 50" "-m 15" "-w 4" "-d 6" "-l 10" ];
     timerConfig.OnCalendar = "2/5:00:00";
   };
 
