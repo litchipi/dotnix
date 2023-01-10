@@ -132,8 +132,15 @@ in
 
   # TODO    Services to add
   # - PlugNMeet     Conference tool
-  # - Shiori        Bookmark manager
   # - NixOS mailserver
+
+  cmn.services.shiori = {
+    enable = true;
+    backup = {
+      gdrive = true;
+      inherit external_copy;
+    };
+  };
 
   cmn.services.paperless = {
     enable = true;
