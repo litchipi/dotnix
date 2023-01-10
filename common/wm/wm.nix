@@ -1,8 +1,7 @@
-{ config, lib, pkgs, home-manager, ... }:
+{ config, lib, pkgs, ... }:
 let
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
-  conf_lib = import ../../lib/commonconf.nix {inherit config lib pkgs;};
-  utils_lib = import ../../lib/utils.nix {inherit config lib pkgs;};
+  libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   cfg = config.cmn.wm;
 
   theme_type = lib.types.submodule {
@@ -18,7 +17,7 @@ let
     };
   };
 in
-conf_lib.create_common_confs [
+libconf.create_common_confs [
   {
     name = "wm";
     minimal.gui = true;

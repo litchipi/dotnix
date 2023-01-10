@@ -1,4 +1,4 @@
-machines: { config, lib, pkgs, ... }: {
+machines: { ... }: {
   cmn.services.cachix.client = machines.sparta.cmn.services.cachix.client;
   cmn.nix.builders.remote = machines.sparta.cmn.nix.builders.remote;
 }

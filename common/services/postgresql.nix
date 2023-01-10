@@ -1,6 +1,5 @@
 { config, lib, pkgs, ... }:
 let
-  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.services.postgresql;
@@ -60,7 +59,7 @@ libconf.create_common_confs [
         enable = true;
         port = cfg.port;
         dataDir = cfg.dir;
-        ensureDatabases = lib.lists.flatten (lib.attrsets.mapAttrsToList (user: val:
+        ensureDatabases = lib.lists.flatten (lib.attrsets.mapAttrsToList (_: val:
           val.databases
         ) cfg.users);
 
@@ -91,7 +90,7 @@ libconf.create_common_confs [
         );
       } // cfg.psqlcfg;
 
-      users.extraUsers = lib.attrsets.mapAttrs' (user: val: {
+      users.extraUsers = lib.attrsets.mapAttrs' (user: _: {
         name = user;
         value = {
           isSystemUser = true;
@@ -100,7 +99,7 @@ libconf.create_common_confs [
         };
       }) cfg.users;
 
-      users.extraGroups = lib.attrsets.mapAttrs' (user: val: {
+      users.extraGroups = lib.attrsets.mapAttrs' (user: _: {
         name = user;
         value.members = [ user ];
       }) cfg.users;

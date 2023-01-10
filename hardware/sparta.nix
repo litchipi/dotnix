@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }: {
+{ lib, pkgs, ... }: {
   base.hostname = "sparta";
 
   # 5Gib swapfile

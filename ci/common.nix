@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ...}: {
+{...}: {
   base.user = "ci";
   base.hostname = "ci";
 

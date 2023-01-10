@@ -113,6 +113,7 @@ in {
     blanket # Play relaxing sound
     shortwave # Listen Internet radio
     gnome-podcasts # Listen to podcasts
+    audacity
 
     # Other
     wike # Wikipedia reader
@@ -132,7 +133,6 @@ in {
   cmn.software.games = {
     retroarch.enable = true;
     ankama-launcher.enable = true;
-    lutris.enable = true;
   };
 
   services.blueman.enable = true;
@@ -141,7 +141,7 @@ in {
   cmn.services.restic.global = {
     enable = true;
     gdrive = true;
-    forget_opts = [ "-y 50" "-m 15" "-w 4" "-d 6" "-l 10" ];
+    pruneOpts = [ "-y 50" "-m 15" "-w 4" "-d 6" "-l 10" ];
     timerConfig.OnCalendar = "2/5:00:00";
   };
 

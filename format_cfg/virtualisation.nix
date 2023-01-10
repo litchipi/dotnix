@@ -1,5 +1,4 @@
-{ config, lib, pkgs, ... }:
-{
+{ config, lib, ... }: {
   config = {
     services.getty.autologinUser = config.base.user;
     setup.is_vm = true;

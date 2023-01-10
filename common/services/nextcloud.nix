@@ -2,7 +2,6 @@
 let
   lib_nc = import ../../lib/services/nextcloud.nix {inherit config lib pkgs;};
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
-  libutils = import ../../lib/utils.nix {inherit config lib pkgs;};
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.services.nextcloud;
@@ -171,7 +170,7 @@ libconf.create_common_confs ([
 
   files_readmemd = {
     sha256 = "sha256-/Cc8UCAXJH2F1ozOwh5jaG9xRJCllvvaZ9nvzmxXuvU";
-    url = v: "https://gitlab.univ-nantes.fr/uncloud/files_readmemd/-/wikis/uploads/7cc2ee379111ac18df99d674676dda98/files_readmemd.tar.gz";
+    url = _: "https://gitlab.univ-nantes.fr/uncloud/files_readmemd/-/wikis/uploads/7cc2ee379111ac18df99d674676dda98/files_readmemd.tar.gz";
     version = "1.2.2";
   };
 
@@ -242,7 +241,7 @@ libconf.create_common_confs ([
   };
 
   external = {
-    sha256 = "sha256-EdlF4BU0/VbJ0HoMmC8jO0YZz1QM13s3xISYIyKfqMs";
+    sha256 = "sha256-sRJVuUV4ZzsB1fVh7r0qwMBVgOfurc0oLJnVZWh3b3s";
     url = v: "https://github.com/nextcloud-releases/external/releases/download/v${v}/external-v${v}.tar.gz";
     version = "5.0.0";
   };
@@ -260,7 +259,7 @@ libconf.create_common_confs ([
   };
 
   riotchat = {
-    # Enabled in the configuration of the synapse service
+    # Enabled in the configuration of the conduit service
     enable = false;
     sha256 = "sha256-1CYXXSP8f2tmHsguXWusOm2nkwF+HbazEeMvepIF0K8=";
     url = v: "https://github.com/gary-kim/riotchat/releases/download/v${v}/riotchat.tar.gz";

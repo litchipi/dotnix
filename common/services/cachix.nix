@@ -1,4 +1,4 @@
-{ config, lib, pkgs, pkgs_unstable, ... }:
+{ config, lib, pkgs, ... }:
 let
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   libcachix = import ../../lib/services/cachix.nix { inherit config lib pkgs;};
@@ -32,8 +32,11 @@ libconf.create_common_confs [
         description = "Add default servers to list as well";
       };
     };
+    cfg.nix.extraOptions = ''
+      fallback = true
+    '';
     cfg.nix.settings = {
-      substituters = (if cfg.client.add_default_servers then default_servers.server else [])
+      extra-substituters = (if cfg.client.add_default_servers then default_servers.server else [])
         ++ (lib.attrsets.mapAttrsToList (server: _: server) cfg.client.servers);
       trusted-public-keys =
         (if cfg.client.add_default_servers then default_servers.pubkey else [])

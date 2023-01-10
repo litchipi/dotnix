@@ -2,7 +2,6 @@
 let
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
-  libutils = import ../../lib/utils.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.hardware.keyboard;
 

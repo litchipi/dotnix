@@ -78,13 +78,13 @@ libconf.create_common_confs [
       inherit default;
     }) remote_builders_default;
     cfg = {
-      base.secrets.store = lib.attrsets.mapAttrs' (name: opts: {
+      base.secrets.store = lib.attrsets.mapAttrs' (name: _: {
         name = "${name}_nixbuilder_ssh";
         value = libdata.set_secret {
           user = "root";
           path = libssh.get_remote_builder_privk_path name;
         };
-      }) (lib.attrsets.filterAttrs (name: opts: opts.enable) cfg.builders.remote.machines);
+      }) (lib.attrsets.filterAttrs (_: opts: opts.enable) cfg.builders.remote.machines);
 
       nix.buildMachines = lib.attrsets.mapAttrsToList (name: usr_opts: let
         opts = remote_builders_default.${name} // usr_opts;
@@ -93,7 +93,7 @@ libconf.create_common_confs [
         inherit (opts) hostName speedFactor supportedFeatures;
         inherit (opts) mandatoryFeatures;
         sshKey = config.base.secrets.store."orionstar_nixbuilder_ssh".dest;
-      }) (lib.attrsets.filterAttrs (name: opts: opts.enable) cfg.builders.remote.machines);
+      }) (lib.attrsets.filterAttrs (_: opts: opts.enable) cfg.builders.remote.machines);
     };
   }
   {

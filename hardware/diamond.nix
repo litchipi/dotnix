@@ -1,6 +1,4 @@
-{ config, lib, pkgs, pkgs_unstable, ... }: let
-  libdata = import ../lib/manage_data.nix { inherit config lib pkgs; };
-in {
+{ config, lib, pkgs, pkgs_unstable, ... }: {
   base.hostname = "diamond";
   base.kernel.package = pkgs_unstable.linuxPackages_zen;
 

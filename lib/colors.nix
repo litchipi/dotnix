@@ -1,14 +1,12 @@
-{ config, lib, pkgs, ...}:
+{ config, lib, ... }:
 let
   escape_code = ''\033['';
 
-  cfg = config.colors;
-  
   ansi_fg = {r, g, b, style}: style + escape_code + "38;2;${builtins.toString r};${builtins.toString g};${builtins.toString b}m";
   ansi_bg = {r, g, b, style}: style + escape_code + "38;2;${builtins.toString r};${builtins.toString g};${builtins.toString b}m";
 
   apply_to_all_colors = f: set:
-    lib.attrsets.mapAttrs (name: value: 
+    lib.attrsets.mapAttrs (_: value:
       if (builtins.isAttrs value)
         then (
           if (builtins.hasAttr "r" value)

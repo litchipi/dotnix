@@ -43,7 +43,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs_unstable, ...}@inputs:
+  outputs = { nixpkgs, nixpkgs_unstable, ...}@inputs:
   let
   # General utils
     # Find all files located in a specific directory
@@ -65,7 +65,7 @@
     # TODO  Pass the libraries as an overlay
     common_overlays = [
       inputs.rust-overlay.overlays.default
-      (prev: final: (import ./overlays/overlays.nix final))
+      (_: final: (import ./overlays/overlays.nix final))
     ];
 
     pkgs_unstable = system: import nixpkgs_unstable {
@@ -85,7 +85,7 @@
       ];
     in import nixpkgs {
       overlays = common_overlays ++ [
-        (prev: final: builtins.listToAttrs (builtins.map (pkg: {
+        (_: _: builtins.listToAttrs (builtins.map (pkg: {
           name = pkg.name;
           value = pkg;
         }) packages_on_unstable))
@@ -129,8 +129,7 @@
     };
 
     # Create entire NixOS derivation for a machine
-    build_machine_deriv = { name, add_modules ? [], ...}@machine: system: let
-    in {
+    build_machine_deriv = machine: system: {
       # Virtual machine options
       vbox = build_deriv_output "virtualbox" machine system [
         ./format_cfg/virtualbox.nix
@@ -158,16 +157,16 @@
       '';
     };
 
-    build_machine_nixoscfg = { name, software, hardware ? null, add_modules ? [], ...}:
-    system: nixpkgs.lib.nixosSystem {
-      pkgs = pkgsForSystem system;
-      inherit system;
-      modules = [
-        software
-        { config.setup.is_nixos = true; }
-      ] ++ (if builtins.isNull hardware then [] else [hardware])
-      ++ (base_modules system) ++ add_modules;
-    };
+    build_machine_nixoscfg = { software, hardware ? null, add_modules ? [], ...}: system:
+      nixpkgs.lib.nixosSystem {
+        pkgs = pkgsForSystem system;
+        inherit system;
+        modules = [
+          software
+          { config.setup.is_nixos = true; }
+        ] ++ (if builtins.isNull hardware then [] else [hardware])
+        ++ (base_modules system) ++ add_modules;
+      };
 
     declare_machines = system: machines: {
       packages = (builtins.listToAttrs (

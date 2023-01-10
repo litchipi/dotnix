@@ -1,9 +1,6 @@
 { config, lib, pkgs, ... }:
 let
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
-  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
-  libcolors = import ../../lib/colors.nix {inherit config lib pkgs;};
-  libutils = import ../../lib/utils.nix {inherit config lib pkgs;};
 in
 libconf.create_common_confs [
   {
@@ -50,18 +47,6 @@ libconf.create_common_confs [
           sed -i 's/.*Exec.*/Exec=ankama-launcher/' $out/share/applications/ankama-launcher.desktop
           install -m 444 -D ${appimageContents}/zaap.png $out/share/icons/hicolor/256x256/apps/zaap.png
         '';
-      })
-    ];
-  }
-  {
-    name = "lutris";
-    parents = ["software" "games"];
-    add_pkgs = [
-      (pkgs.lutris.override {
-        extraLibraries = pkgs: [
-        ];
-        extraPkgs = pkgs: [
-        ];
       })
     ];
   }

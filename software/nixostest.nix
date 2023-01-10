@@ -12,8 +12,6 @@ in {
   # Load the wifi password for the SSID "nixostest"
   base.networking.connect_wifi = [ "nixostest" ];
 
-  installscript.nixos_config_branch = "dev";
-
   # The desktop software to use
   cmn.wm.gnome.enable = true;
   cmn.wm.bck-img = libdata.get_wallpaper "we-must-conquer-mars.jpg";

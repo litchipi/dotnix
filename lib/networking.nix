@@ -1,5 +1,5 @@
-{ config, lib, pkgs, ... }:
-let 
+{ lib, ... }:
+let
   ip = a : b : c : d : {
     inherit a b c d;
     address = "${toString a}.${toString b}.${toString c}.${toString d}";

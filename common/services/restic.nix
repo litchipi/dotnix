@@ -3,6 +3,7 @@ let
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   libextbk= import ../../lib/external_backup.nix {inherit config lib pkgs;};
+  libbck = import ../../lib/services/restic.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.services.restic;
   service_name = "restic_backup_from_remote";
@@ -10,34 +11,6 @@ let
     user = "restic";
     path = ["services" "restic" config.base.hostname name];
   };
-
-  mkMntPt = dev: opt: if builtins.isNull opt.mount_point
-    then "/backup/${dev}"
-    else opt.mount_point;
-
-  extDeviceType = lib.types.submodule {
-    options = {
-      mount_point = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        description = "Where to mount this device";
-        default = null;
-      };
-      device = lib.mkOption {
-        type = lib.types.str;
-        description = "Which device to use";
-      };
-      fsType = lib.mkOption {
-        type = lib.types.str;
-        description = "Which filesystem this device uses";
-      };
-      mnt_flags = lib.mkOption {
-        type = lib.types.listOf lib.types.str;
-        default = ["noexec"];
-        description = "Mount flags on the device";
-      };
-    };
-  };
-
 
   # TODO Add option to copy the backup made to different locations
   target_type = lib.types.submodule {
@@ -71,7 +44,7 @@ let
     };
   };
 
-  create_systemd_service = name: target: let
+  create_systemd_service = _: target: let
     fname_host = builtins.replaceStrings ["." "-"] ["_" "_"] target.host;
     tmpdir = "/tmp/${fname_host}";
     sshfs_options = "-oIdentityFile=$(realpath ${config.base.secrets.store.restic_ssh_privk.dest}) -oStrictHostKeyChecking=yes";
@@ -159,7 +132,9 @@ libconf.create_common_confs [
   {
     name = "global";
     parents = ["services" "restic"];
-    add_opts = with lib.types; {
+    add_opts = with lib.types; (libbck.mkBackupOptions {
+      name = "global";
+    }) // {
       groups = lib.mkOption {
         type = listOf str;
         default = [];
@@ -175,21 +150,6 @@ libconf.create_common_confs [
         default = [];
         description = "Scripts to execute after the backup process";
       };
-      timerConfig = lib.mkOption {
-        type = attrsOf anything;
-        description = "Timer configuration to set for the backup";
-        default = { OnCalendar = "daily"; };
-      };
-      gdrive = lib.mkOption {
-        type = bool;
-        description = "Wether to enable google drive remote backup";
-        default = false;
-      };
-      repo_path = lib.mkOption {
-        type = str;
-        description = "Path to the restic repository";
-        default = "/var/backup/global/restic";
-      };
       lists_basedir = lib.mkOption {
         type = str;
         description = "Path where to store the backup lists";
@@ -200,63 +160,38 @@ libconf.create_common_confs [
         description = "Paths to backup on the repository";
         default = [];
       };
-      forget_opts = lib.mkOption {
-        type = listOf str;
-        description = "Options of snapshots forget";
-        default = ["-y 10" "-m 12" "-w 4" "-d 30" "-l 5"];
-      };
       external_copy = libextbk.mkOption;
     };
     cfg = let
       dynamicFilesListPath = "${cfg.global.lists_basedir}/${config.base.user}_list";
-    in {
+    in lib.attrsets.recursiveUpdate (libbck.mkBackupConfig {
+      name = "global";
+      cfg = config.cmn.services.restic.global;
+      user = "restic";
+      paths = cfg.global.backup_paths;
+      base_secrets_path = [ "services"  "restic" config.base.hostname ];
+      external_copy_add_paths = {
+        ${cfg.global.lists_basedir} = "${config.base.hostname}/global/lists";
+      };
+    }) {
       users.extraUsers.restic = {
         isSystemUser = true;
         extraGroups = cfg.global.groups;
         group = "restic";
       };
-    users.extraGroups = { restic = {}; };
-      base.secrets.store.restic_global_backup_repo_pwd = restic_secret "password";
+      users.extraGroups = { restic = {}; };
 
       setup.directories = [
-        { path = cfg.global.repo_path; perms = "700"; owner = "root"; }
         { path = cfg.global.lists_basedir; perms = "700"; owner = config.base.user; }
       ];
+
       services.restic.backups.global = {
-        initialize = true;
         dynamicFilesFrom = ''
           cat ${dynamicFilesListPath}
         '';
-        passwordFile = config.base.secrets.store.restic_global_backup_repo_pwd.dest;
-        repository = cfg.global.repo_path;
-        timerConfig = {
-          Persistent = true;
-        } // cfg.global.timerConfig;
-        pruneOpts = cfg.global.forget_opts;
-        paths = cfg.global.backup_paths;
         backupPrepareCommand = builtins.concatStringsSep "\n" cfg.global.prepare_script;
         backupCleanupCommand = builtins.concatStringsSep "\n" cfg.global.cleanup_script;
       };
-
-      systemd.services = (libextbk.mkSystemdService cfg.global.external_copy {
-        basename = "restic_global_copy";
-        bind = "restic-backups-global.service";
-        paths = {
-          ${cfg.global.repo_path} = "${config.base.hostname}/global";
-          ${cfg.global.lists_basedir} = "${config.base.hostname}/global/lists";
-        };
-      }) // (libextbk.mkGdriveBckService {
-        basename = "restic_global";
-        enabled = cfg.global.gdrive;
-        rclone_conf = config.base.secrets.store.restic_global_backup_gdrive_conf.dest;
-        bind = "restic-backups-global.service";
-        paths.${cfg.global.repo_path} = "${config.base.hostname}_global_backup";
-      });
-
-      fileSystems = libextbk.mkFileSystems cfg.global.external_copy;
-      base.secrets.store.restic_global_backup_gdrive_conf = lib.mkIf cfg.global.gdrive (
-        restic_secret "gdrive.conf"
-      );
 
       environment.shellAliases = let
         service_name = "restic-backups-global.service";

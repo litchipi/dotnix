@@ -1,6 +1,5 @@
 { config, lib, pkgs, ... }:
 let
-  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   plytheme = config.cmn.wm.boot.style.plymouth.theme;
 

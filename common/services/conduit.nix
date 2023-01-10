@@ -1,7 +1,6 @@
 
 { config, lib, pkgs, ... }:
 let
-  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.services.conduit;
@@ -27,7 +26,7 @@ libconf.create_common_confs [
 
       networking.firewall.allowedTCPPorts = [ 80 443 8448 ];
       users.users."${config.base.user}".extraGroups = [ "conduit" ];
-      
+
       networking.extraHosts = ''
         127.0.0.1 ${fqdn}
       '';
@@ -45,7 +44,7 @@ libconf.create_common_confs [
           allow_registration = true;
         };
       };
-      
+
       services.nginx = let
         proxy = "http://0.0.0.0:${builtins.toString cfg.port}";
       in {

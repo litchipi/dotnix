@@ -1,15 +1,24 @@
 { config, lib, pkgs, inputs, system, ... }:
 let
-  company_name="tyf";
-
   libnc = import ../lib/services/nextcloud.nix { inherit config lib pkgs;};
-  libdata = import ../lib/manage_data.nix { inherit config lib pkgs;};
+  company_name="tyf";
 
   persowebsite = {
     user = "op_persowebsite";
     port = 8095;
     dbname = "persowebsite";
     dir = "/var/www/persowebsite";
+  };
+
+  external_copy = {
+    usb_a = {
+      device = "/dev/disk/by-uuid/2da4b13f-c308-4fcf-995f-c7660401bac7";
+      fsType = "btrfs";
+    };
+    usb_b = {
+      device = "/dev/disk/by-uuid/1826cc9f-ad2b-4d7e-8076-6635478733f2";
+      fsType = "btrfs";
+    };
   };
 in
 {
@@ -31,16 +40,7 @@ in
     backup = {
       gdrive = true;
       timerConfig.OnCalendar = "05/7:00:00";
-      external_copy = {
-        usb_a = {
-          device = "/dev/disk/by-uuid/2da4b13f-c308-4fcf-995f-c7660401bac7";
-          fsType = "btrfs";
-        };
-        usb_b = {
-          device = "/dev/disk/by-uuid/1826cc9f-ad2b-4d7e-8076-6635478733f2";
-          fsType = "btrfs";
-        };
-      };
+      inherit external_copy;
     };
     runners = {
       enable = true;
@@ -56,16 +56,7 @@ in
     gdrive = true;
     timerConfig.OnCalendar = "02/5:00:00";
     backup_paths = [ "/home/${config.base.user}/" ];
-    external_copy = {
-      usb_a = {
-        device = "/dev/disk/by-uuid/2da4b13f-c308-4fcf-995f-c7660401bac7";
-        fsType = "btrfs";
-      };
-      usb_b = {
-        device = "/dev/disk/by-uuid/1826cc9f-ad2b-4d7e-8076-6635478733f2";
-        fsType = "btrfs";
-      };
-    };
+    inherit external_copy;
   };
 
   cmn.services.conduit.enable = true;
@@ -138,6 +129,26 @@ in
   # - ethercalc
   # - invoceplane
   # - vikunja
+
+  # TODO    Services to add
+  # - PlugNMeet     Conference tool
+  # - NixOS mailserver
+
+  cmn.services.shiori = {
+    enable = true;
+    backup = {
+      gdrive = true;
+      inherit external_copy;
+    };
+  };
+
+  cmn.services.paperless = {
+    enable = true;
+    backup = {
+      gdrive = true;
+      inherit external_copy;
+    };
+  };
 
   services.teeworlds = {
     enable = true;
