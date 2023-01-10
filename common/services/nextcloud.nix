@@ -241,7 +241,7 @@ libconf.create_common_confs ([
   };
 
   external = {
-    sha256 = "sha256-EdlF4BU0/VbJ0HoMmC8jO0YZz1QM13s3xISYIyKfqMs";
+    sha256 = "sha256-sRJVuUV4ZzsB1fVh7r0qwMBVgOfurc0oLJnVZWh3b3s";
     url = v: "https://github.com/nextcloud-releases/external/releases/download/v${v}/external-v${v}.tar.gz";
     version = "5.0.0";
   };
