@@ -4,7 +4,8 @@ let
   libbck = import ../../lib/services/restic.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.services.shiori;
-  fqdn = "bookmarks.${config.base.networking.domain}";
+  sub = "bookmarks";
+  fqdn = "${sub}.${config.base.networking.domain}";
 in
   # TODO    Upstream changes
 libconf.create_common_confs [
@@ -37,6 +38,7 @@ libconf.create_common_confs [
       };
     };
     cfg = lib.attrsets.recursiveUpdate {
+      base.networking.subdomains = [ sub ];
       users.users.${cfg.user} = {
         isSystemUser = true;
         group = cfg.user;

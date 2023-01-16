@@ -5,7 +5,8 @@ let
   libbck = import ../../lib/services/restic.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.services.paperless;
-  fqdn = "paper.${config.base.networking.domain}";
+  sub = "paper";
+  fqdn = "${sub}.${config.base.networking.domain}";
 in
 libconf.create_common_confs [
   {
@@ -15,6 +16,7 @@ libconf.create_common_confs [
       name = "paperless";
     };
     cfg = lib.attrsets.recursiveUpdate {
+      base.networking.subdomains = [ sub ];
       base.secrets.store.paperless_admin_pwd = libdata.set_secret {
         user = config.services.paperless.user;
         path = [ "services" "paperless" config.base.hostname "admin_pwd" ];

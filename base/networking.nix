@@ -24,6 +24,11 @@ in
       default = "localhost";
     };
 
+    static_ip_address = lib.mkOption {
+      type = lib.types.str;
+      description = "Static IP address of this machine";
+    };
+
     # TODO  Use firewall open ports to automatically generate port forwarding
     vm_forward_ports = lib.mkOption {
       type = lib.types.attrs;
@@ -35,6 +40,12 @@ in
       type = with lib.types; listOf str;
       description = "Nameservers to add to the configuration";
       default = [];
+    };
+
+    subdomains = lib.mkOption {
+      type = with lib.types; attrsOf int;
+      default = {};
+      description = "Set of subdomains to port to set up the proxy";
     };
   };
 
@@ -74,6 +85,12 @@ in
         #   ];
         # };
       nameservers = [ "1.1.1.1" "1.0.0.1" "8.8.8.8" ] ++ cfg.add_dns;
+
+      extraHosts = builtins.concatStringsSep "\n" (
+        lib.attrsets.mapAttrsToList
+        (sub: _: "127.0.0.1 ${sub}.${config.base.networking.domain}")
+        config.base.networking.subdomains
+      );
     };
 
     users.users."${config.base.user}" = {

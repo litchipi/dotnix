@@ -8,4 +8,5 @@ machines: { ... }: {
     theme = {};
   };
   cmn.nix.builders.setup = machines.suzie.cmn.nix.builders.setup;
+  cmn.services.dns.blocky = machines.suzie.cmn.services.dns.blocky;
 }

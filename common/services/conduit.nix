@@ -4,7 +4,8 @@ let
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.services.conduit;
-  fqdn = "chat.${config.base.networking.domain}";
+  sub = "chat";
+  fqdn = "${sub}.${config.base.networking.domain}";
 in
 libconf.create_common_confs [
   {
@@ -18,6 +19,8 @@ libconf.create_common_confs [
       };
     };
     cfg = {
+      base.networking.subdomains = [ sub ];
+
       base.networking.vm_forward_ports = {
         http = { from = "host"; host.port = 40080; guest.port = 80; };
         https= { from = "host"; host.port = 40443; guest.port = 443; };
@@ -27,9 +30,6 @@ libconf.create_common_confs [
       networking.firewall.allowedTCPPorts = [ 80 443 8448 ];
       users.users."${config.base.user}".extraGroups = [ "conduit" ];
 
-      networking.extraHosts = ''
-        127.0.0.1 ${fqdn}
-      '';
 
       cmn.services.nextcloud.riotchat.enable = true;
 

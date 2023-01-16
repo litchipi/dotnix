@@ -27,6 +27,7 @@ in
   base.networking.ssh_auth_keys = [ "john@sparta" "tim@diamond" ];
 
   base.networking.domain = "orionstar.cyou";
+  base.networking.static_ip_address = "192.168.1.163";
 
   base.add_pkgs = with pkgs; [
     glances
@@ -161,4 +162,20 @@ in
     enable = true;
     name = "orionstar";
   };
+
+  cmn.services.dns.blocky.enable = true;
+  base.networking.add_dns = [
+    "1.1.1.1" "1.0.0.1"
+    "45.61.49.203"
+    "138.197.140.189"
+    "168.138.12.137"
+    "168.138.8.38"
+    "94.247.43.254"
+    "172.104.242.111"
+    "195.10.195.195"
+    "128.76.152.2"
+    "172.104.162.222"
+    "94.16.114.254"
+    "84.200.69.80"
+  ];
 }

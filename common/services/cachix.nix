@@ -3,7 +3,8 @@ let
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   libcachix = import ../../lib/services/cachix.nix { inherit config lib pkgs;};
 
-  fqdn = "cachix.${config.base.networking.domain}";
+  sub = "cachix";
+  fqdn = "${sub}.${config.base.networking.domain}";
   cfg = config.cmn.services.cachix;
 
   default_servers = {
@@ -53,6 +54,7 @@ libconf.create_common_confs [
     name = "server";
     parents = ["services" "cachix"];
     cfg = {
+      base.networking.subdomains = [ sub ];
       base.secrets.store."${fqdn}_secretKeyFile" = libcachix.get_secretKeyFile fqdn;
       services.nix-serve = {
         enable = true;

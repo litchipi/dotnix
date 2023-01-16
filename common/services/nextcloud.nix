@@ -96,14 +96,13 @@ libconf.create_common_confs ([
       pkgs.php
     ];
     cfg = {
+      base.networking.subdomains = [
+        "nextcloud"
+      ];
       base.networking.vm_forward_ports = {
         http = { from = "host"; host.port = 40080; guest.port = 80; };
         https= { from = "host"; host.port = 40443; guest.port = 443; };
       };
-
-      networking.extraHosts = ''
-        127.0.0.1 ${config.services.nextcloud.hostName}
-      '';
 
       users.users."${config.base.user}".extraGroups = [ "nextcloud" "postgres" ];
       users.users.nextcloud.extraGroups = [ "postgres" ];

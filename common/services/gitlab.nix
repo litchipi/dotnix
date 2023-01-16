@@ -51,10 +51,10 @@ libconf.create_common_confs [
       };
       networking.firewall.allowedTCPPorts = [ 80 443 ];
 
-      networking.extraHosts = ''
-        127.0.0.1 ${config.services.gitlab.host}
-        127.0.0.1 smtp.${config.base.networking.domain}
-      '';
+      base.networking.subdomains = [
+        "git"
+        "smtp"
+      ];
 
       users.users."${config.base.user}".extraGroups = [ "gitlab" ];
       users.extraUsers.gitlab.extraGroups = [ "nginx" ];
