@@ -43,8 +43,8 @@ in
     };
 
     subdomains = lib.mkOption {
-      type = with lib.types; attrsOf int;
-      default = {};
+      type = with lib.types; listOf str;
+      default = [];
       description = "Set of subdomains to port to set up the proxy";
     };
   };
@@ -86,9 +86,8 @@ in
         # };
       nameservers = [ "1.1.1.1" "1.0.0.1" "8.8.8.8" ] ++ cfg.add_dns;
 
-      extraHosts = builtins.concatStringsSep "\n" (
-        lib.attrsets.mapAttrsToList
-        (sub: _: "127.0.0.1 ${sub}.${config.base.networking.domain}")
+      extraHosts = builtins.concatStringsSep "\n" (builtins.map
+        (sub: "127.0.0.1 ${sub}.${config.base.networking.domain}")
         config.base.networking.subdomains
       );
     };

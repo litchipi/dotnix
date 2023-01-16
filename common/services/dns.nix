@@ -2,7 +2,7 @@
 let
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
 
-  cfg = config.services.dns;
+  cfg = config.cmn.services.dns;
 in
 libconf.create_common_confs [
   {
@@ -41,9 +41,9 @@ libconf.create_common_confs [
           target = "${cfg.blocky.dataDir}/logs";
           logRetentionDays = 7;
         };
-        customDNS.mapping = builtins.map (sub: {
-          ${sub} = config.base.networking.static_ip_address;
-        }) config.base.networking.subdomains;
+        customDNS.mapping = {
+          ${config.base.networking.domain} = config.base.networking.static_ip_address;
+        };
       };
     };
   }
