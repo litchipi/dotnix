@@ -2,7 +2,7 @@
 let
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
 
-  cfg = config.software.dns;
+  cfg = config.services.dns;
 in
 libconf.create_common_confs [
   {
