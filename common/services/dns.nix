@@ -28,7 +28,7 @@ libconf.create_common_confs [
       enable = true;
       settings = {
         httpPort = cfg.blocky.metrics_port;
-        logLevel = "info";
+        logLevel = "debug";
         upstream.default = config.networking.nameservers;
         blocking.blackLists.custom = [
           "${inputs.StevenBlackHosts}/alternates/fakenews-gambling/hosts"
