@@ -30,7 +30,9 @@ libconf.create_common_confs [
         httpPort = cfg.blocky.metrics_port;
         logLevel = "info";
         upstream.default = config.networking.nameservers;
-        blocking.steven_hosts = "${inputs.StevenBlackHosts}/alternates/fakenews-gambling/hosts";
+        blocking.custom = [
+          "${inputs.StevenBlackHosts}/alternates/fakenews-gambling/hosts"
+        ];
         caching = {
           prefetching = true;
           minTime = "1h";
