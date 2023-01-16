@@ -17,7 +17,7 @@ libconf.create_common_confs [
       name = "ankama-launcher";
       src = pkgs.fetchurl {
         url = "https://launcher.cdn.ankama.com/installers/production/Ankama%20Launcher-Setup-x86_64.AppImage";
-        sha256 = "sha256-nNAoHHOxPZLTHemkwBm/bas005EXAi36B5FsAgRr7zg";
+        sha256 = "814929a44e4b029941fc4de3cedb11f3c59a543bc60a1705e04ac7ea6677c62b";
         name = "ankama-launcher.AppImage";
        };
     in with pkgs; [
