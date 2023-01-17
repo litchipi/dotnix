@@ -14,7 +14,6 @@ libconf.create_common_confs [
         default = 43963;
         description = "Port to serve the HTTP server used for API and metrics";
       };
-
       dataDir = lib.mkOption {
         type = lib.types.str;
         default = "/var/blocky/";
@@ -22,13 +21,14 @@ libconf.create_common_confs [
       };
     };
     cfg = {
-        setup.directories = [
-          { path = "${cfg.blocky.dataDir}/logs"; perms = "700"; owner = "blocky"; }
-        ];
-        networking.firewall = {
-            allowedTCPPorts = [ 53 ];
-            allowedUDPPorts = [ 53 ];
-        };
+      setup.directories = [
+        { path = "${cfg.blocky.dataDir}/logs"; perms = "700"; owner = "blocky"; }
+      ];
+      networking.firewall = {
+        allowedTCPPorts = [ 53 ];
+        allowedUDPPorts = [ 53 ];
+      };
+      systemd.services.blocky.LogsDirectory = "blocky";
     };
     cfg.services.blocky = {
       enable = true;
@@ -46,7 +46,7 @@ libconf.create_common_confs [
         prometheus.enable = true;
         queryLog = {
           type = "csv";
-          target = "${cfg.blocky.dataDir}/";
+          target = "/var/log/blocky";
           logRetentionDays = 7;
         };
         customDNS = {
