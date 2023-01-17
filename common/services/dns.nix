@@ -28,7 +28,7 @@ libconf.create_common_confs [
         allowedTCPPorts = [ 53 ];
         allowedUDPPorts = [ 53 ];
       };
-      systemd.services.blocky.LogsDirectory = "blocky";
+      systemd.services.blocky.serviceConfig.LogsDirectory = "blocky";
     };
     cfg.services.blocky = {
       enable = true;
