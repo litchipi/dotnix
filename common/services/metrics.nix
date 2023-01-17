@@ -58,7 +58,7 @@ in
           settings.server = {
             domain = "${grafana_sub}.${config.base.networking.domain}";
             http_port = cfg.grafana.port;
-            http_addr = "127.0.0.1";
+            http_addr = "0.0.0.0";
             enable_gzip = true;
           };
           settings.database = {
