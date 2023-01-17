@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
+  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.services.metrics;
   prometheus_sub = "metrics";
@@ -20,6 +21,12 @@ let
       cmn.services.metrics.prometheus.localhost_scrape_targets = [(metrics_port_min + offport)];
     };
   };
+
+  grafana_secret = name: libdata.set_secret {
+    user = "grafana";
+    path = ["services" "grafana" config.base.hostname name ];
+  };
+  grafana_secret_dest = name: "$__file{${config.base.secrets.store.${name}.dest}}";
 in
   libconf.create_common_confs [
     {
@@ -33,6 +40,11 @@ in
         };
       };
       cfg = {
+        base.secrets.store = {
+          grafana_admin_pwd = grafana_secret "admin_pwd";
+          grafana_db_pwd = grafana_secret "db_pwd";
+        };
+
         base.networking.subdomains = [ grafana_sub ];
         services.nginx.virtualHosts."${grafana_sub}.${config.base.networking.domain}" = {
           locations."/" = {
@@ -47,6 +59,24 @@ in
             domain = "${grafana_sub}.${config.base.networking.domain}";
             http_port = cfg.grafana.port;
             http_addr = "127.0.0.1";
+            enable_gzip = true;
+          };
+          settings.database = {
+            host = "127.0.0.1:${builtins.toString config.services.postgresql.port}";
+            password = grafana_secret_dest "grafana_db_pwd";
+            type = "postgres";
+            user = "grafana";
+            name = "grafana";
+          };
+          settings.analytics.reporting_enabled = false;
+          settings.security.admin_password = grafana_secret_dest "grafana_admin_pwd";
+        };
+
+        cmn.services.postgresql = {
+          enable = true;
+          users.grafana = {
+            databases = ["grafana"];
+            permissions.grafana = "ALL PRIVILEGES";
           };
         };
       };
