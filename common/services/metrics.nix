@@ -53,6 +53,12 @@ in
           };
         };
 
+        users.users.grafana = {
+          isSystemUser = true;
+          group = "grafana";
+        };
+        users.groups.grafana = {};
+
         services.grafana = {
           enable = true;
           settings.server = {
