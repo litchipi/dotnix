@@ -53,12 +53,6 @@ in
           };
         };
 
-        users.users.grafana = {
-          isSystemUser = true;
-          group = "grafana";
-        };
-        users.groups.grafana = {};
-
         services.grafana = {
           enable = true;
           settings.server = {
@@ -67,13 +61,12 @@ in
             http_addr = "0.0.0.0";
             enable_gzip = true;
           };
-          settings.database = {
-            host = "127.0.0.1:${builtins.toString config.services.postgresql.port}";
-            password = grafana_secret_dest "grafana_db_pwd";
-            type = "postgres";
-            user = "grafana";
-            name = "grafana";
-          };
+          # settings.database = {
+          #   host = "127.0.0.1:${builtins.toString config.services.postgresql.port}";
+          #   type = "postgres";
+          #   user = "grafana";
+          #   name = "grafana";
+          # };
           settings.analytics.reporting_enabled = false;
           settings.security.admin_password = grafana_secret_dest "grafana_admin_pwd";
         };
