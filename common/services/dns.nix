@@ -21,9 +21,15 @@ libconf.create_common_confs [
         description = "Directory where to store data related to blocky";
       };
     };
-    cfg.setup.directories = [
-      { path = "${cfg.blocky.dataDir}/logs"; perms = "700"; owner = "root"; }
-    ];
+    cfg = {
+        setup.directories = [
+          { path = "${cfg.blocky.dataDir}/logs"; perms = "700"; owner = "root"; }
+        ];
+        networking.firewall = {
+            allowedTCPPorts = [ 53 ];
+            allowedUDPPorts = [ 53 ];
+        };
+    };
     cfg.services.blocky = {
       enable = true;
       settings = {
@@ -37,14 +43,16 @@ libconf.create_common_confs [
           prefetching = true;
           minTime = "1h";
         };
-        # prometheus.enable = true;
+        prometheus.enable = true;
         queryLog = {
           type = "csv";
           target = "${cfg.blocky.dataDir}/logs";
           logRetentionDays = 7;
         };
-        customDNS.mapping = {
-          ${config.base.networking.domain} = config.base.networking.static_ip_address;
+        customDNS = {
+          mapping = {
+            ${config.base.networking.domain} = config.base.networking.static_ip_address;
+          };
         };
       };
     };
