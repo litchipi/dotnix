@@ -23,7 +23,7 @@ libconf.create_common_confs [
     };
     cfg = {
         setup.directories = [
-          { path = "${cfg.blocky.dataDir}/logs"; perms = "700"; owner = "root"; }
+          { path = "${cfg.blocky.dataDir}/logs"; perms = "700"; owner = "blocky"; }
         ];
         networking.firewall = {
             allowedTCPPorts = [ 53 ];
@@ -46,7 +46,7 @@ libconf.create_common_confs [
         prometheus.enable = true;
         queryLog = {
           type = "csv";
-          target = "${cfg.blocky.dataDir}/logs";
+          target = "${cfg.blocky.dataDir}/";
           logRetentionDays = 7;
         };
         customDNS = {
