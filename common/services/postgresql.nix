@@ -20,7 +20,7 @@ let
     options.auth_method = lib.mkOption {
       type = lib.types.str;
       description = "Authentication method to use for this user on the databases";
-      default = "ident";
+      default = "peer";
     };
   };
 in

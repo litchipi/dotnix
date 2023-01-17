@@ -90,7 +90,6 @@ in
     users.${persowebsite.user} = {
       databases = [ persowebsite.dbname ];
       permissions.${persowebsite.dbname} = "ALL PRIVILEGES";
-      auth_method = "peer";
     };
   };
 

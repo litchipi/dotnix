@@ -112,7 +112,6 @@ libconf.create_common_confs ([
       cmn.services.postgresql.users.nextcloud = {
         databases = [ "nextcloud" ];
         permissions."nextcloud" = "ALL PRIVILEGES";
-        auth_method = "trust";
       };
 
       cmn.services.restic.global.backup_paths = [
