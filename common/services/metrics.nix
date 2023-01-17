@@ -10,39 +10,43 @@ let
 
   setup_exporter = name: offport: collectors: {
     inherit name;
-    parents = ["services" "metrics" "prometheus"];
-    cfg.services.prometheus.exporters.${name} = {
-      enable = true;
-      enabledCollectors = collectors;
-      port = metrics_port_min + offport;
+    parents = ["services" "metrics" "exporter"];
+    cfg = {
+      services.prometheus.exporters.${name} = {
+        enable = true;
+        enabledCollectors = collectors;
+        port = metrics_port_min + offport;
+      };
+      cmn.services.metrics.prometheus.localhost_scrape_targets = [(metrics_port_min + offport)];
     };
-    cfg.cmn.services.metrics.prometheus.localhost_scrape_targets = [(metrics_port_min + offport)];
   };
-
 in
   libconf.create_common_confs [
     {
       name = "grafana";
       parents = ["services" "metrics"];
       add_opts = {
-        port = {
+        port = lib.mkOption {
           type = lib.types.int;
           default = 43922;
           description = "Port on which serve Prometheus";
         };
       };
-      cfg.services.grafana = {
-        enable = true;
-        port = cfg.grafana.port;
-        domain = "${grafana_sub}.${config.base.networking.domain}";
-        addr = "127.0.0.1";
-      };
       cfg = {
         base.networking.subdomains = [ grafana_sub ];
-        services.nginx.virtualhosts."${grafana_sub}.${config.base.networking.domain}" = {
+        services.nginx.virtualHosts."${grafana_sub}.${config.base.networking.domain}" = {
           locations."/" = {
-            proxypass = "http://127.0.0.1:${builtins.tostring cfg.grafana.port}";
-            proxywebsockets = true;
+            proxyPass = "http://127.0.0.1:${builtins.toString cfg.grafana.port}";
+            proxyWebsockets = true;
+          };
+        };
+
+        services.grafana = {
+          enable = true;
+          settings.server = {
+            domain = "${grafana_sub}.${config.base.networking.domain}";
+            http_port = cfg.grafana.port;
+            http_addr = "127.0.0.1";
           };
         };
       };
@@ -51,12 +55,12 @@ in
       name = "prometheus";
       parents = ["services" "metrics"];
       add_opts = {
-        port = {
+        port = lib.mkOption {
           type = lib.types.int;
           default = 43921;
           description = "Port on which serve Prometheus";
         };
-        localhost_scrape_targets = {
+        localhost_scrape_targets = lib.mkOption {
           type = lib.types.listOf lib.types.int;
           default = [];
           description = "List of ports on localhost that can be scraped";
@@ -64,8 +68,8 @@ in
       };
       cfg = {
         base.networking.subdomains = [ prometheus_sub ];
-        services.nginx.virtualhosts."${prometheus_sub}.${config.base.networking.domain}" = {
-          locations."/".proxypass = "http://127.0.0.1:${builtins.tostring cfg.prometheus.port}";
+        services.nginx.virtualHosts."${prometheus_sub}.${config.base.networking.domain}" = {
+          locations."/".proxyPass = "http://127.0.0.1:${builtins.toString cfg.prometheus.port}";
         };
       };
       cfg.services.prometheus = {

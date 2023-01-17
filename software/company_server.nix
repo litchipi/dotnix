@@ -178,4 +178,10 @@ in
     "94.16.114.254"
     "84.200.69.80"
   ];
+
+  cmn.services.metrics = {
+    grafana.enable = true;
+    prometheus.enable = true;
+    exporter.node.enable = true;
+  };
 }
