@@ -15,9 +15,10 @@ libconf.create_common_confs [
     parents = ["software" "games"];
     add_pkgs = let
       name = "ankama-launcher";
+      # https://download.ankama.com/launcher/full/linux/x64
       src = pkgs.fetchurl {
         url = "https://launcher.cdn.ankama.com/installers/production/Ankama%20Launcher-Setup-x86_64.AppImage";
-        sha256 = "814929a44e4b029941fc4de3cedb11f3c59a543bc60a1705e04ac7ea6677c62b";
+        sha256 = "e7c700b04b2d601014009e55bd9d8225d9ddbc1513bf95ef1d4a0309be30c100";
         name = "ankama-launcher.AppImage";
        };
     in with pkgs; [

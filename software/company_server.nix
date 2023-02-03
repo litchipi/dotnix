@@ -130,10 +130,6 @@ in
   # - invoceplane
   # - vikunja
 
-  # TODO    Services to add
-  # - PlugNMeet     Conference tool
-  # - NixOS mailserver
-
   cmn.services.shiori = {
     enable = true;
     backup = {

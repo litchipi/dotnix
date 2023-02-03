@@ -156,4 +156,6 @@ in {
     enable = true;
     machines.orionstar.enable = true;
   };
+
+  sound.enable = true;
 }
