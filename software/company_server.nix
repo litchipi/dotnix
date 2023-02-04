@@ -157,6 +157,11 @@ in
     enable = true;
     name = "orionstar";
   };
+  cmn.nix.ecospace = {
+    enable = true;
+    olderthan = "15d";
+    freq = "daily";
+  };
 
   cmn.services.dns.blocky.enable = true;
   base.networking.add_dns = [

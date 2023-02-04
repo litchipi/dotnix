@@ -29,22 +29,22 @@ libconf.create_common_confs [
     parents = ["nix"];
     minimal.cli = true;
     add_opts = {
-      minfree = lib.mkOption {
-        type = lib.types.int;
-        description = "Triggers cleaning when there's less than X MiB space left";
-        default = 256;
-      };
-      maxfree = lib.mkOption {
-        type = lib.types.int;
-        description = "To which limit we clean when minfree is triggered (in MiB)";
-        default = 1024;
-      };
-      gc_auto_olderthan = lib.mkOption {
+      # minfree = lib.mkOption {
+      #   type = lib.types.int;
+      #   description = "Triggers cleaning when there's less than X MiB space left";
+      #   default = 256;
+      # };
+      # maxfree = lib.mkOption {
+      #   type = lib.types.int;
+      #   description = "To which limit we clean when minfree is triggered (in MiB)";
+      #   default = 1024;
+      # };
+      olderthan = lib.mkOption {
         type = lib.types.str;
         description = "Auto delete nix store elements older than X";
         default = "7d";
       };
-      gc_freq = lib.mkOption {
+      freq = lib.mkOption {
         type = lib.types.str;
         description = "Frequency to collect garbages in nix store";
         default = "daily";
@@ -59,13 +59,13 @@ libconf.create_common_confs [
         };
         gc = {
           automatic = true;
-          dates = cfg.ecospace.gc_freq;
-          options = "--delete-older-than ${cfg.ecospace.gc_auto_olderthan}";
+          dates = cfg.ecospace.freq;
+          options = "--delete-older-than ${cfg.ecospace.olderthan}";
         };
-        extraOptions = ''
-          min-free = ${toString (cfg.ecospace.minfree * 1024 * 1024)}
-          max-free = ${toString (cfg.ecospace.maxfree * 1024 * 1024)}
-        '';
+        # extraOptions = ''
+        #   min-free = ${toString (cfg.ecospace.minfree * 1024 * 1024)}
+        #   max-free = ${toString (cfg.ecospace.maxfree * 1024 * 1024)}
+        # '';
       };
     };
   }
