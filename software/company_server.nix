@@ -184,4 +184,6 @@ in
     prometheus.enable = true;
     exporter.node.enable = true;
   };
+
+  # TODO    Add https://github.com/nats-io/nats-server
 }

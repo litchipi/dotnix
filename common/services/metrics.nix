@@ -128,5 +128,13 @@ in
         ];
       };
     }
-    (setup_exporter "node" 1 ["systemd"])
+    (setup_exporter "node" 1 ["systemd"]) # TODO   See https://github.com/prometheus/node_exporter
+    # TODO  Add metrics
+    # prometheus-nginx-exporter
+    # prometheus-nginxlog-exporter
+    # prometheus-nats-exporter
+    # prometheus-systemd-exporter
+    # prometheus-nextcloud-exporter
+    # prometheus-postgres-exporter
+    # prometheus-gitlab-ci-pipelines-exporter
 ]
