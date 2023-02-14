@@ -27,7 +27,7 @@ libconf.create_common_confs [
       cmn.software.tui = {
         full.enable = lib.mkDefault true;
         git.enable = lib.mkDefault true;
-        neovim.enable = lib.mkDefault true;
+        helix.enalbe = lib.mkDefault true;
         tmux.enable = lib.mkDefault true;
         jrnl.enable = lib.mkDefault true;
         irssi.enable = lib.mkDefault true;
@@ -223,6 +223,28 @@ libconf.create_common_confs [
         '';
       };
     };
+  }
+
+  {
+    name = "helix";
+    minimal.cli = true;
+    parents = ["software" "tui"];
+    add_pkgs = [
+      pkgs_unstable.helix
+    ];
+    add_opts = {
+      configuration = lib.mkOption {
+        type = lib.types.path;
+        description = "Configuration for the Helix editor";
+      };
+
+      theme = lib.mkOption {
+        type = lib.types.path;
+        description = "Theme to apply to the Helix editor";
+      };
+    };
+    home_cfg.file.".config/helix/config.toml".source = cfg.helix.configuration;
+    home_cfg.file.".config/helix/themes/nixos.toml".source = cfg.helix.theme;
   }
 
   {

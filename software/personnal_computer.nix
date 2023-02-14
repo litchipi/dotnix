@@ -90,9 +90,11 @@ in {
   networking.stevenBlackHosts.enable = true;
 
   cmn.software.musicprod.all = true;
-  cmn.software.dev.basic = true;
-  cmn.software.dev.system = true;
-  cmn.software.dev.web = true;
+  cmn.software.dev = {
+    basic = true;
+    system = true;
+    web = true;
+  };
 
   base.full_pkgs = with pkgs; [
     # Communication

@@ -20,14 +20,14 @@ let
       cfg = {
         environment.interactiveShellInit = initExtra;
         environment.shellAliases = shellAliases;
-        cmn.software.tui.neovim = {
+        cmn.software.tui.neovim = lib.mkIf config.cmn.software.tui.neovim.enable {
           vimcfg = [
             (libdata.read_data_else_empty ["config" "nvim" "${name}.vim"])
           ] ++ [vimcfg];
           add_plugins = vimplugs;
         };
       };
-      home_cfg.programs.neovim = {
+      home_cfg.programs.neovim = lib.mkIf config.cmn.software.tui.neovim.enable {
         plugins = vimplugs;
         coc.settings = coc-settings;
       };
