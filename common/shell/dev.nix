@@ -12,7 +12,8 @@ let
     add_pkgs ? [],
     vimplugs ? [],
     coc-settings ? {},
-    vimcfg ? ""
+    vimcfg ? "",
+    helixlang ? "",
   }:
     {
       inherit name add_pkgs;
@@ -26,6 +27,11 @@ let
           ] ++ [vimcfg];
           add_plugins = vimplugs;
         };
+        cmn.software.tui.helix.languagesdef = [ ''
+          [[language]]
+          name = "${name}"
+          ${helixlang}
+        ''];
       };
       home_cfg.programs.neovim = lib.mkIf config.cmn.software.tui.neovim.enable {
         plugins = vimplugs;
@@ -71,7 +77,6 @@ libconf.create_common_confs [
       })
       cargo-watch
       clippy
-      rust-analyzer
     ];
     vimplugs = with pkgs_unstable.vimPlugins; [
       rust-vim
@@ -88,6 +93,9 @@ libconf.create_common_confs [
       cargo2nix = "nix run github:cargo2nix/cargo2nix --";
       cargocheck = "cargo-watch -c -x 'check --tests'";
     };
+    helixlang = ''
+      language-server = { command = "${pkgs_unstable.rust-analyzer}/bin/rust-analyzer" }
+    '';
   })
 
   (lang_profile {

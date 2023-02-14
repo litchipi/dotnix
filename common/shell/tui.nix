@@ -65,168 +65,6 @@ libconf.create_common_confs [
   }
 
   {
-    name = "neovim";
-    minimal.cli = true;
-    parents = [ "software" "tui" ];
-    add_pkgs = with pkgs; [
-      neovim
-
-      # Coc-nvim
-      nodejs
-      yarn
-    ];
-    add_opts = {
-      add_plugins = lib.mkOption {
-        type = with lib.types; listOf package;
-        default = [];
-        description = "List of plugins to add to the configuration";
-      };
-
-      vimcfg = lib.mkOption {
-        type = with lib.types; listOf str;
-        default = [];
-        description = "List of vim configuration lines to add to the config";
-      };
-
-      themeOverride = lib.mkOption {
-        type = lib.types.attrs;
-        default = {};
-        description = "Theme to apply over the default one";
-      };
-
-      airlineThemeOverride = lib.mkOption {
-        type = lib.types.attrs;
-        default = {};
-        description = "Theme to override on the Airline plugin";
-      };
-    };
-    cfg.environment.variables.EDITOR = "nvim";
-    home_cfg = {
-      home.file.".local/share/nvim/site/autoload/plug.vim".source = let
-        src = pkgs.fetchFromGitHub {
-          owner = "junegunn";
-          repo = "vim-plug";
-          rev = "8fdabfba0b5a1b0616977a32d9e04b4b98a6016a";
-          sha256 = "sha256-jAr/xyQAYM9a1Heh1nw1Rsf2dKGRhlXs0Z4ETTAT0hA=";
-        };
-      in "${src}/plug.vim";
-
-      programs.neovim = {
-        enable = true;
-        vimAlias = true;
-        vimdiffAlias = true;
-
-        withPython3 = true;
-        withNodeJs = true;
-        withRuby = true;
-
-        coc = {
-          enable = true;
-          package = pkgs_unstable.vimPlugins.coc-nvim;
-          # vimUtils.buildVimPluginFrom2Nix {
-          #   pname = "coc.nvim";
-          #   version = "2022-05-21";
-          #   src = pkgs.fetchFromGitHub {
-          #     owner = "neoclide";
-          #     repo = "coc.nvim";
-          #     rev = "791c9f673b882768486450e73d8bda10e391401d";
-          #     sha256 = "sha256-MobgwhFQ1Ld7pFknsurSFAsN5v+vGbEFojTAYD/kI9c=";
-          #   };
-          #   meta.homepage = "https://github.com/neoclide/coc.nvim/";
-          # };
-
-          settings = {
-            diagnostic = {
-              enableSign = true;
-              enableHighlightLineNumber = true;
-              errorSign = "✘";
-              warningSign = "!";
-              infoSign = ">";
-              enableMessage = "jump";
-              virtualText = true;
-              refreshOnInsertMode = true;
-              autoRefresh = true;
-              level = "warning";
-              virtualTextCurrentLineOnly = false;
-            };
-          };
-        };
-
-        extraPython3Packages = (ps: with ps; [
-          pynvim
-        ]);
-
-        plugins = with pkgs.vimPlugins; [
-          tagbar
-
-          vim-airline
-          vim-airline-themes
-          nerdcommenter
-          nerdtree
-          neoformat
-          fzf-vim
-          zoomwintab-vim
-          vim-bbye
-          indentLine
-          vim-plug
-          nvim-colorizer-lua
-          vim-better-whitespace
-
-          # TODO  Telescope nvim setup
-          # Telescope
-          telescope-nvim
-
-          # TODO  Langage setup to migrate to specialized sections
-          vimtex
-          vim-toml
-          haskell-vim
-          vim-latex-live-preview
-
-          # Coc
-          coc-fzf
-          coc-json
-          coc-lists
-          coc-vimtex
-          coc-markdownlint
-        ] ++ cfg.neovim.add_plugins;
-
-        extraConfig = builtins.concatStringsSep "\n" ([
-          "call plug#begin()"
-          (builtins.concatStringsSep "\n\n" (builtins.map (plug: "  Plug '${plug}'")
-            (cfg.neovim.add_plugins ++ [
-              "markstory/vim-zoomwin"
-              # "reedes/vim-colors-pencil"
-              # "miyakogi/conoline.vim"
-            ])
-          ))
-          "call plug#end()"
-          (libdata.read_data ["config" "nvim" "plugins.vim"])
-          (libdata.read_data ["config" "nvim" "base.vim"])
-          (libdata.read_data ["config" "nvim" "autocmds.vim"])
-          (libdata.read_data ["config" "nvim" "keybindings.vim"])
-
-          # Setting the base colors for the theme
-          (libnvim.generate_theme (libnvim.default_theme // cfg.neovim.themeOverride))
-          (libnvim.generate_airline_theme (libnvim.airline_default_theme // cfg.neovim.airlineThemeOverride))
-        ] ++ cfg.neovim.vimcfg);
-      };
-
-      /** install the few vim-plug plugins in a non-reproducable way
-       automatically upon 'home-manager switch' by running neovim
-       in headless mode to run :PlugInstall
-      */
-      home.activation = {
-        neovimPlugInstall = ''
-          # plugin update rev 1
-          # update the number above to force plugin updates, and if it works do it on all
-          # machines to have a chance at getting the same setup. Or better yet create a nix derivation for them :)
-          $DRY_RUN_CMD nvim -c ':PlugInstall!' -c ':PlugDiff' -c ':PlugClean!' -c ':UpdateRemotePlugins' -c ':q!' -c 'q!' --headless
-        '';
-      };
-    };
-  }
-
-  {
     name = "helix";
     minimal.cli = true;
     parents = ["software" "tui"];
@@ -245,10 +83,17 @@ libconf.create_common_confs [
         default = libdata.get_data_path ["config" "helix" "theme.toml"];
         description = "Theme to apply to the Helix editor";
       };
+
+      languagesdef = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [];
+        description = "Lines to add to the `languages.toml` file";
+      };
     };
     # TODO    Uncomment once the config file doesn't change too much
     # home_cfg.home.file.".config/helix/config.toml".source = cfg.helix.configuration;
     # home_cfg.home.file.".config/helix/themes/nixos.toml".source = cfg.helix.theme;
+    home_cfg.home.file.".config/helix/languages.toml".text = builtins.concatStringsSep "\n\n" cfg.helix.languagesdef;
   }
 
   {
@@ -295,125 +140,6 @@ libconf.create_common_confs [
         let g:gitgutter_set_sign_backgrounds = 0
         let g:gitgutter_map_keys = 0
       '';
-    };
-  }
-
-  {
-    name = "tmux";
-    minimal.cli = true;
-    parents = [ "software" "tui" ];
-
-    add_pkgs = with pkgs; [
-      tmux
-      tmuxp
-    ];
-
-    add_opts = {
-      extraConfig = lib.mkOption {
-        type = lib.types.str;
-        description = "Extra tmux configuration to add";
-        default = "";
-      };
-
-      themeOverride = lib.mkOption {
-        type = lib.types.attrs;
-        default = {};
-        description = "Theme to apply over the default one";
-      };
-
-      varsOverride = lib.mkOption {
-        type = lib.types.attrs;
-        default = {};
-        description = "Override theme variables over default ones";
-      };
-    };
-
-    home_cfg.programs = {
-      bash.shellAliases = {
-        quitses = "tmux kill-session -t $(tmux display-message -p \"#S\")";
-      };
-
-      neovim.plugins = with pkgs.vimPlugins; [
-        tmux-complete-vim
-      ];
-
-      tmux = {
-        enable = true;
-        clock24 = true;
-
-        prefix = "M-p";
-        terminal = "xterm-256color";
-        historyLimit = 10000;
-        escapeTime = 0;
-        keyMode = "vi";
-        sensibleOnTop = false;
-        secureSocket = true;
-        plugins = with pkgs.tmuxPlugins; [
-          better-mouse-mode
-        ];
-        tmuxp.enable = true;
-        extraConfig = ''
-          set -ga terminal-overrides ",*256col*:Tc"
-
-          unbind d
-          unbind z
-          unbind q
-          unbind s
-          bind-key f split-window -h
-          bind-key r split-window -v
-
-          bind-key q previous-window
-          bind-key Q resize-pane -L 3
-          bind-key d next-window
-          bind-key D resize-pane -R 3
-          bind-key Z resize-pane -U 3
-          bind-key S resize-pane -D 3
-
-          bind-key a select-pane -t :.-
-          bind-key A swap-pane -D
-          bind-key e select-pane -t :.+
-          bind-key E swap-pane -U
-          bind-key z new-window
-          bind-key s confirm-before -p "kill-window #W? (y/n)" kill-pane
-          bind-key M-s confirm-before -p "kill-window #W? (y/n)" kill-window
-          bind-key m resize-pane -Z
-
-          bind-key M-q swap-window -t -1
-          bind-key M-d swap-window -t +1
-
-          bind-key p paste-buffer
-          bind-key o copy-mode
-          #bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel 'xclip -in -selection clipboard'
-
-          bind-key n command-prompt -I "#W" "rename-window -- '%%'"
-
-          bind-key & select-window -t 0
-          bind-key é select-window -t 1
-          bind-key '"' select-window -t 2
-          bind-key "'" select-window -t 3
-          bind-key - select-window -t 4
-          bind-key è select-window -t 5
-          bind-key _ select-window -t 6
-          bind-key ç select-window -t 7
-          bind-key à select-window -t 8
-          bind-key ) select-window -t 9
-
-          set -g @urlview-key 'u'
-          set -g monitor-activity on
-          set -g default-terminal "tmux"
-
-          set -g mouse on
-          unbind -T copy-mode-vi MouseDragEnd1Pane
-          bind -T copy-mode-vi MouseDown3Pane send -X clear-selection \; send-keys -X cancel
-
-          # Generated theme
-        ''
-        + (libtmux.generate_theme
-            ((libtmux.default_theme (libtmux.default_vars // cfg.tmux.varsOverride))
-            // cfg.tmux.themeOverride)
-          )
-        + cfg.tmux.extraConfig;
-      };
     };
   }
 
