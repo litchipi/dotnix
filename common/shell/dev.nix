@@ -43,6 +43,7 @@ libconf.create_common_confs [
       software = ["rust" "python"];
       functionnal = ["ocaml" "haskell"];
       system = ["c" "nix" "python"];
+      web = ["svelte"];
     };
     add_pkgs = with pkgs; [
       pkg-config
@@ -159,6 +160,13 @@ libconf.create_common_confs [
     ];
     vimplugs = with pkgs_unstable.vimPlugins; [
       coc-clangd
+    ];
+  })
+
+  (lang_profile {
+    name = "svelte";
+    vimplugs = with pkgs_unstable.vimPlugins; [
+      vim-svelte
     ];
   })
 ]

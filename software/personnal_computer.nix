@@ -92,6 +92,7 @@ in {
   cmn.software.musicprod.all = true;
   cmn.software.dev.basic = true;
   cmn.software.dev.system = true;
+  cmn.software.dev.web = true;
 
   base.full_pkgs = with pkgs; [
     # Communication
