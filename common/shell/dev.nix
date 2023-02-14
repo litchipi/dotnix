@@ -137,6 +137,11 @@ libconf.create_common_confs [
       command = "rnix-lsp";
       filetypes = ["nix"];
     };
+    helixlang = let
+      lsp = ${pkgs_unstable.nil}/bin/nil;
+    in ''
+      language-server = { command = "${lsp}" }
+    '';
   })
 
   (let
@@ -160,6 +165,11 @@ libconf.create_common_confs [
       pythonPath = "${pythonpkg}/bin/python3";
       pyright.server = "${pkgs.nodePackages.pyright}/bin/pyright";
     };
+    helixlang = let
+      lsp = ${pkgs_unstable.python310Packages.python-lsp-server}/bin/pylsp;
+    in ''
+      language-server = { command = "${lsp}" }
+    '';
   })
 
   (lang_profile {
@@ -177,5 +187,10 @@ libconf.create_common_confs [
     vimplugs = with pkgs_unstable.vimPlugins; [
       vim-svelte
     ];
+    helixlang = let
+      lsp = "${pkgs_unstable.nodePackages.svelte-language-server}/bin/svelteserver";
+    in ''
+      language-server = { command = "${lsp}" }
+    '';
   })
 ]
