@@ -28,6 +28,7 @@ libconf.create_common_confs [
         full.enable = lib.mkDefault true;
         git.enable = lib.mkDefault true;
         helix.enable = lib.mkDefault true;
+        neovim.enable = lib.mkDefault true;
         tmux.enable = lib.mkDefault true;
         jrnl.enable = lib.mkDefault true;
         irssi.enable = lib.mkDefault true;
