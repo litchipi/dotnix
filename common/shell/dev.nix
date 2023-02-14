@@ -71,6 +71,7 @@ libconf.create_common_confs [
       })
       cargo-watch
       clippy
+      rust-analyzer
     ];
     vimplugs = with pkgs_unstable.vimPlugins; [
       rust-vim

@@ -1,0 +1,69 @@
+theme = "nixos"
+
+[editor]
+cursorline = true
+cursorcolumn = true
+auto-format = false
+idle-timeout = 100
+true-color = true
+rulers = [ 90 ]
+bufferline = "always"
+color-modes = true
+
+[editor.statusline]
+left = ["mode", "spinner"]
+center = ["diagnostics"]
+right = ["position", "position-percentage", "total-line-numbers"]
+
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.whitespace.render]
+space = "none"
+tab = "all"
+newline = "none"
+
+[editor.indent-guides]
+render = true
+character = "╎"
+skip-levels = 1
+
+[keys.normal]
+# Movements
+A-a = "goto_previous_buffer"
+A-e = "goto_next_buffer"
+z = "move_line_up"
+A-z = "goto_prev_paragraph"
+s = "move_line_down"
+A-s = [ "goto_next_paragraph", "goto_first_nonwhitespace"]
+d = "move_char_right"
+A-d = "move_next_word_start"
+q = "move_char_left"
+A-q = "move_prev_word_end"
+
+X = "extend_line_above"
+
+# Navigation
+"A-&" = "file_picker"
+
+# Windows
+tab = "rotate_view"
+A-r = "wclose"
+A-f = "wonly"
+
+[keys.normal."$"]
+a = "diagnostics_picker"
+e = "symbol_picker"
+f = "buffer_picker"
+"&" = "file_picker"
+r = "vsplit"
+space = "code_action"
+
+[keys.insert]
+A-q = "move_char_left"
+A-z = "move_line_up"
+A-s = "move_line_down"
+A-d = "move_char_right"

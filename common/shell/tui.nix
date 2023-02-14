@@ -27,7 +27,7 @@ libconf.create_common_confs [
       cmn.software.tui = {
         full.enable = lib.mkDefault true;
         git.enable = lib.mkDefault true;
-        helix.enalbe = lib.mkDefault true;
+        helix.enable = lib.mkDefault true;
         tmux.enable = lib.mkDefault true;
         jrnl.enable = lib.mkDefault true;
         irssi.enable = lib.mkDefault true;
@@ -235,16 +235,19 @@ libconf.create_common_confs [
     add_opts = {
       configuration = lib.mkOption {
         type = lib.types.path;
+        default = libdata.get_data_path ["config" "helix" "config.toml"];
         description = "Configuration for the Helix editor";
       };
 
       theme = lib.mkOption {
         type = lib.types.path;
+        default = libdata.get_data_path ["config" "helix" "theme.toml"];
         description = "Theme to apply to the Helix editor";
       };
     };
-    home_cfg.file.".config/helix/config.toml".source = cfg.helix.configuration;
-    home_cfg.file.".config/helix/themes/nixos.toml".source = cfg.helix.theme;
+    # TODO    Uncomment once the config file doesn't change too much
+    # home_cfg.home.file.".config/helix/config.toml".source = cfg.helix.configuration;
+    # home_cfg.home.file.".config/helix/themes/nixos.toml".source = cfg.helix.theme;
   }
 
   {
