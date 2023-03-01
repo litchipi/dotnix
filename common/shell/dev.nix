@@ -93,8 +93,10 @@ libconf.create_common_confs [
       cargo2nix = "nix run github:cargo2nix/cargo2nix --";
       cargocheck = "cargo-watch -c -x 'check --tests'";
     };
-    helixlang = ''
-      language-server = { command = "${pkgs_unstable.rust-analyzer}/bin/rust-analyzer" }
+    helixlang = let
+      lsp = "${pkgs_unstable.rust-analyzer}/bin/rust-analyzer";
+    in ''
+      language-server = { command = "${lsp}" }
     '';
   })
 
@@ -138,7 +140,7 @@ libconf.create_common_confs [
       filetypes = ["nix"];
     };
     helixlang = let
-      lsp = ${pkgs_unstable.nil}/bin/nil;
+      lsp = "${pkgs_unstable.nil}/bin/nil";
     in ''
       language-server = { command = "${lsp}" }
     '';
@@ -166,7 +168,7 @@ libconf.create_common_confs [
       pyright.server = "${pkgs.nodePackages.pyright}/bin/pyright";
     };
     helixlang = let
-      lsp = ${pkgs_unstable.python310Packages.python-lsp-server}/bin/pylsp;
+      lsp = "${pkgs_unstable.python310Packages.python-lsp-server}/bin/pylsp";
     in ''
       language-server = { command = "${lsp}" }
     '';
@@ -188,9 +190,10 @@ libconf.create_common_confs [
       vim-svelte
     ];
     helixlang = let
-      lsp = "${pkgs_unstable.nodePackages.svelte-language-server}/bin/svelteserver";
+      lsp = "${pkgs_unstable.nodePackages_latest.svelte-language-server}/bin/svelteserver";
     in ''
       language-server = { command = "${lsp}" }
+      indent = { tab-width = 4, unit = "    " }
     '';
   })
 ]

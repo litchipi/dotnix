@@ -11,44 +11,18 @@ libconf.create_common_confs [
     ];
   }
   {
-    name = "ankama-launcher";
+    name = "dofus";
     parents = ["software" "games"];
-    add_pkgs = let
-      name = "ankama-launcher";
-      # https://download.ankama.com/launcher/full/linux/x64
-      src = pkgs.fetchurl {
-        url = "https://launcher.cdn.ankama.com/installers/production/Ankama%20Launcher-Setup-x86_64.AppImage";
-        sha256 = "5ba369d99e0f8782fc823f548552d2a2c1aa8d9486c7f2c199d76a762c3ac3bf";
-        name = "ankama-launcher.AppImage";
-       };
-    in with pkgs; [
-      libGL
-      winetricks
-      wine-wayland
-      wineasio
-      wineWowPackages.waylandFull
-      winePackages.waylandFull
-      mesa
-      gnutls.dev
-      gst_all_1.gstreamer
-      gst_all_1.gst-plugins-base
-      gst_all_1.gst-plugins-bad
-      gst_all_1.gst-plugins-good
-      gst_all_1.gst-plugins-ugly
-      gst_all_1.gst-plugins-viperfx
-      gst_all_1.gstreamermm
-      gst_all_1.gst-libav
-      gst_all_1.gst-vaapi
-      (appimageTools.wrapType2 {
-        inherit name src;
-        extraInstallCommands = let
-          appimageContents = appimageTools.extractType2 { inherit name src; };
-        in ''
-          install -m 444 -D ${appimageContents}/zaap.desktop $out/share/applications/ankama-launcher.desktop
-          sed -i 's/.*Exec.*/Exec=ankama-launcher/' $out/share/applications/ankama-launcher.desktop
-          install -m 444 -D ${appimageContents}/zaap.png $out/share/icons/hicolor/256x256/apps/zaap.png
-        '';
-      })
-    ];
+    cfg.environment.interactiveShellInit = let
+      appimg = "~/.ankama_launcher.AppImage";
+    in ''
+      function dofus {
+        if ! [ -f ${appimg} ]; then
+          echo "Please download the Ankama launcher and put it in ${appimg}"
+          exit 1;
+        fi
+        ${pkgs.appimage-run}/bin/appimage-run ${appimg}
+      }
+    '';
   }
 ]

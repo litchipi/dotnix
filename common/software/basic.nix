@@ -30,7 +30,7 @@ libconf.create_common_confs [
           env.TERM = "xterm-256color";
           window = {
             decorations = "none";
-            opacity = 0.85;
+            opacity = 0.77;
             padding = {
               x = 15;
               y = 15;

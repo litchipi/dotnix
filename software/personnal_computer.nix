@@ -135,7 +135,7 @@ in {
 
   cmn.software.games = {
     retroarch.enable = true;
-    ankama-launcher.enable = true;
+    dofus.enable = true;
   };
 
   services.blueman.enable = true;
