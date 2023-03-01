@@ -53,9 +53,6 @@ libconf.create_common_confs [
       ffmpeg
       neofetch
       bat
-
-      # Custom TUI tools
-      litchipi.pomodoro
     ];
     cfg = {
       cmn.shell.aliases = {
