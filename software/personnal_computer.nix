@@ -117,6 +117,7 @@ in {
     shortwave # Listen Internet radio
     gnome-podcasts # Listen to podcasts
     audacity
+    python310Packages.deemix
 
     # Other
     wike # Wikipedia reader
