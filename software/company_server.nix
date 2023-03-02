@@ -185,5 +185,8 @@ in
     exporter.node.enable = true;
   };
 
+  # TODO        Nixify the build of Massa, and create a NixOS module from it
+  cmn.services.massa.enable = true;
+
   # TODO    Add https://github.com/nats-io/nats-server
 }
