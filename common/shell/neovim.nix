@@ -2,10 +2,7 @@
 let
   libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
-  libutils = import ../../lib/utils.nix {inherit config lib pkgs;};
-  libcolors = import ../../lib/colors.nix {inherit config lib pkgs;};
   libnvim = import ../../lib/software/neovim.nix {inherit config lib pkgs;};
-  libtmux = import ../../lib/software/tmux.nix {inherit config lib pkgs;};
 
   cfg = config.cmn.software.tui;
 in
