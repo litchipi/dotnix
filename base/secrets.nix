@@ -82,6 +82,11 @@ let
         ${lib.strings.optionalString (!builtins.isNull symlink) "rm -f ${symlink} && ln -s ${dest} ${symlink}"}
       '';
     };
+
+    all_secrets_services = mapAttrs' (name: info: {
+      name = "${name}-key";
+      value = (mkService name info);
+    }) (if config.setup.is_ci_run then {} else cfg.store);
 in {
   options.base.secrets = {
     machine_secret_key_fname = lib.mkOption {
@@ -97,12 +102,7 @@ in {
   };
 
   config = {
-    systemd.services = let
-      units = mapAttrs' (name: info: {
-        name = "${name}-key";
-        value = (mkService name info);
-      }) (if config.setup.is_ci_run then {} else cfg.store);
-    in units;
+    systemd.services = all_secrets_services;
 
     system.activationScripts.decrypt_machine_secret_key = if config.setup.is_ci_run then "" else ''
       export PATH=$PATH:${pkgs.gnupg}/bin/
