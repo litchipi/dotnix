@@ -22,7 +22,10 @@ libconf.create_common_confs [
 
       system.activationScripts.chmod_massa_datadir = ''
         chown -R massa:massa ${cfg.dataDir}
-        chmod -R 660 ${cfg.dataDir}
+        chmod -R 660 ${cfg.dataDir}/client
+        chmod 770 ${cfg.dataDir}/client/massa-client
+        chmod -R 600 ${cfg.dataDir}/node
+        chmod 700 ${cfg.dataDir}/node/massa-node
       '';
 
       users.users.massa = {
@@ -44,7 +47,6 @@ libconf.create_common_confs [
             WorkingDirectory = "${cfg.dataDir}/node";
         };
         script = ''
-            chmod 700 ./massa-node
             ./massa-node -p "$(cat ${config.base.secrets.store.massa_wallet_pwd.dest})"
         '';
       };
