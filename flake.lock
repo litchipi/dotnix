@@ -356,11 +356,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1677749176,
-        "narHash": "sha256-HgMoVGKuoycqmomQ+8zphanlCyXVM7IbJnHT5czq2nc=",
+        "lastModified": 1677765459,
+        "narHash": "sha256-01+5rkpBOFMUReknbIiDr2mRqKvwqW9T8IgmExlWiHI=",
         "owner": "litchipi",
         "repo": "pomodoro",
-        "rev": "876464e1d31a8ad0d895cdc11743dbe871337999",
+        "rev": "f6c8c5b2548989a06c3f67f7dc96d21b23a51313",
         "type": "github"
       },
       "original": {
