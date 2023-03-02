@@ -54,8 +54,8 @@ libconf.create_common_confs [
       nix = {
         settings = {
           auto-optimise-store = true;
-          gc-keep-output = true;
-          gc-keep-derivations = true;
+          # gc-keep-output = true;
+          # gc-keep-derivations = true;
         };
         gc = {
           automatic = true;
