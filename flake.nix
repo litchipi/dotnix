@@ -41,6 +41,11 @@
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    pomodoro = {
+      url = "github:litchipi/pomodoro";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { nixpkgs, nixpkgs_unstable, ...}@inputs:
@@ -65,6 +70,7 @@
     # TODO  Pass the libraries as an overlay
     common_overlays = [
       inputs.rust-overlay.overlays.default
+      inputs.pomodoro.overlays.default
       (_: final: (import ./overlays/overlays.nix final))
     ];
 

@@ -349,6 +349,26 @@
         "url": "ssh://gitlab@git.orionstar.cyou/litchi.pi/personnal_website.git"
       }
     },
+    "pomodoro": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1677749176,
+        "narHash": "sha256-HgMoVGKuoycqmomQ+8zphanlCyXVM7IbJnHT5czq2nc=",
+        "owner": "litchipi",
+        "repo": "pomodoro",
+        "rev": "876464e1d31a8ad0d895cdc11743dbe871337999",
+        "type": "github"
+      },
+      "original": {
+        "owner": "litchipi",
+        "repo": "pomodoro",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "StevenBlackHosts": "StevenBlackHosts",
@@ -360,6 +380,7 @@
         "nixpkgs": "nixpkgs",
         "nixpkgs_unstable": "nixpkgs_unstable",
         "persowebsite": "persowebsite",
+        "pomodoro": "pomodoro",
         "rust-overlay": "rust-overlay_2",
         "shix": "shix"
       }

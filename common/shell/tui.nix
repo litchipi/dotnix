@@ -22,6 +22,9 @@ libconf.create_common_confs [
       python310
 
       unzip unrar
+
+      # Custom pomodoro tool from the overlay
+      pomodoro
     ];
     cfg = {
       cmn.software.tui = {
