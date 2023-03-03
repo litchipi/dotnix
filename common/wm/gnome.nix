@@ -127,6 +127,7 @@ libcmnconf.create_common_confs [
     };
 
     add_pkgs = (with pkgs_unstable.gnomeExtensions; [
+      audio-selector
       gnome-40-ui-improvements
       caffeine
       bring-out-submenu-of-power-offlogout-button
