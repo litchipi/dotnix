@@ -102,6 +102,7 @@ in
     system.stateVersion = "22.11";
 
     boot.cleanTmpDir = true;
+    boot.supportedFilesystems = [ "ntfs" "exfat" "nfs" "vfat" "ext" "xfs" "btrfs" ];
 
     # clean logs older than 2d
     services.cron.systemCronJobs = [
