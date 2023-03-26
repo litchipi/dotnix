@@ -1,25 +1,22 @@
 { config, lib, pkgs, ... }:
 let
   libdata = import ../../lib/manage_data.nix { inherit config lib pkgs; };
-  libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
-
-  cfg = config.cmn.services.massa;
+  cfg = config.services.massa;
 in
-libconf.create_common_confs [
   {
-    name = "massa";
-    parents = ["services"];
-    add_opts.dataDir = lib.mkOption {
+    options.services.massa = {
+      secrets = lib.mkOption {
+        type = lib.types.attrsets;
+        description = "Secrets to use for the massa configuration";
+      };
+      dataDir = lib.mkOption {
         type = lib.types.str;
         description = "Where the configuration and data are stored";
         default = "/var/massa";
-    };
-    cfg = {
-      base.secrets.store.massa_wallet_pwd = libdata.set_secret {
-        user = "massa";
-        path = [ "services" "massa" config.base.hostname "wallet_pwd" ];
       };
+    };
 
+    config = {
       system.activationScripts.chmod_massa_datadir = ''
         chown -R massa:massa ${cfg.dataDir}
         chmod -R 660 ${cfg.dataDir}/client
@@ -47,9 +44,8 @@ libconf.create_common_confs [
             WorkingDirectory = "${cfg.dataDir}/node";
         };
         script = ''
-            ./massa-node -p "$(cat ${config.base.secrets.store.massa_wallet_pwd.dest})"
+          ./massa-node -p "$(cat ${cfg.secrets.wallet_password})"
         '';
       };
     };
   }
-]

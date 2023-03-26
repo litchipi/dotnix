@@ -53,13 +53,13 @@ in
     ssh_ident = "${config.base.user}@${config.base.hostname}";
     ssh_privk_secret_k = "${ssh_ident}_ssh_privk";
   in {
-    base.secrets.store.${ssh_privk_secret_k} = libdata.set_secret {
+    secrets.store.ssh_privk.${config.base.hostname}.${config.base.user} = {
+      link = "/home/${config.base.user}/.ssh/id_rsa";
       user = config.base.user;
-      path = ["keys" config.base.hostname "ssh_${config.base.user}_privk"];
-      symlink = "/home/${config.base.user}/.ssh/id_rsa";
+      transform = "cat - <(echo \"\")";
     };
 
-    base.home_cfg = if config.setup.is_ci_run then {} else {
+    base.home_cfg = {
       home.file.".ssh/id_rsa.pub".source = (
         libdata.get_data_path ["pubkeys" "ssh" "${ssh_ident}.pub"]
       );

@@ -1,16 +1,6 @@
-{config, lib, pkgs, inputs, ...}:
-
-with inputs.home-manager.lib.hm.gvariant;
-
-let
-  conf_lib = import ../../lib/commonconf.nix {inherit config lib pkgs;};
-in
-conf_lib.create_common_confs [
+{config, lib, pkgs, inputs, ...}: with inputs.home-manager.lib.hm.gvariant;
   {
-    name = "apps";
-    parents = ["dconf"];
-    minimal.gui = true;
-    home_cfg.dconf.settings = {
+    config.base.home_cfg.dconf.settings = {
       "org/gnome/nautilus/preferences" = {
         default-folder-viewer = "icon-view";
         search-filter-time-type = "first_modified";
@@ -83,4 +73,3 @@ conf_lib.create_common_confs [
       };
     };
   }
-]

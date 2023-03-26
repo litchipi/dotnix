@@ -1,50 +1,44 @@
 { config, lib, pkgs, ... }:
 let
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
-  libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   libextbk = import ../../lib/external_backup.nix {inherit config lib pkgs;};
 
-  cfg = config.cmn.services.gitlab;
-  gitlab_secret = name: libdata.set_secret {
-    user = "gitlab";
-    path = ["services" "gitlab" config.base.hostname name];
-  };
+  cfg = config.services.gitlab;
 in
-libconf.create_common_confs [
   {
-    name = "gitlab";
-    parents = [ "services" ];
-    add_pkgs = [
-      pkgs.nginx
-    ];
-    add_opts.backup = {
-      repo_path = lib.mkOption {
-        type = lib.types.str;
-        description = "Path to the restic repository";
-        default = "/var/backup/gitlab";
+    options.services.gitlab = {
+      secrets = lib.mkOption {
+        type = lib.types.attrsets;
+        description = "Secrets to use for the gitlab configuration";
       };
-      timerConfig = lib.mkOption {
-        type = lib.types.anything;
-        description = "Timer config for the systemd service";
-        default = { OnCalendar = "daily"; };
+      backup = {
+        repo_path = lib.mkOption {
+          type = lib.types.str;
+          description = "Path to the restic repository";
+          default = "/var/backup/gitlab";
+        };
+        timerConfig = lib.mkOption {
+          type = lib.types.anything;
+          description = "Timer config for the systemd service";
+          default = { OnCalendar = "daily"; };
+        };
+        pruneOpts = lib.mkOption {
+          type = lib.types.listOf lib.types.str;
+          description = "Options of snapshots forget";
+          default = ["-y 10" "-m 12" "-w 4" "-d 30" "-l 5"];
+        };
+        gdrive = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Enable saving the backup to Google Drive";
+        };
+        external_copy = libextbk.mkOption;
       };
-      pruneOpts = lib.mkOption {
-        type = lib.types.listOf lib.types.str;
-        description = "Options of snapshots forget";
-        default = ["-y 10" "-m 12" "-w 4" "-d 30" "-l 5"];
-      };
-      gdrive = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Enable saving the backup to Google Drive";
-      };
-      external_copy = libextbk.mkOption;
     };
-    cfg = {
+    config = {
       setup.directories = [
         { path = cfg.backup.repo_path; perms = "700"; owner = "gitlab"; }
       ];
-
       base.networking.vm_forward_ports = {
         http = { from = "host"; host.port = 40080; guest.port = 80; };
         https= { from = "host"; host.port = 40443; guest.port = 443; };
@@ -59,17 +53,9 @@ libconf.create_common_confs [
       users.users."${config.base.user}".extraGroups = [ "gitlab" ];
       users.extraUsers.gitlab.extraGroups = [ "nginx" ];
 
-      base.secrets.store = {
-        gitlab_secretFile = gitlab_secret "secretfile";
-        gitlab_otpFile = gitlab_secret "otp";
-        gitlab_jwsFile = gitlab_secret "session";
-        gitlab_dbFile = gitlab_secret "db";
-        gitlab_dbpwd = gitlab_secret "dbpwd";
-        gitlab_initialrootpwd = gitlab_secret "initial_root_pwd";
-        gitlab_restic_repo_pwd = gitlab_secret "restic_repo_pwd";
-      } // (if !cfg.backup.gdrive then {} else {
-        gitlab_rclone_conf = gitlab_secret "gdrive.conf";
-      });
+      secrets.store.services.gitlab = pkgs.secrets.set_common_config {
+        user = config.services.gitlab.user;
+      } config.secrets.store.services.gitlab;
 
       services.nginx = {
         enable = true;
@@ -93,9 +79,9 @@ libconf.create_common_confs [
         port = 80;
         extraDatabaseConfig.port = config.services.postgresql.port;
 
-        databasePasswordFile = config.base.secrets.store.gitlab_dbpwd.dest;
+        databasePasswordFile = cfg.secrets.dbpwd.file;
         initialRootEmail = config.base.email;
-        initialRootPasswordFile = config.base.secrets.store.gitlab_initialrootpwd.dest;
+        initialRootPasswordFile = cfg.secrets.initial_root_pwd.file;
 
         # TODO Set up HTTPS with
         # https://nixos.org/manual/nixos/stable/#module-security-acme-nginx
@@ -103,10 +89,10 @@ libconf.create_common_confs [
         https = false; #true;
         smtp.enable = true;
         secrets = {
-          dbFile = config.base.secrets.store.gitlab_dbFile.dest;
-          secretFile = config.base.secrets.store.gitlab_secretFile.dest;
-          otpFile = config.base.secrets.store.gitlab_otpFile.dest;
-          jwsFile = config.base.secrets.store.gitlab_jwsFile.dest;
+          dbFile = cfg.secrets.db.file;
+          secretFile = cfg.secrets.secretfile.file;
+          otpFile = cfg.secrets.otp.file;
+          jwsFile = cfg.secrets.session.file;
         };
 
         extraConfig = {
@@ -123,7 +109,7 @@ libconf.create_common_confs [
 
       services.restic.backups.gitlab = {
         initialize = true;
-        passwordFile = config.base.secrets.store.gitlab_restic_repo_pwd.dest;
+        passwordFile = cfg.secrets.restic_repo_pwd.file;
         repository = cfg.backup.repo_path;
         timerConfig = {
           Persistent = true;
@@ -170,9 +156,7 @@ libconf.create_common_confs [
           rm $SOURCE
         '';
       };
-
       fileSystems = libextbk.mkFileSystems cfg.backup.external_copy;
-
       systemd.services = libextbk.mkSystemdService cfg.backup.external_copy {
         basename = "restic_gitlab_backup";
         bind = "restic-backups-gitlab.service";
@@ -181,96 +165,8 @@ libconf.create_common_confs [
         basename = "restic_gitlab_backup";
         enabled = cfg.backup.gdrive;
         bind = "restic-backups-gitlab.service";
-        rclone_conf = config.base.secrets.store.gitlab_rclone_conf.dest;
+        rclone_conf = cfg.secrets.rclone_gdrive.file;
         paths.${cfg.backup.repo_path} = "${config.base.hostname}_gitlab_backup";
       });
     };
   }
-
-  {
-    name = "runners";
-    parents = [ "services" "gitlab" ];
-    add_opts = {
-      nb_jobs = lib.mkOption {
-        type = lib.types.int;
-        default = 1;
-        description = "Number of jobs to start in parallel";
-      };
-      services = lib.mkOption {
-        type = lib.types.attrsOf lib.types.anything;
-        default = {};
-        description = "Images to use for services";
-      };
-      add_nix_service = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Wether to add a service to build using the host's nix store";
-      };
-    };
-    cfg = {
-      virtualisation.docker.enable = true;
-      base.secrets.store.gitlab_runner_registrationConfigFile = libdata.write_secret_file {
-        user = "root";
-        filename = "gitlab_runner_registrationConfigFile";
-        text = let
-          vars = {
-            CI_SERVER_URL="http://git.${config.base.networking.domain}";
-            REGISTRATION_TOKEN=builtins.readFile (libdata.get_data_path
-              [ "secrets" "services" "gitlab" config.base.hostname "runner_registration_token"]
-            );
-          } // (if config.cmn.services.gitlab.enable then {
-            DOCKER_NETWORK_MODE="host";
-          } else {});
-        in (builtins.concatStringsSep "\n"
-          (lib.attrsets.mapAttrsToList (name: var: "${name}=\"${var}\"") vars));
-        };
-
-        services.gitlab-runner = {
-          enable = true;
-          settings.concurrent = cfg.runners.nb_jobs;
-          services = (builtins.mapAttrs (_:
-            { runnerOpts ? {}, runnerEnvs ? {}, ...} : lib.attrsets.recursiveUpdate {
-            registrationConfigFile =
-                config.base.secrets.store.gitlab_runner_registrationConfigFile.dest;
-            environmentVariables = runnerEnvs;
-          } runnerOpts) cfg.runners.services) // (if cfg.runners.add_nix_service then
-          { nix = {
-            registrationConfigFile = config.base.secrets.store.gitlab_runner_registrationConfigFile.dest;
-            dockerImage = "alpine";
-            dockerVolumes = [
-              "/nix/store:/nix/store:ro"
-              "/nix/var/nix/db:/nix/var/nix/db:ro"
-              "/nix/var/nix/daemon-socket:/nix/var/nix/daemon-socket:ro"
-            ];
-            dockerDisableCache = true;
-            preBuildScript = pkgs.writeScript "setup-container" ''
-              mkdir -p -m 0755 /nix/var/log/nix/drvs
-              mkdir -p -m 0755 /nix/var/nix/gcroots
-              mkdir -p -m 0755 /nix/var/nix/profiles
-              mkdir -p -m 0755 /nix/var/nix/temproots
-              mkdir -p -m 0755 /nix/var/nix/userpool
-              mkdir -p -m 1777 /nix/var/nix/gcroots/per-user
-              mkdir -p -m 1777 /nix/var/nix/profiles/per-user
-              mkdir -p -m 0755 /nix/var/nix/profiles/per-user/root
-              mkdir -p -m 0700 "$HOME/.nix-defexpr"
-
-              . ${pkgs.nix}/etc/profile.d/nix.sh
-
-              ${pkgs.nix}/bin/nix-env -i ${builtins.concatStringsSep " " (with pkgs; [ nix cacert git openssh ])}
-
-              ${pkgs.nix}/bin/nix-channel --add https://nixos.org/channels/nixpkgs-unstable
-              ${pkgs.nix}/bin/nix-channel --update nixpkgs
-            '';
-            environmentVariables = {
-              ENV = "/etc/profile";
-              USER = "root";
-              NIX_REMOTE = "daemon";
-              PATH = "/nix/var/nix/profiles/default/bin:/nix/var/nix/profiles/default/sbin:/bin:/sbin:/usr/bin:/usr/sbin";
-              NIX_SSL_CERT_FILE = "/nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt";
-            };
-            tagList = [ "nix" ];
-          };} else {});
-        };
-    };
-  }
-]

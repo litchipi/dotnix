@@ -1,15 +1,15 @@
 { config, lib, pkgs, pkgs_unstable, ... }:
 let
   cfg = config.base;
-  libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
 
   base_home_config = {
     home = {
       homeDirectory = "/home/${cfg.user}";
       username = cfg.user;
-      keyboard.layout = "fr";
+      keyboard.layout = lib.mkDefault "fr";
       activation.create_user_dirs = let
-        dirpaths = builtins.concatStringsSep " " (builtins.map (dir: "$HOME/${dir}") cfg.create_user_dirs);
+        dirpaths = builtins.concatStringsSep " "
+          (builtins.map (dir: "$HOME/${dir}") cfg.create_user_dirs);
       in ''
         if [ ! -z "${dirpaths}" ]; then
           mkdir -p ${dirpaths}
@@ -49,34 +49,10 @@ in
       default = "${cfg.user}@${cfg.hostname}.nix";
     };
 
-    home_cfg = lib.mkOption {
-      type = lib.types.attrs;
-      default = {};
-      description = "Additionnal home-manager configurations for this machine";
-    };
-
     add_fonts = lib.mkOption {
       type = with lib.types; listOf package;
       default = [];
       description = "Additional fonts to add to the system";
-    };
-
-    add_pkgs = lib.mkOption {
-      type = with lib.types; listOf package;
-      default = [];
-      description = "Additionnal packages to set for this machine";
-    };
-
-    full_pkgs = lib.mkOption {
-      type = with lib.types; listOf package;
-      default = [];
-      description = "Additionnal packages that are not included for a minimal configuration";
-    };
-
-    extraGroups = lib.mkOption {
-      type = with lib.types; listOf str;
-      default = [];
-      description = "Extra groups to add the base user into";
     };
 
     create_user_dirs = lib.mkOption {
@@ -85,16 +61,10 @@ in
       description = "Folders to create in $HOME of the user";
     };
 
-    minimal.cli = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Wether to enable minimal CLI config";
-    };
-
-    minimal.gui = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Wether to enable minimal GUI config";
+    home_cfg = lib.mkOption {
+      type = lib.types.anything;
+      default = {};
+      description = "Configuration to set for home-manager on the user defined in config";
     };
   };
 
@@ -102,26 +72,25 @@ in
     system.stateVersion = "22.11";
 
     boot.cleanTmpDir = true;
-    boot.supportedFilesystems = [ "ntfs" "exfat" "nfs" "vfat" "ext" "xfs" "btrfs" ];
-
     # clean logs older than 2d
     services.cron.systemCronJobs = [
-        "0 20 * * * root journalctl --vacuum-time=2d"
+      "0 20 * * * root journalctl --vacuum-time=2d"
     ];
 
-    console.keyMap = "fr";
-    i18n.defaultLocale = "fr_FR.UTF-8";
+    console.keyMap = lib.mkDefault "fr";
+    i18n.defaultLocale = lib.mkDefault "fr_FR.UTF-8";
+
+    secrets.store.credentials.logins.${cfg.hostname}.${cfg.user} = {
+      transform = "${pkgs.openssl}/bin/openssl passwd -6 -stdin";
+    };
 
     users = {
-      groups = lib.mkMerge (builtins.map (group:
-        lib.attrsets.setAttrByPath [ group ] {}
-      ) ([cfg.user] ++ cfg.extraGroups));
-
+      groups.${cfg.user} = {};
       users."${cfg.user}" = {
         isNormalUser = true;
         group = cfg.user;
-        extraGroups = [ "wheel" ] ++ cfg.extraGroups;
-        password = libdata.plain_secrets.logins."${cfg.user}_${cfg.hostname}";
+        extraGroups = [ "wheel" ];
+        passwordFile = config.secrets.store.credentials.logins.${cfg.hostname}.${cfg.user}.file;
       };
       mutableUsers = false;
     };
@@ -129,12 +98,8 @@ in
     home-manager = {
       useGlobalPkgs = true;
       useUserPackages = true;
-      users."${cfg.user}" = lib.mkMerge [
-        cfg.home_cfg
-        base_home_config
-      ];
+      users."${cfg.user}" = lib.attrsets.recursiveUpdate cfg.home_cfg base_home_config;
     };
-
     time.timeZone = lib.mkDefault "Europe/Paris";
 
     hardware.firmware = if config.setup.is_nixos
@@ -143,33 +108,33 @@ in
       ]
       else [];
 
-    services.pcscd.enable = true;
+    services.pcscd.enable = lib.mkDefault true;
     programs.gnupg.agent = {
-       enable = true;
+       enable = lib.mkDefault true;
        pinentryFlavor = "curses";
        enableSSHSupport = true;
     };
 
-    environment.systemPackages = let
-      base_full_pkgs = with pkgs; [
-        # Firmwares
-        linux-firmware
-        sof-firmware
-        alsa-firmware
-      ];
-    in with pkgs; [
+    environment.variables = {
+      DOTNIX_SRC="${./..}";
+    };
+
+    environment.systemPackages = with pkgs; [
+      # TODO    Put in hardware.firmware directly ?
+      # Firmwares
+      linux-firmware
+      sof-firmware
+      alsa-firmware
+
       complete-alias
       coreutils-full
-      git git-crypt pass-git-helper
+      gitFull git-crypt pass-git-helper
       gnupg pinentry pinentry-curses
       file
       srm
-    ] ++ cfg.add_pkgs
-    ++ (if (config.base.minimal.cli || config.base.minimal.gui) then [] else
-      (cfg.full_pkgs ++ base_full_pkgs));
+    ];
 
     nix.settings = {
-      auto-optimise-store = true;
       experimental-features = [ "nix-command" "flakes" ];
       trusted-users = [ config.base.user ];
     };
@@ -178,27 +143,30 @@ in
       keep-derivations = true
     '';
 
+    # TODO  Revise this service definition
     # unlock gpg keys with my login password
-    security.pam.services.login.gnupg.enable = true;
-    security.pam.services.login.gnupg.noAutostart = true;
-    security.pam.services.login.gnupg.storeOnly = true;
+    security.pam.services.login = {
+      gnupg = {
+        enable = lib.mkDefault true;
+        noAutostart = true;
+        storeOnly = true;
+      };
+    };
 
     # Hardware-accelerated video decoding
     hardware.opengl.extraPackages = builtins.attrValues {
-      inherit (pkgs)
-        vaapiVdpau
-      ;
+      inherit (pkgs) vaapiVdpau;
     };
 
     zramSwap = {
-      enable = true;
+      enable = lib.mkDefault true;
       algorithm = "zstd";
     };
 
     fonts = {
-      fontDir.enable = true;
-      fontconfig.enable = true;
-      enableDefaultFonts = true;
+      fontDir.enable = lib.mkDefault true;
+      fontconfig.enable = lib.mkDefault true;
+      enableDefaultFonts = lib.mkDefault true;
       fonts = with pkgs; [
         pkgs_unstable.nerdfonts
         pkgs_unstable.powerline-fonts

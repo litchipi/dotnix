@@ -1,9 +1,8 @@
 { config, lib, pkgs, pkgs_unstable, ... }:
 let
-  libcmnconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
 
-  cfg = config.cmn.wm.gnome;
+  cfg = config.wm.gnome;
   gnome_theme_type = lib.types.submodule {
     options = {
       dark = lib.mkOption {
@@ -21,13 +20,14 @@ let
     };
   };
 in
-libcmnconf.create_common_confs [
   {
-    name = "gnome";
-    minimal.gui = true;
-    parents = ["wm"];
+    imports = [
+      ./wm.nix
+      ./plymouth.nix
+      ../dconf/gnome.nix
+    ];
 
-    add_opts = {
+    options.wm.gnome = {
       add_extensions = lib.mkOption {
         type = with lib.types; listOf package;
         default = [ ];
@@ -50,7 +50,30 @@ libcmnconf.create_common_confs [
       };
     };
 
-    cfg = {
+    config = {
+      environment.systemPackages = (with pkgs_unstable.gnomeExtensions; [
+        audio-selector
+        gnome-40-ui-improvements
+        caffeine
+        bring-out-submenu-of-power-offlogout-button
+        hide-activities-button
+        runcat
+        tray-icons-reloaded
+        bluetooth-quick-connect
+        (static-background-in-overview.overrideAttrs (_: {
+          src = pkgs.fetchFromGitHub {
+            owner = "dz4k";
+            repo = "gnome-static-background";
+            rev = "75093fbfddee8b2863f85a382baac93983e57ac8";
+            sha256 = "sha256-Y8FnqVUo59IDFCXZA2X/hN3t/upcB+6bJf3irRwt7yw=";
+          };
+        }))
+        dash-to-dock
+        gsconnect
+      ] ++ cfg.add_extensions) ++ (with pkgs; [
+        gnome.gnome-tweaks
+      ]) ++ (if builtins.isNull cfg.theme then [] else [ cfg.theme.package ]);
+
       nixpkgs.overlays = lib.mkIf cfg.mutter_dynamic_buffering [ (_: _: {
         gnome.mutter = pkgs_unstable.gnome.mutter.overrideAttrs (old: {
           patches = (old.patches or []) ++ [
@@ -59,20 +82,6 @@ libcmnconf.create_common_confs [
         });
       })];
 
-      cmn.wm = {
-        enable = true;
-        boot.style = {
-          plymouth.enable = true;
-          grub.enable = true;
-        };
-      };
-
-      programs.dconf.enable = true;
-      cmn.dconf.gnome = {
-        enable = true;
-        keyboard_shortcuts.enable = true;
-      };
-
       services.xserver = {
         displayManager.gdm.enable = true;
         desktopManager.gnome.enable = true;
@@ -80,8 +89,8 @@ libcmnconf.create_common_confs [
 
       security.pam.services.login.enableGnomeKeyring = true;
 
+      programs.dconf.enable = true;
       nixpkgs.config.firefox.enableGnomeExtensions = true;
-
       services.gnome = {
         core-os-services.enable = true;
         core-shell.enable = true;
@@ -112,41 +121,17 @@ libcmnconf.create_common_confs [
         mkdir -p /var/lib/AccountsService/users/
         echo '${gdm_user_conf}' > /var/lib/AccountsService/users/${config.base.user}
       '';
-    };
 
-    home_cfg = {
-      gtk = if builtins.isNull cfg.theme then {} else {
-        gtk3.extraConfig.gtk-application-prefer-dark-theme = cfg.theme.dark;
-        gtk4.extraConfig.gtk-application-prefer-dark-theme = cfg.theme.dark;
-      };
-      dconf.settings = if builtins.isNull cfg.theme then {} else {
-        "org/gnome/shell/extensions/user-theme" = {
-          name = cfg.theme.name;
+      base.home_cfg = {
+        gtk = if builtins.isNull cfg.theme then {} else {
+          gtk3.extraConfig.gtk-application-prefer-dark-theme = cfg.theme.dark;
+          gtk4.extraConfig.gtk-application-prefer-dark-theme = cfg.theme.dark;
+        };
+        dconf.settings = if builtins.isNull cfg.theme then {} else {
+          "org/gnome/shell/extensions/user-theme" = {
+            name = cfg.theme.name;
+          };
         };
       };
     };
-
-    add_pkgs = (with pkgs_unstable.gnomeExtensions; [
-      audio-selector
-      gnome-40-ui-improvements
-      caffeine
-      bring-out-submenu-of-power-offlogout-button
-      hide-activities-button
-      runcat
-      tray-icons-reloaded
-      bluetooth-quick-connect
-      (static-background-in-overview.overrideAttrs (_: {
-        src = pkgs.fetchFromGitHub {
-          owner = "dz4k";
-          repo = "gnome-static-background";
-          rev = "75093fbfddee8b2863f85a382baac93983e57ac8";
-          sha256 = "sha256-Y8FnqVUo59IDFCXZA2X/hN3t/upcB+6bJf3irRwt7yw=";
-        };
-      }))
-      dash-to-dock
-      gsconnect
-    ] ++ cfg.add_extensions) ++ (with pkgs; [
-      gnome.gnome-tweaks
-    ]) ++ (if builtins.isNull cfg.theme then [] else [ cfg.theme.package ]);
   }
-]

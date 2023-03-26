@@ -1,32 +1,19 @@
 {config, lib, pkgs, inputs, ...}:
-
 with inputs.home-manager.lib.hm.gvariant;
-
-let
-  conf_lib = import ../../lib/commonconf.nix {inherit config lib pkgs;};
-  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
-
-  # TODO  Validate good utilisation in GDM
-  gdm_logo_path = libdata.get_data_path ["assets" "desktop" "gdm_greeting_logo.png"];
-in
-conf_lib.create_common_confs [
   {
-    name = "gnome";
-    parents = ["dconf"];
-    minimal.gui = true;
-    home_cfg = {
+    config.base.home_cfg = {
       dconf.settings = {
         "org/gnome/desktop/privacy" = {
           remember-recent-files = false;
         };
 
         "org/gnome/login-screen" = {
-          logo="${gdm_logo_path}";
+          logo="${../../data/assets/desktop/gdm_greeting_logo.png}";
         };
 
         "org/gnome/desktop/background" = {
-          picture-uri="file://${config.cmn.wm.bck-img}";
-          picture-uri-dark="file://${config.cmn.wm.bck-img}";
+          picture-uri="file://${config.wm.bck-img}";
+          picture-uri-dark="file://${config.wm.bck-img}";
           picture-options="zoom";
         };
 
@@ -53,7 +40,7 @@ conf_lib.create_common_confs [
         };
 
         "org/gnome/desktop/screensaver" = {
-          picture-uri="file://${config.cmn.wm.bck-img}";
+          picture-uri="file://${config.wm.bck-img}";
           lock-delay = mkUint32 0;
           picture-options = "zoom";
         };
@@ -163,7 +150,7 @@ conf_lib.create_common_confs [
         };
 
         "org/gnome/desktop/applications/terminal" = {
-          exec="${lib.strings.getName config.cmn.software.default_terminal_app}";
+          exec="${lib.strings.getName config.software.default_terminal_app}";
         };
 
         "org/gnome/shell/app-switcher" = {
@@ -192,39 +179,31 @@ conf_lib.create_common_confs [
           background-opacity=0.0;
         };
 
+        "org/gnome/settings-daemon/plugins/media-keys" = {
+          custom-keybindings = [
+            "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
+            "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/"
+            "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
+          ];
+        };
+
+        "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
+          binding = "<Primary><Alt>Return";
+          command = "${config.software.terminal_cmd} \"bash\"";
+          name = "terminal";
+        };
+
+        "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
+          binding = "<Super>m";
+          command = "${config.software.terminal_cmd} \"mocp\"";
+          name = "mocp";
+        };
+
+        "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2" = {
+          binding = "<Primary><Shift><Alt>Return";
+          command = "${config.software.terminal_cmd} \"tmux\"";
+          name = "tmux";
+        };
       };
     };
   }
-
-  {
-    name = "keyboard_shortcuts";
-    parents = ["dconf" "gnome"];
-    home_cfg.dconf.settings = {
-      "org/gnome/settings-daemon/plugins/media-keys" = {
-        custom-keybindings = [
-          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
-          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/"
-          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
-        ];
-      };
-
-      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
-        binding = "<Primary><Alt>Return";
-        command = "${config.cmn.software.terminal_cmd} \"bash\"";
-        name = "terminal";
-      };
-
-      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
-        binding = "<Super>m";
-        command = "${config.cmn.software.terminal_cmd} \"mocp\"";
-        name = "mocp";
-      };
-
-      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2" = {
-        binding = "<Primary><Shift><Alt>Return";
-        command = "${config.cmn.software.terminal_cmd} \"tmux\"";
-        name = "tmux";
-      };
-    };
-  }
-]

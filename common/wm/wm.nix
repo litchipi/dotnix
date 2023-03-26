@@ -1,8 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
-  libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
-  cfg = config.cmn.wm;
+  cfg = config.wm;
 
   theme_type = lib.types.submodule {
     options = {
@@ -17,17 +16,16 @@ let
     };
   };
 in
-libconf.create_common_confs [
   {
-    name = "wm";
-    minimal.gui = true;
-    add_opts = {
-      # TODO  Rework:   Get a path instead, change libdata to a "getwallpaper" function
-      #                 Allow for fetching wallpaper from remote
+    imports = [
+      ../dconf/apps.nix
+    ];
+
+    options.wm = {
       bck-img = lib.mkOption {
         type = lib.types.path;
         description = "The background image to set";
-        default = libdata.get_wallpaper "forest.jpg";
+        default = ../../data/assets/desktop/wallpapers/forest.jpg;
       };
       iconTheme = lib.mkOption {
         type = lib.types.nullOr theme_type;
@@ -60,15 +58,13 @@ libconf.create_common_confs [
         description = "Wether to enable autologin into the session";
       };
     };
-    add_pkgs = with pkgs; [
-      glxinfo
-    ] ++ (if builtins.isNull cfg.cursorTheme then [] else [ cfg.cursorTheme.package ]);
-    cfg = {
+    config = {
+      environment.systemPackages = with pkgs; [
+        glxinfo
+      ] ++ (if builtins.isNull cfg.cursorTheme then [] else [ cfg.cursorTheme.package ]);
       xdg.portal.enable = true;
 
       programs.dconf.enable = true;
-      cmn.dconf.apps.enable = true;
-      cmn.software.infosec = lib.mkIf config.cmn.software.infosec.enable { gui.enable = true; };
 
       services.xserver = {
         enable = true;
@@ -90,23 +86,22 @@ libconf.create_common_confs [
       # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
       systemd.services."getty@tty1".enable = false;
       systemd.services."autovt@tty1".enable = false;
-    };
 
-    home_cfg = {
-      gtk = {
-        enable = true;
-      }
-      // (if builtins.isNull cfg.gtkTheme then {} else { theme = cfg.gtkTheme; })
-      // (if builtins.isNull cfg.iconTheme then {} else { iconTheme = cfg.iconTheme; })
-      // (if builtins.isNull cfg.font then {} else { font = cfg.font; });
+      home-manager.users.${config.base.user} = {
+        gtk = {
+          enable = true;
+        }
+        // (if builtins.isNull cfg.gtkTheme then {} else { theme = cfg.gtkTheme; })
+        // (if builtins.isNull cfg.iconTheme then {} else { iconTheme = cfg.iconTheme; })
+        // (if builtins.isNull cfg.font then {} else { font = cfg.font; });
 
-      dconf.settings = cfg.add_dconf
-      // (if builtins.isNull cfg.cursorTheme then {} else {
-        "org/gnome/desktop/interface".cursor-theme = cfg.cursorTheme.name;
-      });
+        dconf.settings = cfg.add_dconf
+        // (if builtins.isNull cfg.cursorTheme then {} else {
+          "org/gnome/desktop/interface".cursor-theme = cfg.cursorTheme.name;
+        });
+      };
     };
   }
-]
 
 # Other themes
   # Icons

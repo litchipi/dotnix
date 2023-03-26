@@ -1,44 +1,29 @@
-
 { config, lib, pkgs, ... }:
 let
-  libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
-
-  cfg = config.cmn.services.conduit;
   sub = "chat";
   fqdn = "${sub}.${config.base.networking.domain}";
+  cfg = config.services.conduit;
 in
-libconf.create_common_confs [
   {
-    name = "conduit";
-    parents = [ "services" ];
-    add_opts = {
-      port = lib.mkOption {
-        type = lib.types.int;
-        description = "Port of the Conduit server";
-        default = 6167;
-      };
+    options.services.conduit = {
     };
-    cfg = {
+    config = {
       base.networking.subdomains = [ sub ];
-
       base.networking.vm_forward_ports = {
         http = { from = "host"; host.port = 40080; guest.port = 80; };
         https= { from = "host"; host.port = 40443; guest.port = 443; };
         matrix-federation = { from = "host"; host.port = 48448; guest.port = 8448; };
       };
-
       networking.firewall.allowedTCPPorts = [ 80 443 8448 ];
       users.users."${config.base.user}".extraGroups = [ "conduit" ];
-
-
-      cmn.services.nextcloud.riotchat.enable = true;
+      services.nextcloud_apps.riotchat.enable = config.services.nextcloud.enable;
 
       services.matrix-conduit = {
         enable = true;
         settings.global = {
           address = "0.0.0.0";
           server_name = "${fqdn}";
-          port = cfg.port;
+          port = lib.mkDefault 6167;
 
           # TODO  Remove registration once we find a way to generate users here
           allow_registration = true;
@@ -46,7 +31,7 @@ libconf.create_common_confs [
       };
 
       services.nginx = let
-        proxy = "http://0.0.0.0:${builtins.toString cfg.port}";
+        proxy = "http://0.0.0.0:${builtins.toString config.services.matrix-conduit.port}";
       in {
         enable = true;
 
@@ -82,4 +67,3 @@ libconf.create_common_confs [
       };
     };
   }
-]

@@ -1,43 +1,35 @@
-{ config, lib, pkgs, ... }:
-let
-  libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
-in
-libconf.create_common_confs [
-  {
-    # Minimal server config
-    name = "server";
-    minimal.cli = true;
-    cfg = {
-      base.networking.vm_forward_ports = {
-        ssh = { from = "host"; host.port = 40022; guest.port = 22;};
-      };
-
-      cmn.software.tui.enable = true;
-
-      networking.extraHosts = ''
-        127.0.0.1 ${config.base.networking.domain}
-      '';
+{ config, lib, pkgs, ... }: let
+  cfg = config.server;
+in {
+  imports = [
+    ../software/shell/tui.nix
+  ];
+  options.server.full = lib.mkEnableOption {
+    description = "Enable the full server mode";
+    default = true;
+  };
+  config = {
+    base.networking.vm_forward_ports = {
+      ssh = { from = "host"; host.port = 40022; guest.port = 22;};
     };
-  }
 
-  {
-    name = "full";
-    default_enabled = config.cmn.server.enable;
-    parents = ["server"];
-    add_pkgs = with pkgs; [
+    networking.extraHosts = ''
+      127.0.0.1 ${config.base.networking.domain}
+    '';
+
+    environment.systemPackages = with pkgs; if cfg.full then [
       certbot
       mtr
       nettools
-    ];
-    cfg = {
-      services.fail2ban = {
+    ] else [];
+
+    services.fail2ban = {
+      enable = cfg.full;
+      maxretry = 5;
+      bantime-increment = {
         enable = true;
-        maxretry = 5;
-        bantime-increment = {
-          enable = true;
-          factor = "4";
-        };
+        factor = "4";
       };
     };
-  }
-]
+  };
+}

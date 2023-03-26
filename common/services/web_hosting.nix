@@ -1,8 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
-
-  cfg = config.cmn.services.web_hosting;
+  cfg = config.services.web_hosting;
 
   website = lib.types.submodule {
     options.package = lib.mkOption {
@@ -50,7 +48,7 @@ let
   };
 
   create_application_service = name: app: {
-    "webapp_${name}" = {
+    "webapp-${name}" = {
       enable = true;
       path = app.add_pkgs;
       serviceConfig = {
@@ -61,14 +59,9 @@ let
       wantedBy = [ "multi-user.target" ];
     };
   };
-
 in
-libconf.create_common_confs [
   {
-    name = "web_hosting";
-    parents = ["services"];
-
-    add_opts = {
+    options = {
       websites = lib.mkOption {
         type = with lib.types; attrsOf website;
         description = "Static websites to serve";
@@ -83,16 +76,15 @@ libconf.create_common_confs [
     };
 
     # TODO  Asserts that applications and websites do not overlap subdomain
-    cfg = {
+    config = {
       networking.firewall.allowedTCPPorts = [ 80 443 ];
       base.networking.subdomains = lib.attrsets.mapAttrsToList
         (sub: _: sub)
         (cfg.applications // cfg.websites);
 
-      system.activationScripts.webapp_init_scripts = builtins.concatStringsSep "\n" (lib.attrsets.mapAttrsToList
-        (_: app: app.initScript) cfg.applications
+      system.activationScripts.webapp_init_scripts = builtins.concatStringsSep "\n" (
+        lib.attrsets.mapAttrsToList (_: app: app.initScript) cfg.applications
       );
-
 
       users.extraUsers = lib.attrsets.mapAttrs' (_: app: {
         name = app.service_user;
@@ -136,4 +128,3 @@ libconf.create_common_confs [
       );
     };
   }
-]

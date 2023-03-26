@@ -1,135 +1,67 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, ... }@args:
 let
-  libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
+  libsoft = import ../../lib/software/package_set.nix args;
 
-  cfg = config.cmn.infosec;
-in
-libconf.create_common_confs [
-  {
-    name = "infosec";
-    parents = ["software"];
+  cfg = config.software.infosec;
 
-    chain_enable_opts = {
-      internet = ["web" "pwd_crack" "network" "malware"];
-      software = ["forensics" "malware"];
-      hardware = [];
-      wireless = ["rtl" "wifi" "pwd_crack"];
-      all = ["web" "pwd_crack" "network" "forensics" "malware" "rtl" "wifi"];
-    };
-
-    cfg = {
-      cmn.software.basic.enable = true;
-      cmn.software.tui.enable = true;
-      cmn.software.dev.scripts = true;
-    };
-
-    add_pkgs = with pkgs; [
-      # Scripting
-      python39Full
-      python39Packages.scapy
-
-      # Tools
-      dos2unix
-    ];
-  }
-
-  ## GUI
-  {
-    name = "gui";
-    parents = ["software" "infosec" ];
-    default_enabled = config.cmn.wm.enable && config.cmn.software.infosec.enable;
-    add_pkgs = with pkgs; [
-      # Note taking
+  all_packages_sets = with pkgs; {
+    gui = [
       cherrytree
     ];
-  }
-
-  ## WEB
-  {
-    name = "web";
-    parents = ["software" "infosec" ];
-    add_pkgs = with pkgs; [
-      # Enumeration
+    web = [
       gobuster
-
-      # Database attacks
       sqlmap
     ];
-  }
-
-  ## PWD CRACK
-  {
-    name = "pwd_crack";
-    parents = ["software" "infosec" ];
-    add_pkgs = with pkgs; [
-      # Password cracking
+    pwd_crack = [
       john
       hashcat
       hashcat-utils
       thc-hydra
       hcxtools
-
-      # Wordlist generation
       crunch
     ];
-  }
-
-  ## NETWORK
-  {
-    name = "network";
-    parents = ["software" "infosec" ];
-    add_pkgs = with pkgs; [
-      # Scanning
+    network = [
       nmap
       tcpdump
       ngrep
       rustscan
       sniffglue
     ];
-  }
-
-  ## FORENSICS
-  {
-    name = "forensics";
-    parents = ["software" "infosec" ];
-    add_pkgs = with pkgs; [
-      # Binary analysis
+    forensics = [
       binwalk
       radare2
     ];
-  }
-
-  ## MALWARE
-  {
-    name = "malware";
-    parents = ["software" "infosec" ];
-    add_pkgs = with pkgs; [
-      # Malware creation
+    malware = [
       snowcrash
       metasploit
     ];
-  }
-
-  ## RTL
-  {
-    name = "rtl";
-    parents = ["software" "infosec" ];
-    add_pkgs = with pkgs; [
-      gnuradio
-    ];
-  }
-
-  ## WIFI
-  {
-    name = "wifi";
-    parents = ["software" "infosec" ];
-    add_pkgs = with pkgs; [
-      # Wifi cracking
+    rtl = [ gnuradio ];
+    wifi = [
       wifite2
       aircrack-ng
-
-      # 802.15.4 sniff
       whsniff
     ];
+  };
+in
+  {
+    import = [
+      ./basic.nix
+      ../shell/tui.nix
+      ../shell/dev.nix
+    ];
+    options = {
+      package_sets = libsoft.mkPackageSetsOptions all_packages_sets;
+    };
+    config = {
+      environment.systemPackages = with pkgs; [
+        # Scripting
+        python310Full
+        python310Packages.scapy
+
+        # Tools
+        dos2unix
+      ] ++ (libsoft.mkPackageSetsConfig cfg.package_sets all_packages_sets);
+
+      software.dev.scripts.enable = true;
+    };
   }
-]

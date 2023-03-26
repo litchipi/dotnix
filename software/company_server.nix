@@ -38,6 +38,7 @@ in
 
   cmn.services.gitlab = {
     enable = true;
+    secrets = config.secrets.store.services.gitlab.${config.base.hostname};
     backup = {
       gdrive = true;
       timerConfig.OnCalendar = "05/7:00:00";

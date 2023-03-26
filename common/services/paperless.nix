@@ -1,31 +1,33 @@
 { config, lib, pkgs, ... }:
 let
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
-  libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   libbck = import ../../lib/services/restic.nix {inherit config lib pkgs;};
 
-  cfg = config.cmn.services.paperless;
+  cfg = config.services.paperless;
   sub = "paper";
   fqdn = "${sub}.${config.base.networking.domain}";
 in
-libconf.create_common_confs [
   {
-    name = "paperless";
-    parents = [ "services" ];
-    add_opts.backup = libbck.mkBackupOptions {
-      name = "paperless";
-    };
-    cfg = lib.attrsets.recursiveUpdate {
-      base.networking.subdomains = [ sub ];
-      base.secrets.store.paperless_admin_pwd = libdata.set_secret {
-        user = config.services.paperless.user;
-        path = [ "services" "paperless" config.base.hostname "admin_pwd" ];
+    options.services.paperless = {
+      secrets = lib.mkOption {
+        type = lib.types.attrsets;
+        description = "Secrets for the Paperless service";
       };
+      backup = libbck.mkBackupOptions {
+        name = "paperless";
+      };
+    };
+    config = lib.attrsets.recursiveUpdate {
+      base.networking.subdomains = [ sub ];
+
+      secrets.store.services.paperless = libdata.set_common_secret_config {
+        user = config.services.paperless.user;
+      } config.secrets.store.services.paperless;
 
       services.paperless = {
         enable = true;
-        dataDir = "/var/paperless";
-        passwordFile = config.base.secrets.store.paperless_admin_pwd.dest;
+        dataDir = lib.mkDefault "/var/lib/paperless";
+        passwordFile = cfg.secrets.admin_pwd.file;
       };
 
       services.nginx = {
@@ -37,9 +39,9 @@ libconf.create_common_confs [
       };
     } (libbck.mkBackupConfig {
       name = "paperless";
-      cfg = config.cmn.services.paperless.backup;
+      cfg = cfg.backup;
       user = config.services.paperless.user;
       paths = [ config.services.paperless.dataDir ];
+      secrets = cfg.secrets;
     });
   }
-]

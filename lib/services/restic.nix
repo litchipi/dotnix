@@ -4,12 +4,13 @@
 in {
   mkBackupOptions = {
     name,
+    basedir,
     copy_external ? true,
   }: {
     repo_path = lib.mkOption {
       type = lib.types.str;
       description = "Path to the restic repository";
-      default = "/var/backup/${name}";
+      default = "${basedir}/${name}/restic";
     };
     timerConfig = lib.mkOption {
       type = lib.types.anything;
@@ -35,28 +36,21 @@ in {
     cfg,
     user,
     paths,
-    base_secrets_path ? [ "services" name config.base.hostname ],
+    secrets,
     copy_external ? true,
     external_copy_add_paths ? {},
   }: {
     setup.directories = [
-      { path = cfg.repo_path; perms = "700"; owner = user; }
+      { path = cfg.repo_path; perms = "750"; owner = user; }
     ];
 
-    base.secrets.store = let
-      mkSecret = sec: libdata.set_secret {
-        inherit user;
-        path = base_secrets_path ++ [ sec ];
-      };
-    in {
-      "${name}_restic_repo_pwd" = mkSecret "restic_repo_pwd";
-    } // (if !cfg.gdrive then {} else {
-      "${name}_rclone_conf" = mkSecret "gdrive.conf";
-    });
+    secrets.store.services.restic = libdata.set_common_secret_config {
+      inherit user;
+    } config.secrets.store.services.restic;
 
     services.restic.backups.${name} = {
       initialize = true;
-      passwordFile = config.base.secrets.store."${name}_restic_repo_pwd".dest;
+      passwordFile = secrets.restic_repo_pwd.file;
       repository = cfg.repo_path;
       timerConfig = {
         Persistent = true;
@@ -77,7 +71,7 @@ in {
       enabled = cfg.gdrive;
       basename = "restic_${name}_backup";
       bind = "restic-backups-${name}.service";
-      rclone_conf = config.base.secrets.store."${name}_rclone_conf".dest;
+      rclone_conf = secrets.rclone_gdrive.file;
       paths.${cfg.repo_path} = "${config.base.hostname}_${name}_backup";
     });
   } else {});

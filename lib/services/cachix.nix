@@ -3,11 +3,6 @@
 in rec {
   get_pubkey = fqdn: libdata.get_data_path [ "pubkeys" "cachix" "${fqdn}-pub.pem" ];
   get_privkey_secret_pathlist = fqdn: ["services" "cachix" "${fqdn}-priv.pem" ];
-  get_privkey = fqdn: libdata.get_data_path (["secrets"] ++ (get_privkey_secret_pathlist fqdn));
-  get_secretKeyFile = fqdn: libdata.set_secret {
-    user = "root";
-    path = get_privkey_secret_pathlist fqdn;
-  };
 
   set_servers = server_list: lib.lists.foldl (acc: el:
     lib.attrsets.recursiveUpdate acc (set_server el)

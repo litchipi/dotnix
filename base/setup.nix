@@ -13,12 +13,6 @@
       description = "Wether to enable virtualisation config or not";
     };
 
-    is_ci_run = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Wether this build is made for CI or not";
-    };
-
     config_repo_path = lib.mkOption {
       type = lib.types.str;
       description = "Path of the git repository where the dotnix files are";
@@ -55,11 +49,17 @@
   };
 
   config = {
-    system.activationScripts.create_setup_dirs = lib.strings.concatStringsSep "\n" (builtins.map (dir: ''
-        mkdir -p ${dir.path}
-        chown -R ${dir.owner}:${if builtins.isNull dir.group then dir.owner else dir.group} ${dir.path}
-        ${lib.strings.optionalString (!builtins.isNull dir.perms) "chmod -R ${dir.perms} ${dir.path}"}
-    '') config.setup.directories);
+    systemd.services.create_setup_dirs = {
+      wantedBy = [ "local-fs.target" ];
+      after = [ "local-fs.target" ];
+      serviceConfig.Type = "oneshot";
+      script = lib.strings.concatStringsSep "\n" (builtins.map (dir: ''
+          mkdir -p ${dir.path}
+          chown -R ${dir.owner}:${if builtins.isNull dir.group then dir.owner else dir.group} ${dir.path}
+          ${lib.strings.optionalString (!builtins.isNull dir.perms) "chmod -R ${dir.perms} ${dir.path}"}
+      '') config.setup.directories);
+    };
+
     environment.shellAliases = {
       upgrade = "sudo nixos-rebuild switch --flake ${config.setup.config_repo_path} $@ && echo 'Success'";
     };

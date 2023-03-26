@@ -1,18 +1,14 @@
 { config, lib, pkgs, ... }:
 let
-  libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
   libbck = import ../../lib/services/restic.nix {inherit config lib pkgs;};
 
-  cfg = config.cmn.services.shiori;
+  cfg = config.services.shiori;
   sub = "bookmarks";
   fqdn = "${sub}.${config.base.networking.domain}";
 in
   # TODO    Upstream changes
-libconf.create_common_confs [
   {
-    name = "shiori";
-    parents = [ "services" ];
-    add_opts = {
+    options.services.shiori = {
       port = lib.mkOption {
         type = lib.types.int;
         default = 45631;
@@ -37,7 +33,8 @@ libconf.create_common_confs [
         name = "shiori";
       };
     };
-    cfg = lib.attrsets.recursiveUpdate {
+
+    config = lib.attrsets.recursiveUpdate {
       base.networking.subdomains = [ sub ];
       users.users.${cfg.user} = {
         isSystemUser = true;
@@ -67,6 +64,6 @@ libconf.create_common_confs [
       cfg = cfg.backup;
       user = cfg.user;
       paths = [ "${cfg.dataDir}/shiori.db" ];
+      secrets = config.secrets.store.services.shiori.${config.base.hostname};
     });
   }
-]

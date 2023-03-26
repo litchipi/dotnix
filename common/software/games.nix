@@ -1,28 +1,22 @@
 { config, lib, pkgs, ... }:
 let
-  libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
+  cfg = config.software.games;
 in
-libconf.create_common_confs [
   {
-    name = "retroarch";
-    parents = ["software" "games"];
-    add_pkgs = with pkgs; [
-      retroarchFull
-    ];
-  }
-  {
-    name = "dofus";
-    parents = ["software" "games"];
-    cfg.environment.interactiveShellInit = let
-      appimg = "~/.ankama_launcher.AppImage";
-    in ''
-      function dofus {
-        if ! [ -f ${appimg} ]; then
-          echo "Please download the Ankama launcher and put it in ${appimg}"
+    options.software.games = {
+      dofus.appimg = lib.mkOption {
+        description = "Path to the AppImage for the Dofus game";
+        default = "~/.ankama_launcher.AppImage";
+        type = lib.types.str;
+      };
+    };
+    config.environment.shellAliases = {
+      dofus = ''
+        if ! [ -f ${cfg.dofus.appimg} ]; then
+          echo "Please download the Ankama launcher and put it in ${cfg.dofus.appimg}"
           exit 1;
         fi
-        ${pkgs.appimage-run}/bin/appimage-run ${appimg}
-      }
-    '';
+        ${pkgs.appimage-run}/bin/appimage-run ${cfg.dofus.appimg}
+      '';
+    };
   }
-]

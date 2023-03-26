@@ -1,48 +1,29 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, ... }@args:
 let
-  libconf = import ../../lib/commonconf.nix {inherit config lib pkgs;};
-in
-libconf.create_common_confs [
-  {
-    name = "musicprod";
-    chain_enable_opts  = {
-      all = ["electro" "guitar" "score"];
-    };
-    cfg = {
-      cmn.shell.aliases.music.enable = true;
-    };
-    add_pkgs = with pkgs; [
-      youtube-dl
-      ffmpeg
-      audacity
-    ];
-    parents = [ "software" ];
-  }
+  libsoft = import ../../lib/software/package_set.nix args;
+  cfg = config.software.music;
 
-  {
-    name = "electro";
-    add_pkgs = with pkgs; [
+  all_packages_sets = with pkgs; {
+    electro = [
       lmms
       mixxx
-      reaper
     ];
-    parents = [ "software" "musicprod" ];
-  }
-
-  {
-    name = "guitar";
-    add_pkgs = with pkgs; [
+    guitar = [
       guitarix
       gxplugins-lv2
     ];
-    parents = [ "software" "musicprod" ];
-  }
-
-  {
-    name = "score";
-    add_pkgs = with pkgs; [
+    score = [
       musescore
     ];
-    parents = [ "software" "musicprod" ];
+  };
+in
+  {
+    options.software.music = libsoft.mkPackageSetsOptions all_packages_sets;
+    config = {
+      environment.systemPackages = with pkgs; [
+        youtube-dl
+        ffmpeg
+        audacity
+      ] ++ (libsoft.mkPackageSetsConfig cfg all_packages_sets);
+    };
   }
-]
