@@ -61,6 +61,7 @@ in
     config = {
       environment.systemPackages = with pkgs; [
         glxinfo
+        wl-clipboard
       ] ++ (if builtins.isNull cfg.cursorTheme then [] else [ cfg.cursorTheme.package ]);
       xdg.portal.enable = true;
 
