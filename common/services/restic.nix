@@ -47,22 +47,14 @@ in
       dynamicFilesListPath = "${cfg.lists_basedir}/${config.base.user}_list";
     in lib.attrsets.recursiveUpdate (libbck.mkBackupConfig {
       name = "global";
-      cfg = config.services.backup.restic.global;
-      user = "restic";
-      paths = cfg.backup_paths;
-      secrets = config.secrets.store.services.restic.${config.base.hostname};
+      cfg = config.cmn.services.restic.global;
+      paths = cfg.global.backup_paths;
+      user = config.base.user;
+      base_secrets_path = [ "services"  "restic" config.base.hostname ];
       external_copy_add_paths = {
         ${cfg.lists_basedir} = "${config.base.hostname}/global/lists";
       };
     }) {
-      users.extraUsers.restic = {
-        isSystemUser = true;
-        extraGroups = cfg.groups;
-        group = "restic";
-      };
-      users.extraGroups = { restic = {}; };
-      users.users.${config.base.user}.extraGroups = [ "restic" ];
-
       setup.directories = [
         {
           path = cfg.basedir;
@@ -88,8 +80,8 @@ in
       environment.interactiveShellInit= ''
         addbackup() {
           for file in $@; do
-            fname=$(realpath $file)
             touch ${dynamicFilesListPath}
+            fname=$(realpath $file)
             if ! grep "$fname" ${dynamicFilesListPath} > /dev/null; then
               echo "$fname" >> ${dynamicFilesListPath}
             fi
