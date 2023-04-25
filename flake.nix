@@ -61,6 +61,9 @@
       url = "path:/home/john/work/perso/tools/encryptf";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Packages
+    helix.url = "github:helix-editor/helix/23.03";
   };
 
   outputs = { nixpkgs, nixpkgs_unstable, ...}@inputs:
@@ -70,7 +73,7 @@
     common_overlays = [
       inputs.rust-overlay.overlays.default
       inputs.pomodoro.overlays.default
-      (_: final: (import ./overlays/overlays.nix final))
+      (self: final: (import ./overlays/overlays.nix self final))
     ];
 
     pkgs_unstable = system: import nixpkgs_unstable {

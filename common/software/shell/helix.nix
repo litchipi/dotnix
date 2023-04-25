@@ -22,11 +22,10 @@ in {
     };
   };
   config = {
-    environment.systemPackages = [ pkgs_unstable.helix ];
-    # TODO    Uncomment once the config file doesn't change too much
-    # home_cfg.home.file.".config/helix/config.toml".source = cfg.configuration;
-    # home_cfg.home.file.".config/helix/themes/nixos.toml".source = cfg.theme;
-    base.home_cfg.home.file.".config/helix/languages.toml".text =
+    environment.systemPackages = [ inputs.helix.packages.${system}.default ];
+    home_cfg.home.file.".config/helix/config.toml".source = cfg.configuration;
+    home_cfg.home.file.".config/helix/themes/nixos.toml".source = cfg.theme;
+    home_cfg.home.file.".config/helix/languages.toml".text =
       builtins.concatStringsSep "\n\n" cfg.languagesdef;
   };
 }

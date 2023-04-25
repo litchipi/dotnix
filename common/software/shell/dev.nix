@@ -90,7 +90,20 @@ let
       helixlang = let
         lsp = "${pkgs_unstable.rust-analyzer}/bin/rust-analyzer";
       in ''
-        language-server = { command = "${lsp}" }
+        [language.language-server]
+        command = "${lsp}"
+        timeout = 60
+
+        [language.config]
+        cachePriming.enable = false
+        cargo.features = "all"
+
+        [language.config.inlayHints]
+        closingBraceHints = true
+        closureReturnTypeHints.enable = "skip_trivial"
+        parameterHints.enable = false
+        typeHints.enable = true
+        inlayHints.maxLength = 10
       '';
     };
 
@@ -188,6 +201,24 @@ let
       in ''
         language-server = { command = "${lsp}" }
         indent = { tab-width = 4, unit = "    " }
+      '';
+    };
+
+    typescript = lang_profile {
+      name = "typescript";
+      helixlang = let
+        lsp = "${pkgs_unstable.nodePackages_latest.typescript-language-server}/bin/typescript-language-server";
+      in ''
+        language-server = { command = "${lsp}", args = ["--stdio"] }
+      '';
+    };
+
+    javascript = lang_profile {
+      name = "javascript";
+      helixlang = let
+        lsp = "${pkgs_unstable.nodePackages_latest.typescript-language-server}/bin/typescript-language-server";
+      in ''
+        language-server = { command = "${lsp}", args = ["--stdio"] }
       '';
     };
   };

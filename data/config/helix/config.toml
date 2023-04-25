@@ -2,18 +2,28 @@ theme = "nixos"
 
 [editor]
 cursorline = true
-cursorcolumn = true
 auto-format = false
-idle-timeout = 100
+idle-timeout = 200
 true-color = true
 rulers = [ 90 ]
-bufferline = "always"
+bufferline = "multiple"
 color-modes = true
+auto-save = true
+# rainbow-brackets = true
+soft-wrap.enable = true
+text-width = 100
 
 [editor.statusline]
-left = ["mode", "spinner"]
+left = ["spinner", "mode", "version-control"]
 center = ["diagnostics"]
-right = ["position", "position-percentage", "total-line-numbers"]
+right = ["position", "position-percentage", "total-line-numbers", "file-name"]
+mode.normal = "N"
+mode.insert = "I"
+mode.select = "S"
+
+[editor.lsp]
+display-inlay-hints = true
+display-messages = true
 
 
 [editor.cursor-shape]
@@ -35,35 +45,58 @@ skip-levels = 1
 # Movements
 A-a = "goto_previous_buffer"
 A-e = "goto_next_buffer"
-z = "move_line_up"
-A-z = "goto_prev_paragraph"
-s = "move_line_down"
-A-s = [ "goto_next_paragraph", "goto_first_nonwhitespace"]
-d = "move_char_right"
-A-d = "move_next_word_start"
-q = "move_char_left"
-A-q = "move_prev_word_end"
+A-z = "move_line_up"
+A-Z = [ "move_line_up", "move_line_up", "move_line_up", "move_line_up", "move_line_up" ]
+A-s = "move_line_down"
+A-S = [ "move_line_down", "move_line_down", "move_line_down", "move_line_down", "move_line_down" ]
+A-d = "move_char_right"
+A-D = [ "move_next_word_start", "collapse_selection"]
+A-q = "move_char_left"
+A-Q = [ "move_prev_word_end", "collapse_selection"]
 
-X = "extend_line_above"
+A-x = "split_selection_on_newline"
 
 # Navigation
-"A-&" = "file_picker"
+"A-&" = "file_picker_in_current_directory"
 
 # Windows
 tab = "rotate_view"
 A-r = "wclose"
 A-f = "wonly"
 
+G = "goto_last_line"
+
+"." = "repeat_last_motion"
+
 [keys.normal."$"]
-a = "diagnostics_picker"
+a = "workspace_diagnostics_picker"
 e = "symbol_picker"
 f = "buffer_picker"
 "&" = "file_picker"
 r = "vsplit"
 space = "code_action"
+"²" = "workspace_symbol_picker"
+# TODO    Get this working
+# "$" = [ "command_mode", ":toggle_option lsp.inlayHint"]
+"$" = "last_picker"
+"i" = "rename_symbol"
 
 [keys.insert]
-A-q = "move_char_left"
 A-z = "move_line_up"
+A-Z = [ "move_line_up", "move_line_up", "move_line_up", "move_line_up", "move_line_up" ]
 A-s = "move_line_down"
+A-S = [ "move_line_down", "move_line_down", "move_line_down", "move_line_down", "move_line_down" ]
 A-d = "move_char_right"
+A-D = [ "move_next_word_start", "collapse_selection" ]
+A-q = "move_char_left"
+A-Q = [ "move_prev_word_end", "collapse_selection" ]
+
+[keys.select]
+A-z = "move_line_up"
+A-Z = [ "move_line_up", "move_line_up", "move_line_up", "move_line_up", "move_line_up" ]
+A-s = "move_line_down"
+A-S = [ "move_line_down", "move_line_down", "move_line_down", "move_line_down", "move_line_down" ]
+A-d = "move_char_right"
+A-D = "move_next_word_start"
+A-q = "move_char_left"
+A-Q = "move_prev_word_end"

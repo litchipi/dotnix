@@ -109,6 +109,8 @@ in
             unbind -T copy-mode-vi MouseDragEnd1Pane
             bind -T copy-mode-vi MouseDown3Pane send -X clear-selection \; send-keys -X cancel
 
+            set -sg escape-time 0
+
             # Generated theme
           ''
           + (libtmux.generate_theme
