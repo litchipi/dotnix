@@ -55,8 +55,6 @@ in {
       dimmed = libcolors.fromhex "#AB7776";
     };
 
-    console.font = "Monaco";
-
     wm = {
       boot.style.plymouth.theme = "glowing"; #hexagon_2";   # TODO  Test splash screen
       autologin = true;
