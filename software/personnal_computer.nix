@@ -147,6 +147,8 @@ in {
       teeworlds
       mari0
       superTuxKart
+
+      zenith-nvidia
     ];
 
     services.blueman.enable = true;
@@ -181,4 +183,6 @@ in {
 
     sound.enable = true;
   };
+
+  # TODO    Use SDDM instead of gdm ?
 }

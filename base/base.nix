@@ -154,8 +154,14 @@ in
     };
 
     # Hardware-accelerated video decoding
-    hardware.opengl.extraPackages = builtins.attrValues {
-      inherit (pkgs) vaapiVdpau;
+    hardware.opengl = {
+      enable = true;
+      driSupport = true;
+      extraPackages = builtins.attrValues {
+        inherit (pkgs)
+          vaapiVdpau
+        ;
+      };
     };
 
     zramSwap = {

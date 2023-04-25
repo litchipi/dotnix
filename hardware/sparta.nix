@@ -10,7 +10,27 @@
     setbrightness = "${pkgs.brightnessctl}/bin/brightnessctl -d amdgpu_bl1 set";
   };
 
-  services.xserver.videoDrivers = [ "amdgpu" "nvidia" ];
+  services.xserver.videoDrivers = [ "nvidia" ];
+
+  hardware.opengl.extraPackages = with pkgs; [
+    amdvlk
+
+    vaapiVdpau
+    libvdpau-va-gl
+    # TODO  Place in global config ?
+    rocm-opencl-icd
+    rocm-opencl-runtime
+  ];
+
+  hardware = {
+    nvidia = {
+      prime = lib.mkForce {
+        amdgpuBusId = "PCI:5:0:0";
+        nvidiaBusId = "PCI:1:0:0";
+      };
+      powerManagement.enable = true;
+    };
+  };
 
   base.kernel.package = pkgs.linuxPackages_zen;
   boot = {
@@ -51,9 +71,4 @@
 
   networking.networkmanager.enable = true;
   networking.useDHCP = lib.mkDefault true;
-
-  hardware.nvidia.prime = lib.mkForce {
-    amdgpuBusId = "PCI:5:0:0";
-    nvidiaBusId = "PCI:1:0:0";
-  };
 }
