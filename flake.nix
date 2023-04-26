@@ -73,7 +73,7 @@
     common_overlays = [
       inputs.rust-overlay.overlays.default
       inputs.pomodoro.overlays.default
-      (self: final: (import ./overlays/overlays.nix self final))
+      (self: super: (import ./overlays/overlays.nix self super))
     ];
 
     pkgs_unstable = system: import nixpkgs_unstable {

@@ -74,14 +74,6 @@ in
         gnome.gnome-tweaks
       ]) ++ (if builtins.isNull cfg.theme then [] else [ cfg.theme.package ]);
 
-      nixpkgs.overlays = lib.mkIf cfg.mutter_dynamic_buffering [ (_: _: {
-        gnome.mutter = pkgs_unstable.gnome.mutter.overrideAttrs (old: {
-          patches = (old.patches or []) ++ [
-            (libdata.pkg_patch "gnome.mutter" "dynamic_buffering")
-          ];
-        });
-      })];
-
       services.xserver = {
         displayManager.gdm.enable = true;
         desktopManager.gnome.enable = true;
