@@ -21,8 +21,9 @@ in
       base.networking.subdomains = [ sub ];
 
       secrets.store.services.paperless = libdata.set_common_secret_config {
+        enable = true;
         user = config.services.paperless.user;
-      } config.secrets.store.services.paperless;
+      } cfg.secrets;
 
       services.paperless = {
         enable = true;

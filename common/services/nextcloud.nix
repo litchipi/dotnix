@@ -200,8 +200,9 @@ in
       users.users.nextcloud.extraGroups = [ "postgres" ];
 
       secrets.store.services.nextcloud = libdata.set_common_secret_config {
+        enable = true;
         user = config.services.nextcloud.user;
-      } config.secrets.store.services.nextcloud;
+      } cfg.secrets;
 
       services.postgresql = {
         enable = true;

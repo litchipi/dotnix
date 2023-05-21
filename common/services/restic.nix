@@ -47,13 +47,13 @@ in
       dynamicFilesListPath = "${cfg.lists_basedir}/${config.base.user}_list";
     in lib.attrsets.recursiveUpdate (libbck.mkBackupConfig {
       name = "global";
-      cfg = config.cmn.services.restic.global;
+      cfg = config.services.backup.restic.global;
       paths = cfg.global.backup_paths;
       user = config.base.user;
-      base_secrets_path = [ "services"  "restic" config.base.hostname ];
       external_copy_add_paths = {
         ${cfg.lists_basedir} = "${config.base.hostname}/global/lists";
       };
+      secrets = config.secrets.store.services.restic.sparta;
     }) {
       setup.directories = [
         {

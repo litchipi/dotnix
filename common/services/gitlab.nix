@@ -54,8 +54,9 @@ in
       users.extraUsers.gitlab.extraGroups = [ "nginx" ];
 
       secrets.store.services.gitlab = pkgs.secrets.set_common_config {
+        enable = true;
         user = config.services.gitlab.user;
-      } config.secrets.store.services.gitlab;
+      } cfg.secrets;
 
       services.nginx = {
         enable = true;

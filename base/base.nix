@@ -81,6 +81,7 @@ in
     i18n.defaultLocale = lib.mkDefault "fr_FR.UTF-8";
 
     secrets.store.credentials.logins.${cfg.hostname}.${cfg.user} = {
+      enable = true;
       transform = "${pkgs.openssl}/bin/openssl passwd -6 -stdin";
     };
 

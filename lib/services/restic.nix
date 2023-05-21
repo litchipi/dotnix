@@ -45,6 +45,7 @@ in {
     ];
 
     secrets.store.services.restic = libdata.set_common_secret_config {
+      enable = true;
       inherit user;
     } config.secrets.store.services.restic;
 

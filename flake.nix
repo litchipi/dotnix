@@ -48,22 +48,22 @@
     };
 
     nixos-secrets = {
-      url = "path:/home/john/work/perso/nix/libs/nixos_secrets";
+      url = "github:litchipi/nixos-secrets";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     json-repl = {
-      url = "path:/home/john/work/perso/tools/json_repl";
+      url = "github:litchipi/json_repl";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     encryptf = {
-      url = "path:/home/john/work/perso/tools/encryptf";
+      url = "github:litchipi/encrypt";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Packages
-    helix.url = "github:helix-editor/helix/23.03";
+    helix.url = "github:helix-editor/helix/23.05";
   };
 
   outputs = { nixpkgs, nixpkgs_unstable, ...}@inputs:

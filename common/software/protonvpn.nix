@@ -16,7 +16,10 @@ in
       ];
       environment.systemPackages = [ pkgs_unstable.protonvpn-cli ];
 
-      secrets.store.credentials.protonvpn.user = config.base.user;
+      secrets.store.credentials.protonvpn = {
+        enable = true;
+        user = config.base.user;
+      };
 
       environment.shellAliases = let
         protonvpn_login = pkgs.writeText "protonvpn_login.tcl" ''

@@ -13,6 +13,7 @@ in
     };
     config = {
       secrets.store.services.grafana = libdata.set_common_secret_config {
+        enable = true;
         user = config.services.grafana.user;
       } config.secrets.store.services.grafana;
 
