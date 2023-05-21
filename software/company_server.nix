@@ -30,7 +30,7 @@ in
   base.networking.static_ip_address = "192.168.1.163";
 
   base.add_pkgs = with pkgs; [
-    glances
+    zenith
   ];
 
   cmn.server.enable = true;

@@ -39,7 +39,7 @@ in
         fzf
         ripgrep
         autojump
-        glances
+        zenith
         python310
         unzip unrar
 
