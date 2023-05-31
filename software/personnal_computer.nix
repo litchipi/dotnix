@@ -10,6 +10,7 @@ in {
     ../common/software/music.nix
     ../common/software/games.nix
     ../common/software/protonvpn.nix
+    ../common/software/shell/helix.nix
     ../common/software/shell/dev.nix
     ../common/software/shell/tui.nix
     ../common/software/shell/neovim.nix

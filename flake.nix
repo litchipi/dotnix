@@ -58,7 +58,8 @@
     };
 
     encryptf = {
-      url = "github:litchipi/encrypt";
+      url = "path:/home/john/encrypt";
+      # url = "github:litchipi/encrypt";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -158,6 +159,7 @@
 
         decrypt_provision_key = pkgs.secrets.scripts.mkDecryptProvKeyScript {
           privk_dir = "data/secrets/privkeys";
+          keypath = "data/secrets/privkeys/sparta";
           runtimeInputs = [ inputs.encryptf.packages.${system}.default ];
           decrypt_key_cmd = inp: out: "encryptf \"${out}\" --decrypt \"${inp}\"";
         };

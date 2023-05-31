@@ -1,4 +1,4 @@
-{ config, lib, pkgs, pkgs_unstable, ... }:
+{ config, lib, pkgs, pkgs_unstable, inputs, ... }:
 let
   cfg = config.software.tui.helix;
 in {

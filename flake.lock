@@ -230,17 +230,14 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1683812074,
-        "narHash": "sha256-GrIZQzlGH0Yg2S3njMdzOuSbinmw99wn/gdyLSxTIr8=",
-        "owner": "litchipi",
-        "repo": "encrypt",
-        "rev": "7e1cfe7a242ff7599ef50830d553b59022e18975",
-        "type": "github"
+        "lastModified": 1685560584,
+        "narHash": "sha256-i3e20Ck8RmIxt4mVWu2wna+8RnGo4wD/jfxW+CrpWlA=",
+        "path": "/home/john/encrypt",
+        "type": "path"
       },
       "original": {
-        "owner": "litchipi",
-        "repo": "encrypt",
-        "type": "github"
+        "path": "/home/john/encrypt",
+        "type": "path"
       }
     },
     "flake-compat": {

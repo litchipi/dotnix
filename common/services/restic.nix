@@ -59,8 +59,8 @@ in
         {
           path = cfg.basedir;
           perms = "750";
-          owner = "restic";
-          group = "restic";
+          owner = config.base.user;
+          group = config.base.user;
         }
       ];
 

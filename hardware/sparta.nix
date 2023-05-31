@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }: {
+{ lib, pkgs, config, ... }: {
   base.hostname = "sparta";
 
   powerManagement.cpuFreqGovernor = "performance";
@@ -20,6 +20,7 @@
   ];
 
   hardware = {
+    cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
     nvidia = {
       prime = lib.mkForce {
         amdgpuBusId = "PCI:5:0:0";
@@ -36,35 +37,44 @@
       efi.canTouchEfiVariables = true;
       efi.efiSysMountPoint = "/boot/efi";
     };
+    kernelModules = [ "kvm-amd" ];
     initrd = {
       availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
 
-      # Setup keyfiles
       secrets = {
         "/crypto_keyfile.bin" = null;
       };
 
-      # Enable swap on luks
-      luks.devices."luks-d8d528de-520b-4821-b3eb-4acf42a897dd" = {
-        device = "/dev/disk/by-uuid/d8d528de-520b-4821-b3eb-4acf42a897dd";
+      luks.devices."luks-58202ff0-2f04-4a36-84cb-6adfa446e4cb".device = "/dev/disk/by-uuid/58202ff0-2f04-4a36-84cb-6adfa446e4cb";
+
+      luks.devices."luks-8763aedb-7bb6-405b-b815-d585442b592c" = {
+        device = "/dev/disk/by-uuid/8763aedb-7bb6-405b-b815-d585442b592c";
         keyFile = "/crypto_keyfile.bin";
       };
-
-      luks.devices."luks-c1736d11-aad9-4fef-9a7c-162d038394bd".device = "/dev/disk/by-uuid/c1736d11-aad9-4fef-9a7c-162d038394bd";
     };
   };
 
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/814c7052-a17e-41c1-9c49-429662e6ce9d";
-    fsType = "ext4";
-  };
+  fileSystems = {
+    "/" = {
+      device = "/dev/disk/by-uuid/974b3c13-3011-42b3-94be-8577a228ec84";
+      fsType = "ext4";
+    };
 
-  fileSystems."/boot/efi" = {
-    device = "/dev/disk/by-uuid/0112-A359";
-    fsType = "vfat";
-  };
+    "/boot/efi" = {
+      device = "/dev/disk/by-uuid/3372-84AC";
+      fsType = "vfat";
+    };
 
-  swapDevices = [ { device = "/dev/disk/by-uuid/dfab04e5-1930-471b-ade2-56f9f484d197"; } ];
+    "/data" = {
+      device = "/dev/disk/by-uuid/2d932fe0-fad7-4495-a853-e9fe0c6ec67d";
+      fsType = "btrfs";
+    };
+    
+    "/nix/store" = {
+      device = "/dev/disk/by-uuid/4d6b8350-4f6e-4a3c-9732-5061011ffc06";
+      fsType = "btrfs";
+    };
+  };
 
   networking.networkmanager.enable = true;
   networking.useDHCP = lib.mkDefault true;
