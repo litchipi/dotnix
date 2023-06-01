@@ -66,6 +66,10 @@ in
         gnome.gnome-tweaks
       ]) ++ (if builtins.isNull cfg.theme then [] else [ cfg.theme.package ]);
 
+      environment.shellAliases = {
+        logout = "dbus-send --session --type=method_call --print-reply --dest=org.gnome.SessionManager /org/gnome/SessionManager org.gnome.SessionManager.Logout uint32:1";
+      };
+
       services.xserver = {
         displayManager.gdm.enable = true;
         desktopManager.gnome.enable = true;
