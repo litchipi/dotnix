@@ -62,10 +62,10 @@ in
         bluetooth-quick-connect
         (static-background-in-overview.overrideAttrs (_: {
           src = pkgs.fetchFromGitHub {
-            owner = "dz4k";
+            owner = "litchipi";
             repo = "gnome-static-background";
-            rev = "75093fbfddee8b2863f85a382baac93983e57ac8";
-            sha256 = "sha256-Y8FnqVUo59IDFCXZA2X/hN3t/upcB+6bJf3irRwt7yw=";
+            rev = "9dd17943ed24bb2611d9ade1d2caf3b490ec83d6";
+            sha256 = "sha256-5KImW7Scd2dLiM9XJHiQpJPnLLYL9DUd+2ZFtM0/ASQ=";
           };
         }))
         dash-to-dock

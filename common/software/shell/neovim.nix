@@ -3,10 +3,10 @@ let
   libdata = import ../../../lib/manage_data.nix {inherit config lib pkgs;};
   libnvim = import ../../../lib/software/neovim.nix {inherit config lib pkgs;};
 
-  cfg = config.software.shell.neovim;
+  cfg = config.software.tui.neovim;
 in
   {
-    options.software.shell.neovim = {
+    options.software.tui.neovim = {
       add_plugins = lib.mkOption {
         type = with lib.types; listOf package;
         default = [];

@@ -13,7 +13,6 @@ in {
     ../common/software/shell/helix.nix
     ../common/software/shell/dev.nix
     ../common/software/shell/tui.nix
-    ../common/software/shell/neovim.nix
     ../common/services/restic.nix
     ../common/services/cachix/client.nix
     ../common/system/server.nix

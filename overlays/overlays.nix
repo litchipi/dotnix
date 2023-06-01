@@ -29,11 +29,11 @@ in
     };
 
     # Triple buffering patch on mutter
-    gnome = super.gnome.overrideScope' (gself: gsuper: {
-      mutter = super.gnome.mutter.overrideAttrs (oldAttrs: {
-        patches = (oldAttrs.patches or []) ++ [
-          ../data/patches/gnome.mutter/triple_buffering_43_4.patch
-        ];
-      });
-    });
+    # gnome = super.gnome.overrideScope' (gself: gsuper: {
+      # mutter = super.gnome.mutter.overrideAttrs (oldAttrs: {
+        # patches = (oldAttrs.patches or []) ++ [
+          # ../data/patches/gnome.mutter/triple_buffering_43_4.patch
+        # ];
+      # });
+    # });
   }

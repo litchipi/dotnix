@@ -124,9 +124,11 @@ in
 
     services.openssh = {
       enable = true;
-      passwordAuthentication = false;
-      permitRootLogin = lib.mkForce "no";
-      kbdInteractiveAuthentication = false;
+      settings = {
+        PasswordAuthentication = false;
+        PermitRootLogin = lib.mkForce "no";
+        KbdInteractiveAuthentication = false;
+      };
     };
 
     # Set up  recommended settings for nginx if used

@@ -27,7 +27,7 @@ in
     config = {
       environment.systemPackages = [ pkgs.tmux pkgs.tmuxp ];
 
-      software.shell = if builtins.hasAttr "neovim" config.software.shell then {
+      software.tui = if builtins.hasAttr "neovim" config.software.tui then {
         neovim.add_plugins = with pkgs.vimPlugins; [
           tmux-complete-vim
         ];

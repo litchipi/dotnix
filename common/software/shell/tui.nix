@@ -49,9 +49,7 @@ in
       software.tui.shell_aliases = {
         music.enable = cfg.package_sets.complete.enable;
         git.enable = true;
-      };
-
-      software.shell = if builtins.hasAttr "neovim" config.software.shell
+      } // (if builtins.hasAttr "neovim" config.software.tui
         then { neovim = {
             vimcfg = [''
               " GitGutter
@@ -66,7 +64,7 @@ in
             ];
           };
         }
-        else {};
+        else {});
 
       base.home_cfg.programs.git = {
         enable = true;
@@ -74,7 +72,7 @@ in
         userEmail = lib.mkDefault config.base.email;
         extraConfig = {
           init.defaultBranch = "main";
-          safe.directory = "/etc/nixos";
+          # safe.directory = "/etc/nixos";
           credential.helper = "${
               pkgs.git.override { withLibsecret = true; }
             }/bin/git-credential-libsecret";
