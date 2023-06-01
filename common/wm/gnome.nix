@@ -1,6 +1,6 @@
 { config, lib, pkgs, pkgs_unstable, ... }:
 let
-  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
+  libgnome = import ../../lib/software/gnome.nix { inherit config lib pkgs; };
 
   cfg = config.wm.gnome;
   gnome_theme_type = lib.types.submodule {
@@ -51,15 +51,8 @@ in
     };
 
     config = {
-      environment.systemPackages = (with pkgs_unstable.gnomeExtensions; [
-        (audio-selector.overrideAttrs (_: {
-          src = pkgs.fetchFromGitHub {
-            owner = "litchipi";
-            repo = "Gnome-Shell-Extension-Audio-Selector";
-            rev = "8033a7a21aabc63dcc347a8bc3d1bf6b9edffc19";
-            sha256 = "sha256-3tu0FvmAHktVl2DIf2y8Y9uwShFZ/5d5UlBVVN2faLY=";
-          };
-        }))
+      environment.systemPackages = (with pkgs_unstable.gnomeExtensions; libgnome.adaptGnomeExtensions "44" [
+        audio-selector
         gnome-40-ui-improvements
         caffeine
         bring-out-submenu-of-power-offlogout-button
@@ -67,17 +60,9 @@ in
         runcat
         tray-icons-reloaded
         bluetooth-quick-connect
-        (static-background-in-overview.overrideAttrs (_: {
-          src = pkgs.fetchFromGitHub {
-            owner = "litchipi";
-            repo = "gnome-static-background";
-            rev = "9dd17943ed24bb2611d9ade1d2caf3b490ec83d6";
-            sha256 = "sha256-5KImW7Scd2dLiM9XJHiQpJPnLLYL9DUd+2ZFtM0/ASQ=";
-          };
-        }))
+        static-background-in-overview
         dash-to-dock
-        gsconnect
-      ] ++ cfg.add_extensions) ++ (with pkgs; [
+      ]) ++ (cfg.add_extensions) ++ (with pkgs; [
         gnome.gnome-tweaks
       ]) ++ (if builtins.isNull cfg.theme then [] else [ cfg.theme.package ]);
 
