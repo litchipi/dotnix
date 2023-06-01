@@ -84,8 +84,9 @@ in
             mkdir -p $(dirname ${dynamicFilesListPath})
             chown ${config.base.user} $(dirname ${dynamicFilesListPath})
           fi
+          touch ${dynamicFilesListPath}
+          chmod 600 ${dynamicFilesListPath}
           for file in $@; do
-            touch ${dynamicFilesListPath}
             fname=$(realpath $file)
             if ! grep "$fname" ${dynamicFilesListPath} > /dev/null; then
               echo "$fname" >> ${dynamicFilesListPath}

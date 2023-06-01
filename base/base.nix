@@ -178,9 +178,9 @@ in
       fonts = with pkgs; [
         pkgs_unstable.nerdfonts
         pkgs_unstable.powerline-fonts
-        pkgs.ubuntu_font_family
-        pkgs.fira-code
-        pkgs.fira-code-symbols
+        ubuntu_font_family
+        fira-code
+        fira-code-symbols
       ] ++ cfg.add_fonts;
     };
   };

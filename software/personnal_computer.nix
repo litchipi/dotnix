@@ -23,7 +23,10 @@ in {
     secrets = {
       provision_key.key = ../data/secrets/privkeys/sparta;
       store = {
-        tokens.openai.enable = true;
+        tokens.openai = {
+          enable = true;
+          user = config.base.user;
+        };
         services.cachix.orionstar.enable = true;      
       };
     };
@@ -32,9 +35,6 @@ in {
 
     base.networking.ssh_auth_keys = [ "tim@diamond" ];
     base.create_user_dirs = [ "work" "learn" ];
-    base.networking.connect_wifi = [
-      "SFR-a0e0"
-    ];
 
     base.add_fonts = let
       libdafont = import ../lib/fetchers/dafont.nix { inherit config lib pkgs; };

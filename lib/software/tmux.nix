@@ -38,8 +38,8 @@
     in
       res.acc + (if left then sepchar "default" last.bg else "");
 
-      disk_usage = " #(df -l|grep -e \"/$\"|awk -F ' ' '{print $5}')";
-      connected = "#(if ping -c 1 1.1.1.1 2>/dev/null 1>/dev/null; then echo ''; else echo ''; fi)";
+      disk_usage = " #(df -l|grep -e \"/$\"|awk -F ' ' '{print $5}')";
+      connected = "#(if ping -c 1 1.1.1.1 2>/dev/null 1>/dev/null; then echo '󰖟'; else echo ''; fi)";
 in {
   generate_theme = theme: builtins.concatStringsSep "\n" (
     lib.attrsets.mapAttrsToList (name: cnt:

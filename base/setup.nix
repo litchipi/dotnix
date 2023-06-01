@@ -62,7 +62,7 @@
 
     environment.shellAliases = {
       upgrade = "sudo nixos-rebuild switch --flake ${config.setup.config_repo_path}";
-      build = "nixos-rebuild build --flake ${config.setup.config_repo_path}";
+      build-nixos-config = "nixos-rebuild build --flake ${config.setup.config_repo_path}";
     };
   };
 }
