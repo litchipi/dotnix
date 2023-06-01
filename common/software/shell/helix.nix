@@ -1,6 +1,7 @@
-{ config, lib, pkgs, pkgs_unstable, inputs, ... }:
+{ config, lib, pkgs, pkgs_unstable, inputs, system, ... }:
 let
   cfg = config.software.tui.helix;
+  libdata = import ../../../lib/manage_data.nix { inherit config lib pkgs; };
 in {
   options.software.tui.helix = {
     configuration = lib.mkOption {
@@ -23,9 +24,9 @@ in {
   };
   config = {
     environment.systemPackages = [ inputs.helix.packages.${system}.default ];
-    home_cfg.home.file.".config/helix/config.toml".source = cfg.configuration;
-    home_cfg.home.file.".config/helix/themes/nixos.toml".source = cfg.theme;
-    home_cfg.home.file.".config/helix/languages.toml".text =
+    base.home_cfg.home.file.".config/helix/config.toml".source = cfg.configuration;
+    base.home_cfg.home.file.".config/helix/themes/nixos.toml".source = cfg.theme;
+    base.home_cfg.home.file.".config/helix/languages.toml".text =
       builtins.concatStringsSep "\n\n" cfg.languagesdef;
   };
 }
