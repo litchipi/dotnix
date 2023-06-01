@@ -639,15 +639,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1684683951,
-        "narHash": "sha256-7CTVI989kXM87bTlIilCtObLZ9h4aIoauwtVIj9qiIg=",
+        "lastModified": 1685607938,
+        "narHash": "sha256-7KBE9Pa9J1Awlvg3ua/JmabH/Ntk+BgF6a+3D6dyzi0=",
         "owner": "litchipi",
         "repo": "nixos-secrets",
-        "rev": "834d91bd368789524d7390ce5708da0eb8bbf0f1",
+        "rev": "d43c1ea1d037831f22bb523ca9f6e5fa09db9193",
         "type": "github"
       },
       "original": {
         "owner": "litchipi",
+        "ref": "dev",
         "repo": "nixos-secrets",
         "type": "github"
       }

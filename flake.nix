@@ -48,7 +48,7 @@
     };
 
     nixos-secrets = {
-      url = "github:litchipi/nixos-secrets";
+      url = "github:litchipi/nixos-secrets/dev";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
