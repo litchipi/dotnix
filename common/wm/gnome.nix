@@ -52,7 +52,14 @@ in
 
     config = {
       environment.systemPackages = (with pkgs_unstable.gnomeExtensions; [
-        audio-selector
+        (audio-selector.overrideAttrs (_: {
+          src = pkgs.fetchFromGitHub {
+            owner = "litchipi";
+            repo = "Gnome-Shell-Extension-Audio-Selector";
+            rev = "8033a7a21aabc63dcc347a8bc3d1bf6b9edffc19";
+            sha256 = "sha256-3tu0FvmAHktVl2DIf2y8Y9uwShFZ/5d5UlBVVN2faLY=";
+          };
+        }))
         gnome-40-ui-improvements
         caffeine
         bring-out-submenu-of-power-offlogout-button
