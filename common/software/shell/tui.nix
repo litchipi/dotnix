@@ -1,6 +1,5 @@
 { config, lib, pkgs, pkgs_unstable, ... }@args:
 let
-  libdata = import ../../../lib/manage_data.nix {inherit config lib pkgs;};
   libutils = import ../../../lib/utils.nix {inherit config lib pkgs;};
   libcolors = import ../../../lib/colors.nix {inherit config lib pkgs;};
   libsoft = import ../../../lib/software/package_set.nix args;
@@ -8,12 +7,12 @@ let
   all_packages_sets = with pkgs; {
     complete = [
       du-dust
-      youtube-dl
       yt-dlp
       termusic
       ffmpeg
       neofetch
       bat
+      deemix
     ];
   };
   cfg = config.software.tui;
@@ -45,7 +44,7 @@ in
 
         # Custom pomodoro tool from the overlay
         pomodoro
-      ];
+      ] ++ (libsoft.mkPackageSetsConfig cfg.package_sets all_packages_sets);
 
       software.tui.shell_aliases = {
         music.enable = cfg.package_sets.complete.enable;

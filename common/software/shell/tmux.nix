@@ -44,7 +44,7 @@ in
           clock24 = true;
 
           prefix = "M-p";
-          # terminal = builtins.trace "xterm 256" "xterm-256color";
+          terminal = "screen-256color";
           historyLimit = 10000;
           escapeTime = 0;
           keyMode = "vi";

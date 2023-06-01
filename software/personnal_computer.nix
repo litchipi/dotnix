@@ -83,9 +83,12 @@ in {
       gnome.user_icon = libdata.get_data_path ["assets" "desktop" "user_icons" "litchi.jpg"];
     };
 
-    software.tui.irssi = {
-      theme = pkgs.litchipi.irssitheme;
-      default_nick = "stixp";
+    software.tui = {
+      irssi = {
+        theme = pkgs.litchipi.irssitheme;
+        default_nick = "stixp";
+      };
+      package_sets.complete = true;
     };
     base.home_cfg.programs.irssi.networks.libera.channels = {
       rust.autoJoin = true;
