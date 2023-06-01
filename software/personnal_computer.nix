@@ -20,7 +20,13 @@ in {
     ../common/system/nixcfg.nix
   ];
   config = {
-    secrets.provision_key.key = ../data/secrets/privkeys/sparta;
+    secrets = {
+      provision_key.key = ../data/secrets/privkeys/sparta;
+      store = {
+        tokens.openai.enable = true;
+        services.cachix.orionstar.enable = true;      
+      };
+    };
     base.user = "john";
     base.email = "litchi.pi@proton.me";
 
