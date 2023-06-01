@@ -52,10 +52,19 @@ in
 
     config = {
       environment.systemPackages = (with pkgs_unstable.gnomeExtensions; libgnome.adaptGnomeExtensions "44" [
-        audio-selector
+        # TODO  Update once available on Gnome 44
+        # audio-selector
+        (bring-out-submenu-of-power-offlogout-button.overrideAttrs (old: {
+          src = pkgs.fetchFromGitHub {
+            owner = "PRATAP-KUMAR";
+            repo = "Bring-Out-Submenu-of-Power-Off-Logout";
+            rev = "708150539cd5a173023a9ac7f3b1488d76510b83";
+            sha256 = "sha256-hxG4+YH/zVd41oUKySQnV7rVK8xbNLDdd4y7gEIq3NA=";
+          };
+        }))
+        disable-workspace-switcher
         gnome-40-ui-improvements
         caffeine
-        bring-out-submenu-of-power-offlogout-button
         hide-activities-button
         runcat
         tray-icons-reloaded

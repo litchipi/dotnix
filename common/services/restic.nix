@@ -79,6 +79,11 @@ in
 
       environment.interactiveShellInit= ''
         addbackup() {
+          if [ ! -d $(dirname ${dynamicFilesListPath}) ]; then
+            echo "List dir doesn't exist, creating ..."
+            mkdir -p $(dirname ${dynamicFilesListPath})
+            chown ${config.base.user} $(dirname ${dynamicFilesListPath})
+          fi
           for file in $@; do
             touch ${dynamicFilesListPath}
             fname=$(realpath $file)
