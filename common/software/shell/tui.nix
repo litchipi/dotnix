@@ -12,7 +12,7 @@ let
       ffmpeg
       neofetch
       bat
-      deemix
+      python310Packages.deemix
     ];
   };
   cfg = config.software.tui;
