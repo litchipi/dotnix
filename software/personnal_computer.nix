@@ -13,6 +13,7 @@ in {
     ../common/software/shell/helix.nix
     ../common/software/shell/dev.nix
     ../common/software/shell/tui.nix
+    ../common/software/shell/ai.nix
     ../common/services/restic.nix
     ../common/services/cachix/client.nix
     ../common/system/server.nix
@@ -112,46 +113,25 @@ in {
 
     networking.stevenBlackHosts.enable = true;
 
-    environment.systemPackages = with pkgs; [
-      # Communication
-      cawbird # Twitter reader
-      newsflash # RSS reader
-
-      # Creation
-      gimp-with-plugins # Image editor
-      inkscape-with-extensions # Vector image editor
-      shotcut   # Video editor
-
-      # Writing
-      apostrophe  # Markdown editor
-      gummi
-      gnome-latex
-      # marp # Markdown to PDF  # Insecure
-
-      # Music
-      blanket # Play relaxing sound
-      shortwave # Listen Internet radio
-      gnome-podcasts # Listen to podcasts
-      audacity
-      python310Packages.deemix
-
-      # Other
-      wike # Wikipedia reader
-      gnome-recipes # Browser / create cooking recipes
-      gaphor # UML modelling tool
-      geogebra # Math graph tool
-
-      # System
-      authenticator # 2FA TOTP app
-
-      # Games
-      teeworlds
-      mari0
-      superTuxKart
-
-      zenith-nvidia
-    ];
-
+    environment = {
+      variables.EDITOR = "hx";
+      systemPackages = with pkgs; [
+        newsflash # RSS reader
+        gimp-with-plugins # Image editor
+        apostrophe  # Markdown editor
+        gummi
+        gnome-latex
+        blanket # Play relaxing sound
+        shortwave # Listen Internet radio
+        gnome-podcasts # Listen to podcasts
+        audacity
+        python310Packages.deemix
+        geogebra # Math graph tool
+        authenticator # 2FA TOTP app
+        zenith-nvidia
+      ];
+    };
+    
     services.blueman.enable = true;
     services.flatpak.enable = true;
 
@@ -183,7 +163,8 @@ in {
     };
 
     sound.enable = true;
-  };
 
-  # TODO    Use SDDM instead of gdm ?
+    software.shell.ai.token_secret = config.secrets.store.tokens.openai.file;
+    # TODO    Use SDDM instead of gdm ?
+  };
 }

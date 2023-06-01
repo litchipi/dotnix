@@ -38,7 +38,6 @@ in
         nodejs
         yarn
       ];
-      environment.variables.EDITOR = "nvim";
       base.home_cfg = {
         home.file.".local/share/nvim/site/autoload/plug.vim".source = let
           src = pkgs.fetchFromGitHub {
