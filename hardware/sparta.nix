@@ -22,6 +22,7 @@
   hardware = {
     cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
     nvidia = {
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
       prime = lib.mkForce {
         amdgpuBusId = "PCI:5:0:0";
         nvidiaBusId = "PCI:1:0:0";
@@ -69,7 +70,7 @@
       device = "/dev/disk/by-uuid/2d932fe0-fad7-4495-a853-e9fe0c6ec67d";
       fsType = "btrfs";
     };
-    
+
     "/nix/store" = {
       device = "/dev/disk/by-uuid/4d6b8350-4f6e-4a3c-9732-5061011ffc06";
       fsType = "btrfs";

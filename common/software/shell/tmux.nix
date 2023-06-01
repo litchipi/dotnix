@@ -103,7 +103,7 @@ in
 
             set -g @urlview-key 'u'
             set -g monitor-activity on
-            # WTF set -g default-terminal "tmux"
+            set -g default-terminal "tmux"
 
             set -g mouse on
             unbind -T copy-mode-vi MouseDragEnd1Pane
