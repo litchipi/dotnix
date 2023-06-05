@@ -135,6 +135,8 @@ in {
         geogebra # Math graph tool
         authenticator # 2FA TOTP app
         zenith-nvidia
+        libreoffice
+        deluge
       ];
     };
     
