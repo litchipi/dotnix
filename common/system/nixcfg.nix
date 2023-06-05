@@ -53,6 +53,7 @@ in
   {
     options.nix = {
       ecospace = {
+        gc-enable = lib.mkEnableOption { description = "Enable the auto garbage collection"; };
         # minfree = lib.mkOption {
         #   type = lib.types.int;
         #   description = "Triggers cleaning when there's less than X MiB space left";
@@ -105,7 +106,7 @@ in
             then [ cfg.builders.local.configuration.sshUser ]
             else [];
         };
-        gc = {
+        gc = lib.mkIf cfg.ecospace.gc-enable {
           automatic = true;
           dates = cfg.ecospace.freq;
           options = "--delete-older-than ${cfg.ecospace.olderthan}";
