@@ -86,7 +86,7 @@ in {
         package = pkgs.cantarell-fonts;
       };
 
-      gnome.user_icon = libdata.get_data_path ["assets" "desktop" "user_icons" "litchi.jpg"];
+      gnome.user_icon = libdata.get_data_path ["assets" "desktop" "user_icons" "litchi.png"];
     };
 
     software.tui = {
@@ -137,6 +137,8 @@ in {
         zenith-nvidia
         libreoffice
         deluge
+        calibre
+        imagemagick
       ];
     };
     
@@ -174,5 +176,10 @@ in {
 
     software.shell.ai.token_secret = config.secrets.store.tokens.openai.file;
     # TODO    Use SDDM instead of gdm ?
+
+    services.printing = {
+      enable = true;
+      drivers = [ pkgs.epson-escpr ];
+    };
   };
 }
