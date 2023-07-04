@@ -1,7 +1,5 @@
 { config, lib, pkgs, ... }:
 let
-  libcachix = import ../../lib/services/cachix.nix { inherit config lib pkgs;};
-
   sub = "cachix";
   fqdn = "${sub}.${config.base.networking.domain}";
   cfg = config.services.cachix.server;

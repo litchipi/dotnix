@@ -71,13 +71,12 @@ in
         } else {});
       };
 
-      # TODO  Modify the default database port to postgresql in nixpkgs (upstream)
       services.gitlab = {
         enable = true;
         packages.gitlab = pkgs.gitlab-ee;
 
         host = "git.${config.base.networking.domain}";
-        port = 80;
+        # TODO  Modify the default database port to postgresql in nixpkgs (upstream)
         extraDatabaseConfig.port = config.services.postgresql.port;
 
         databasePasswordFile = cfg.secrets.dbpwd.file;
@@ -104,8 +103,7 @@ in
             default_projects_features = { builds = false; };
           };
         };
-        # TODO    Make this path configurable
-        backup.path = "/var/gitlab/backup/";
+        backup.path = "${cfg.statePath}/backup";
       };
 
       services.restic.backups.gitlab = {
@@ -134,7 +132,7 @@ in
               rm "$name.tar"
           }
 
-          SOURCE=/var/gitlab/backup/restic_gitlab_backup.tar
+          SOURCE=${cfg.statePath}/backup/restic_gitlab_backup.tar
           OUTPUT=/tmp/gitlab_backup_restic/
 
           echo "Extract the archive"

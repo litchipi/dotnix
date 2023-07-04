@@ -75,26 +75,6 @@ in
           default = "daily";
         };
       };
-
-      builders = {
-        remote.machines = lib.mkOption {
-          type = lib.types.attrsOf remote_builder_type;
-          description = "Attrsets of machine definition";
-        };
-        local = {
-          enable = lib.mkEnableOption {
-            description = "Wether to enable locally a builder for others to connect into";
-          };
-          name = lib.mkOption {
-            type = lib.types.str;
-            description = "Name of the builder";
-          };
-          configuration = lib.mkOption {
-            type = remote_builder_type;
-            description = "Configuration to set on the builder";
-          };
-        };
-      };
     };
     config = {
       nix = {
@@ -102,9 +82,6 @@ in
           auto-optimise-store = true;
           # gc-keep-output = true;
           # gc-keep-derivations = true;
-          trusted-users = if cfg.builders.local.enable
-            then [ cfg.builders.local.configuration.sshUser ]
-            else [];
         };
         gc = lib.mkIf cfg.ecospace.gc-enable {
           automatic = true;
@@ -115,22 +92,6 @@ in
         #   min-free = ${toString (cfg.ecospace.minfree * 1024 * 1024)}
         #   max-free = ${toString (cfg.ecospace.maxfree * 1024 * 1024)}
         # '';
-        buildMachines = lib.attrsets.mapAttrsToList (name: opts: {
-          inherit (opts) system sshUser maxJobs protocol;
-          inherit (opts) hostName speedFactor supportedFeatures;
-          inherit (opts) mandatoryFeatures;
-          inherit (opts) sshKey;
-        }) (lib.attrsets.filterAttrs (_: opts: opts.enable) cfg.builders.remote.machines);
-      };
-      users = lib.mkIf cfg.builders.local.enable {
-        users.${cfg.builders.local.sshUser} = {
-          isSystemUser = true;
-          openssh.authorizedKeys.keyFiles=[
-            (libssh.get_remote_builder_pubk cfg.builders.setup.name)
-          ];
-          group = cfg.builders.local.sshUser;
-        };
-        groups.${cfg.builders.local.sshUser} = {};
       };
     };
   }

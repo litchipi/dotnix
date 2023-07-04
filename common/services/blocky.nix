@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, ... }:
+{ config, lib, inputs, ... }:
 let
   cfg = config.services.blocky;
 in
