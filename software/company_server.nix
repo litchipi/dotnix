@@ -16,13 +16,15 @@ in
     ../common/services/gitlab.nix
     ../common/services/gitlab_runner.nix
     ../common/services/restic.nix
-    ../common/services/nextcloud.nix
     ../common/services/shiori.nix
     ../common/services/paperless.nix
+    ../common/services/grafana.nix
+    ../common/services/prometheus.nix
     ../common/services/blocky.nix
     ../common/system/server.nix
     ../common/system/nixcfg.nix
   ];
+
   base.user = "op";
   base.email = "litchi.pi@proton.me";
   base.networking.ssh_auth_keys = [ "john@sparta" "tim@diamond" ];
@@ -36,7 +38,7 @@ in
 
   services.gitlab = {
     enable = true;
-    secrets = config.secrets.store.services.gitlab.${config.base.hostname};
+    secret-store = config.secrets.store.services.gitlab.${config.base.hostname};
     backup = {
       gdrive = true;
       timerConfig.OnCalendar = "05/7:00:00";
@@ -47,12 +49,15 @@ in
   services.gitlab-runner = {
     enable = true;
     secrets = config.secrets.store.services.gitlab.${config.base.hostname};
-    services.buster.runnerOpts.dockerImage = "debian:stable-20221024-slim";
+    runner-images = {
+      debian = {
+        runnerOpts.dockerImage = "debian:stable-20221024-slim";
+      };
+    };
     add_nix_service = true;
   };
 
   services.backup.restic.global = {
-    enable = true;
     gdrive = true;
     timerConfig.OnCalendar = "02/5:00:00";
     backup_paths = [ "/home/${config.base.user}/" ];
@@ -78,7 +83,7 @@ in
   };
 
   nix.ecospace = {
-    enable = true;
+    gc-enable = true;
     olderthan = "15d";
     freq = "daily";
   };

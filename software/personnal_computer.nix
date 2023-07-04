@@ -1,7 +1,6 @@
 { config, lib, pkgs, ... }: let
   libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
   libcolors = import ../lib/colors.nix {inherit config lib pkgs;};
-  libcachix = import ../lib/services/cachix.nix {inherit config lib pkgs;};
 in {
   imports = [
     ../base/shell.nix
@@ -15,7 +14,6 @@ in {
     ../common/software/shell/tui.nix
     ../common/software/shell/ai.nix
     ../common/services/restic.nix
-    ../common/services/cachix/client.nix
     ../common/system/server.nix
     ../common/system/nixcfg.nix
   ];
@@ -27,7 +25,6 @@ in {
           enable = true;
           user = config.base.user;
         };
-        services.cachix.orionstar.enable = true;      
       };
     };
     base.user = "john";
@@ -149,27 +146,6 @@ in {
       gdrive = true;
       pruneOpts = [ "-y 50" "-m 15" "-w 4" "-d 6" "-l 10" ];
       timerConfig.OnCalendar = "2/5:00:00";
-    };
-
-    services.cachix.client = {
-      servers = libcachix.set_servers [
-        { fqdn = "cachix.orionstar.cyou"; }
-      ];
-    };
-
-    nix.builders.remote.machines.orionstar = {
-      enable = true;
-      system = "x86_64-linux";
-      sshUser = "nixremotebuilder";
-      maxJobs = 4;
-      protocol = "ssh";
-      hostName = "orionstar.cyou";
-      speedFactor = 10;
-      supportedFeatures = [
-        "kvm"
-        "big-parallel"
-      ];
-      sshKey = config.secrets.store.services.cachix.orionstar.file;
     };
 
     sound.enable = true;

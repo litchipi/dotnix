@@ -9,50 +9,15 @@ in
   # TODO    Upstream changes
   {
     options.services.shiori = {
-      port = lib.mkOption {
-        type = lib.types.int;
-        default = 45631;
-        description = "On which port serve the Shiori service";
-      };
-      address = lib.mkOption {
-        type = lib.types.str;
-        default = "0.0.0.0";
-        description = "On which address serve the Shiori service";
-      };
-      dataDir = lib.mkOption {
-        type = lib.types.str;
-        default = "/var/shiori";
-        description = "Where to store the Shiori data";
-      };
-      user = lib.mkOption {
-        type = lib.types.str;
-        default = "shiori";
-        description = "User running the service";
-      };
+      secrets = pkgs.secrets.mkSecretOption "Secrets for Shiori";
       backup = libbck.mkBackupOptions {
         name = "shiori";
+        basedir = "/var/backup";
       };
     };
 
     config = lib.attrsets.recursiveUpdate {
       base.networking.subdomains = [ sub ];
-      users.users.${cfg.user} = {
-        isSystemUser = true;
-        group = cfg.user;
-      };
-      users.groups.${cfg.user} = {};
-
-      systemd.services.shiori = {
-        description = "Shiori simple bookmarks manager";
-        wantedBy = [ "multi-user.target" ];
-        environment.SHIORI_DIR = cfg.dataDir;
-        script = ''
-          ${pkgs.shiori}/bin/shiori migrate
-          ${pkgs.shiori}/bin/shiori serve \
-            --address '${cfg.address}' \
-            --port '${builtins.toString cfg.port}'
-        '';
-      };
 
       services.nginx = {
         enable = true;
@@ -62,8 +27,8 @@ in
     } (libbck.mkBackupConfig {
       name = "shiori";
       cfg = cfg.backup;
-      user = cfg.user;
-      paths = [ "${cfg.dataDir}/shiori.db" ];
-      secrets = config.secrets.store.services.shiori.${config.base.hostname};
+      user = "root";
+      paths = [ "${config.systemd.services.shiori.environment.SHIORI_DIR}" ];
+      secrets = cfg.secrets;
     });
   }

@@ -35,9 +35,9 @@ in
       services.nginx.virtualHosts."${prometheus_sub}.${config.base.networking.domain}" = {
         locations."/".proxyPass = "http://127.0.0.1:${builtins.toString cfg.port}";
       };
-      localhost_scrape_targets = builtins.foldl' (
-        acc: _: acc ++ [ (cfg.metrics_port_min + (builtins.length acc)) ]
-      ) [] all_exporters;
+      # localhost_scrape_targets = builtins.foldl' (
+      #   acc: _: acc ++ [ (cfg.metrics_port_min + (builtins.length acc)) ]
+      # ) [] all_exporters;
       services.prometheus = {
         enable = true;
         webExternalUrl = "${prometheus_sub}.${config.base.networking.domain}";
@@ -49,6 +49,7 @@ in
         globalConfig = {
 
         };
+
         scrapeConfigs = [{
           job_name = "localscrape";
           static_configs = [{
@@ -57,16 +58,24 @@ in
               cfg.localhost_scrape_targets;
           }];
         }];
+
         alertmanagers = [
 
         ];
+
         rules = [
 
         ];
-        exporters = builtins.foldl' (acc: exporter: acc ++ [ (exporter // {
-          enable = true;
-          port = cfg.metrics_port_min + (builtins.length acc);
-        })]) [] all_exporters;
+
+        exporters = (lib.attrsets.foldlAttrs (acc: name: val: {
+          count = acc.count + 1;
+          data = acc.data // {
+            ${name} = val // {
+              enable = true;
+              port = cfg.metrics_port_min + acc.count;
+            };
+          };
+        }) { count = 0; data = {}; } all_exporters).data;
       };
     };
   }

@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ lib, ... }:
 let
   data_dir_root = ../data;
 in
@@ -24,10 +24,4 @@ in
   pkg_patch = package: patchname: get_data_path ["patches" package "${patchname}.patch"];
 
   get_wallpaper = name: get_data_path ["assets" "desktop" "wallpapers" name ];
-
-  set_common_secret_config = conf: tree: builtins.mapAttrs (name: value:
-    if builtins.hasAttr "__is_leaf" value
-      then conf
-      else (set_common_secret_config conf value)
-    ) tree;
 }

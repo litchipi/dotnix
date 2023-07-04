@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 let
   sub = "cachix";
   fqdn = "${sub}.${config.base.networking.domain}";

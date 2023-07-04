@@ -1,16 +1,16 @@
 { config, lib, pkgs, ... }:
 let
-  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
   libextbk = import ../../lib/external_backup.nix {inherit config lib pkgs;};
 
   cfg = config.services.gitlab;
+  secrets = pkgs.secrets.set_common_config {
+    enable = true;
+    user = config.services.gitlab.user;
+  } cfg.secret-store;
 in
   {
     options.services.gitlab = {
-      secrets = lib.mkOption {
-        type = lib.types.attrsets;
-        description = "Secrets to use for the gitlab configuration";
-      };
+      secret-store = pkgs.secrets.mkSecretOption "Secrets for Gitlab";
       backup = {
         repo_path = lib.mkOption {
           type = lib.types.str;
@@ -53,11 +53,6 @@ in
       users.users."${config.base.user}".extraGroups = [ "gitlab" ];
       users.extraUsers.gitlab.extraGroups = [ "nginx" ];
 
-      secrets.store.services.gitlab = pkgs.secrets.set_common_config {
-        enable = true;
-        user = config.services.gitlab.user;
-      } cfg.secrets;
-
       services.nginx = {
         enable = true;
         virtualHosts = {
@@ -79,9 +74,9 @@ in
         # TODO  Modify the default database port to postgresql in nixpkgs (upstream)
         extraDatabaseConfig.port = config.services.postgresql.port;
 
-        databasePasswordFile = cfg.secrets.dbpwd.file;
+        databasePasswordFile = secrets.dbpwd.file;
         initialRootEmail = config.base.email;
-        initialRootPasswordFile = cfg.secrets.initial_root_pwd.file;
+        initialRootPasswordFile = secrets.initial_root_pwd.file;
 
         # TODO Set up HTTPS with
         # https://nixos.org/manual/nixos/stable/#module-security-acme-nginx
@@ -89,10 +84,10 @@ in
         https = false; #true;
         smtp.enable = true;
         secrets = {
-          dbFile = cfg.secrets.db.file;
-          secretFile = cfg.secrets.secretfile.file;
-          otpFile = cfg.secrets.otp.file;
-          jwsFile = cfg.secrets.session.file;
+          dbFile = secrets.db.file;
+          secretFile = secrets.secretfile.file;
+          otpFile = secrets.otp.file;
+          jwsFile = secrets.session.file;
         };
 
         extraConfig = {
@@ -108,7 +103,7 @@ in
 
       services.restic.backups.gitlab = {
         initialize = true;
-        passwordFile = cfg.secrets.restic_repo_pwd.file;
+        passwordFile = secrets.restic_repo_pwd.file;
         repository = cfg.backup.repo_path;
         timerConfig = {
           Persistent = true;
@@ -164,8 +159,20 @@ in
         basename = "restic_gitlab_backup";
         enabled = cfg.backup.gdrive;
         bind = "restic-backups-gitlab.service";
-        rclone_conf = cfg.secrets.rclone_gdrive.file;
+        rclone_conf = secrets.rclone_gdrive.file;
         paths.${cfg.backup.repo_path} = "${config.base.hostname}_gitlab_backup";
       });
+
+      services.postgresql = {
+        enable = true;
+        ensureUsers = [
+          {
+            name = "gitlab";
+            ensurePermissions = {
+              "DATABASE gitlab" = "ALL PRIVILEGES";
+            };
+          }
+        ];
+      };
     };
   }

@@ -4,6 +4,11 @@ let
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
 
   cfg = config.services.nextcloud;
+  secrets = libdata.set_common_secret_config {
+    enable = true;
+    user = config.services.nextcloud.user;
+  } cfg.secrets;
+
   sub = "nextcloud";
 
   externalSite = lib.submodule {
@@ -155,7 +160,7 @@ in
   {
     options.services.nextcloud = {
       secrets = lib.mkOption {
-        type = lib.types.attrsets;
+        type = lib.types.attrs;
         description = "Secrets for the service Nextcloud";
       };
       extra_config_script = lib.mkOption {
@@ -199,11 +204,6 @@ in
       users.users."${config.base.user}".extraGroups = [ "nextcloud" "postgres" ];
       users.users.nextcloud.extraGroups = [ "postgres" ];
 
-      secrets.store.services.nextcloud = libdata.set_common_secret_config {
-        enable = true;
-        user = config.services.nextcloud.user;
-      } cfg.secrets;
-
       services.postgresql = {
         enable = true;
         ensureDatabases = ["nextcloud"];
@@ -234,7 +234,7 @@ in
           dbhost = "/run/postgresql:${builtins.toString config.services.postgresql.port}";
           dbname = "nextcloud";
           adminuser = "root";
-          adminpassFile = cfg.secrets.admin_pwd.file;
+          adminpassFile = secrets.admin_pwd.file;
         };
         extraApps = builtins.mapAttrs (name: app: pkgs.fetchzip {
           inherit name;

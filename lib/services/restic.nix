@@ -1,6 +1,5 @@
 { config, lib, pkgs, ... }: let
   libextbk = import ../../lib/external_backup.nix {inherit config lib pkgs;};
-  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
 in {
   mkBackupOptions = {
     name,
@@ -39,19 +38,19 @@ in {
     secrets,
     copy_external ? true,
     external_copy_add_paths ? {},
-  }: {
+  }: let
+    rsecrets = pkgs.secrets.set_common_config {
+      enable = true;
+      inherit user;
+    } secrets;
+  in {
     setup.directories = [
       { path = cfg.repo_path; perms = "750"; owner = user; }
     ];
 
-    secrets.store.services.restic = libdata.set_common_secret_config {
-      enable = true;
-      inherit user;
-    } config.secrets.store.services.restic;
-
     services.restic.backups.${name} = {
       initialize = true;
-      passwordFile = secrets.restic_repo_pwd.file;
+      passwordFile = rsecrets.restic_repo_pwd.file;
       repository = cfg.repo_path;
       timerConfig = {
         Persistent = true;
@@ -72,7 +71,7 @@ in {
       enabled = cfg.gdrive;
       basename = "restic_${name}_backup";
       bind = "restic-backups-${name}.service";
-      rclone_conf = secrets.rclone_gdrive.file;
+      rclone_conf = rsecrets.rclone_gdrive.file;
       paths.${cfg.repo_path} = "${config.base.hostname}_${name}_backup";
     });
   } else {});

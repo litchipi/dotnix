@@ -4,11 +4,12 @@ let
   libbck = import ../../lib/services/restic.nix {inherit config lib pkgs;};
 
   cfg = config.services.backup.restic.global;
+  basedir = "/var/backup";
 in
   {
     options.services.backup.restic.global = with lib.types; (libbck.mkBackupOptions {
       name = "global";
-      basedir = cfg.basedir;
+      inherit basedir;
     }) // {
       groups = lib.mkOption {
         type = listOf str;
@@ -25,15 +26,10 @@ in
         default = [];
         description = "Scripts to execute after the backup process";
       };
-      basedir = lib.mkOption {
-        type = str;
-        description = "Path where everything related to backup is contained";
-        default = "/var/backup";
-      };
       lists_basedir = lib.mkOption {
         type = str;
         description = "Path where to store the backup lists";
-        default = "${cfg.basedir}/global/lists";
+        default = "${basedir}/global/lists";
       };
       backup_paths = lib.mkOption {
         type = listOf str;
@@ -48,7 +44,7 @@ in
     in lib.attrsets.recursiveUpdate (libbck.mkBackupConfig {
       name = "global";
       cfg = config.services.backup.restic.global;
-      paths = cfg.global.backup_paths;
+      paths = cfg.backup_paths;
       user = config.base.user;
       external_copy_add_paths = {
         ${cfg.lists_basedir} = "${config.base.hostname}/global/lists";
@@ -57,7 +53,7 @@ in
     }) {
       setup.directories = [
         {
-          path = cfg.basedir;
+          path = basedir;
           perms = "750";
           owner = config.base.user;
           group = config.base.user;
@@ -65,7 +61,9 @@ in
       ];
 
       services.restic.backups.global = {
-        extraBackupArgs = "--files-from ${dynamicFilesListPath}";
+        extraBackupArgs = [
+          "--files-from ${dynamicFilesListPath}"
+        ];
         backupPrepareCommand = builtins.concatStringsSep "\n" cfg.prepare_script;
         backupCleanupCommand = builtins.concatStringsSep "\n" cfg.cleanup_script;
       };
