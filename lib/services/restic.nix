@@ -57,7 +57,7 @@ in {
         Persistent = true;
       } // cfg.timerConfig;
       pruneOpts = cfg.pruneOpts;
-      inherit user;
+      inherit user paths;
     };
   } // (if copy_external then {
     fileSystems = libextbk.mkFileSystems cfg.external_copy;

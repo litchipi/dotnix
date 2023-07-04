@@ -72,7 +72,7 @@ in
       };
 
       # TODO  Modify the default database port to postgresql in nixpkgs (upstream)
-      services.gitlab = rec {
+      services.gitlab = {
         enable = true;
         packages.gitlab = pkgs.gitlab-ee;
 
