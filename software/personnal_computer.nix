@@ -158,10 +158,11 @@ in {
       drivers = [ pkgs.epson-escpr ];
     };
 
-    virtualisation.virtualbox = {
+    users.extraGroups.vboxusers.members = [ config.base.user ];
+    virtualisation.virtualbox.host = {
       enable = true;
       headless = true;
-      enableWebService = true;
+      enableWebService = false; # true;
     };
   };
 }
