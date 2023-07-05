@@ -157,5 +157,11 @@ in {
       enable = true;
       drivers = [ pkgs.epson-escpr ];
     };
+
+    virtualisation.virtualbox = {
+      enable = true;
+      headless = true;
+      enableWebService = true;
+    };
   };
 }
