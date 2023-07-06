@@ -159,10 +159,8 @@ in {
     };
 
     users.extraGroups.vboxusers.members = [ config.base.user ];
-    virtualisation.virtualbox.host = {
-      enable = true;
-      headless = true;
-      enableWebService = false; # true;
-    };
+    virtualisation.virtualbox.host.enable = true;
+
+    shix.remoteRepoUrl = "gitlab@git.orionstar.cyou:litchi.pi/shix-shells.git";
   };
 }

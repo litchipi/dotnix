@@ -103,7 +103,7 @@
       inputs.home-manager.nixosModules.home-manager
       inputs.StevenBlackHosts.nixosModule
       inputs.nix-ld.nixosModules.nix-ld
-      inputs.shix.nixosModules.x86_64-linux.default
+      inputs.shix.nixosModules.${system}.default
       # inputs.envfs.nixosModules.envfs
       ((pkgsForSystem system).secrets.mkModule ./data/secrets/secrets.json)
       {

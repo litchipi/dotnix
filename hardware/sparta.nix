@@ -32,7 +32,7 @@
   };
 
   base.kernel.package = pkgs.linuxPackages_zen;
-  boot = {
+  boot = if config.setup.is_vm then {} else {
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
