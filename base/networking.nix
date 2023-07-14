@@ -51,13 +51,14 @@ in
 
   config = let
     ssh_ident = "${config.base.user}@${config.base.hostname}";
-    ssh_privk_secret_k = "${ssh_ident}_ssh_privk";
   in {
     secrets.store.ssh_privk.${config.base.hostname}.${config.base.user} = {
-      enable = true;
       link = "/home/${config.base.user}/.ssh/id_rsa";
-      user = config.base.user;
       transform = "cat - <(echo \"\")";
+    };
+    secrets.setup.ssh_privk = {
+      user = config.base.user;
+      secret = config.secrets.store.ssh_privk.${config.base.hostname}.${config.base.user};
     };
 
     base.home_cfg = {

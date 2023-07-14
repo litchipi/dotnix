@@ -18,15 +18,8 @@ in {
     ../common/system/nixcfg.nix
   ];
   config = {
-    secrets = {
-      provision_key.key = ../data/secrets/privkeys/sparta;
-      store = {
-        tokens.openai = {
-          enable = true;
-          user = config.base.user;
-        };
-      };
-    };
+    secrets.provision_key.key = ../data/secrets/privkeys/sparta;
+
     base.user = "john";
     base.email = "litchi.pi@proton.me";
 
@@ -143,6 +136,7 @@ in {
     services.flatpak.enable = true;
 
     services.backup.restic.global = {
+      secrets = config.secrets.store.services.restic.sparta;
       gdrive = true;
       pruneOpts = [ "-y 50" "-m 15" "-w 4" "-d 6" "-l 10" ];
       timerConfig.OnCalendar = "2/5:00:00";
@@ -150,7 +144,8 @@ in {
 
     sound.enable = true;
 
-    software.shell.ai.token_secret = config.secrets.store.tokens.openai.file;
+    software.protonvpn.secrets = config.secrets.store.credentials.protonvpn;
+    software.shell.ai.token = config.secrets.store.tokens.openai;
     # TODO    Use SDDM instead of gdm ?
 
     services.printing = {

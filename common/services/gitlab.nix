@@ -3,10 +3,6 @@ let
   libextbk = import ../../lib/external_backup.nix {inherit config lib pkgs;};
 
   cfg = config.services.gitlab;
-  secrets = pkgs.secrets.set_common_config {
-    enable = true;
-    user = config.services.gitlab.user;
-  } cfg.secret-store;
 in
   {
     options.services.gitlab = {
@@ -36,6 +32,10 @@ in
       };
     };
     config = {
+      secrets.setup.gitlab = {
+        user = config.services.gitlab.user;
+        secret = cfg.secret-store;
+      };
       setup.directories = [
         { path = cfg.backup.repo_path; perms = "700"; owner = "gitlab"; }
       ];
@@ -74,9 +74,9 @@ in
         # TODO  Modify the default database port to postgresql in nixpkgs (upstream)
         extraDatabaseConfig.port = config.services.postgresql.port;
 
-        databasePasswordFile = secrets.dbpwd.file;
+        databasePasswordFile = cfg.secret-store.dbpwd.file;
         initialRootEmail = config.base.email;
-        initialRootPasswordFile = secrets.initial_root_pwd.file;
+        initialRootPasswordFile = cfg.secret-store.initial_root_pwd.file;
 
         # TODO Set up HTTPS with
         # https://nixos.org/manual/nixos/stable/#module-security-acme-nginx
@@ -84,10 +84,10 @@ in
         https = false; #true;
         smtp.enable = true;
         secrets = {
-          dbFile = secrets.db.file;
-          secretFile = secrets.secretfile.file;
-          otpFile = secrets.otp.file;
-          jwsFile = secrets.session.file;
+          dbFile = cfg.secret-store.db.file;
+          secretFile = cfg.secret-store.secretfile.file;
+          otpFile = cfg.secret-store.otp.file;
+          jwsFile = cfg.secret-store.session.file;
         };
 
         extraConfig = {
@@ -103,7 +103,7 @@ in
 
       services.restic.backups.gitlab = {
         initialize = true;
-        passwordFile = secrets.restic_repo_pwd.file;
+        passwordFile = cfg.secret-store.restic_repo_pwd.file;
         repository = cfg.backup.repo_path;
         timerConfig = {
           Persistent = true;
@@ -159,7 +159,7 @@ in
         basename = "restic_gitlab_backup";
         enabled = cfg.backup.gdrive;
         bind = "restic-backups-gitlab.service";
-        rclone_conf = secrets.rclone_gdrive.file;
+        rclone_conf = cfg.secret-store.rclone_gdrive.file;
         paths.${cfg.backup.repo_path} = "${config.base.hostname}_gitlab_backup";
       });
 

@@ -4,6 +4,10 @@ let
 in
   {
     options.software.protonvpn = {
+      secrets = lib.mkOption {
+        type = lib.types.attrs;
+        description = "Secrets for the usage of ProtonVPN";
+      };
       username = lib.mkOption {
         default = "";
         type = lib.types.str;
@@ -16,9 +20,9 @@ in
       ];
       environment.systemPackages = [ pkgs_unstable.protonvpn-cli ];
 
-      secrets.store.credentials.protonvpn = {
-        enable = true;
+      secrets.setup.protonvpn = {
         user = config.base.user;
+        secret = cfg.secrets;
       };
 
       environment.shellAliases = let
@@ -40,7 +44,7 @@ in
         '';
       in {
         vpn_logout = "protonvpn-cli logout";
-        vpn_login = "${pkgs.expect}/bin/expect ${protonvpn_login} ${cfg.username} $(cat ${config.secrets.store.credentials.protonvpn.file})";
+        vpn_login = "${pkgs.expect}/bin/expect ${protonvpn_login} ${cfg.username} $(cat ${cfg.secrets.file})";
         vpn = "protonvpn-cli c --sc";
         vpn_p2p = "protonvpn-cli c --p2p";
         vpn_tor = "protonvpn-cli c --tor";

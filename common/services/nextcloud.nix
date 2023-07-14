@@ -4,11 +4,6 @@ let
   libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
 
   cfg = config.services.nextcloud;
-  secrets = libdata.set_common_secret_config {
-    enable = true;
-    user = config.services.nextcloud.user;
-  } cfg.secrets;
-
   sub = "nextcloud";
 
   externalSite = lib.submodule {
@@ -194,6 +189,10 @@ in
     };
     config = {
       environment.systemPackages = [ pkgs.php ];
+      secrets.setup.nextcloud = {
+        secret = cfg.secrets;
+        user = config.services.nextcloud.user;
+      };
 
       base.networking.subdomains = [ sub ];
       base.networking.vm_forward_ports = {

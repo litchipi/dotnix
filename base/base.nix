@@ -81,10 +81,8 @@ in
     console.keyMap = lib.mkDefault "fr";
     i18n.defaultLocale = lib.mkDefault "fr_FR.UTF-8";
 
-    secrets.store.credentials.logins.${cfg.hostname}.${cfg.user} = {
-      enable = true;
-      transform = "${pkgs.openssl}/bin/openssl passwd -6 -stdin";
-    };
+    secrets.store.credentials.logins.${cfg.hostname}.${cfg.user}.transform = "${pkgs.openssl}/bin/openssl passwd -6 -stdin";
+    secrets.setup.system_login.secret = config.secrets.store.credentials.logins.${cfg.hostname}.${cfg.user};
 
     users = {
       groups.${cfg.user} = {};

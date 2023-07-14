@@ -1,4 +1,4 @@
-{config, lib, ...}:
+{ config, lib, ... }:
 {
   options.setup = {
     is_nixos = lib.mkOption {

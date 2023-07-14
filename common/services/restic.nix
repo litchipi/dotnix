@@ -3,14 +3,18 @@ let
   libextbk= import ../../lib/external_backup.nix {inherit config lib pkgs;};
   libbck = import ../../lib/services/restic.nix {inherit config lib pkgs;};
 
-  cfg = config.services.backup.restic.global;
   basedir = "/var/backup";
+  cfg = config.services.backup.restic.global;
 in
   {
     options.services.backup.restic.global = with lib.types; (libbck.mkBackupOptions {
       name = "global";
       inherit basedir;
     }) // {
+      secrets = lib.mkOption {
+        type = attrs;
+        description = "Secrets to use for the restic backup";
+      };
       groups = lib.mkOption {
         type = listOf str;
         default = [];
@@ -49,7 +53,7 @@ in
       external_copy_add_paths = {
         ${cfg.lists_basedir} = "${config.base.hostname}/global/lists";
       };
-      secrets = config.secrets.store.services.restic.sparta;
+      inherit (cfg) secrets;
     }) {
       setup.directories = [
         {

@@ -38,19 +38,19 @@ in {
     secrets,
     copy_external ? true,
     external_copy_add_paths ? {},
-  }: let
-    rsecrets = pkgs.secrets.set_common_config {
-      enable = true;
+  }: {
+    secrets.setup."restic_${name}" = {
       inherit user;
-    } secrets;
-  in {
+      secret = secrets;
+    };
+
     setup.directories = [
       { path = cfg.repo_path; perms = "750"; owner = user; }
     ];
 
     services.restic.backups.${name} = {
       initialize = true;
-      passwordFile = rsecrets.restic_repo_pwd.file;
+      passwordFile = secrets.restic_repo_pwd.file;
       repository = cfg.repo_path;
       timerConfig = {
         Persistent = true;
@@ -71,7 +71,7 @@ in {
       enabled = cfg.gdrive;
       basename = "restic_${name}_backup";
       bind = "restic-backups-${name}.service";
-      rclone_conf = rsecrets.rclone_gdrive.file;
+      rclone_conf = secrets.rclone_gdrive.file;
       paths.${cfg.repo_path} = "${config.base.hostname}_${name}_backup";
     });
   } else {});

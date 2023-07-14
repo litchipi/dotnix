@@ -49,3 +49,9 @@ rest is derived from it.
 
 In encrypted file, stores an encrypted version of the secret for each different global
 key stored in the git repo.
+
+# How to activate a given secret ?
+
+
+Got secrets in `config.secrets.store.path.to.secrets`, want to be able to pass the secrets to the config of a module
+And this module activates the secret

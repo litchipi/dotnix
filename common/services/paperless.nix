@@ -3,11 +3,6 @@ let
   libbck = import ../../lib/services/restic.nix {inherit config lib pkgs;};
 
   cfg = config.services.paperless;
-  secrets = pkgs.secrets.set_common_config {
-    enable = true;
-    user = config.services.paperless.user;
-  } cfg.secrets;
-
   sub = "paper";
   fqdn = "${sub}.${config.base.networking.domain}";
 in
@@ -20,12 +15,16 @@ in
       };
     };
     config = lib.attrsets.recursiveUpdate {
+      secrets.setup.paperless = {
+        user = config.services.paperless.user;
+        secret = cfg.secrets;
+      };
       base.networking.subdomains = [ sub ];
 
       services.paperless = {
         enable = true;
         dataDir = lib.mkDefault "/var/lib/paperless";
-        passwordFile = secrets.admin_pwd.file;
+        passwordFile = cfg.secrets.admin_pwd.file;
       };
 
       services.nginx = {
@@ -40,6 +39,6 @@ in
       cfg = cfg.backup;
       user = config.services.paperless.user;
       paths = [ config.services.paperless.dataDir ];
-      secrets = secrets;
+      secrets = cfg.secrets;
     });
   }

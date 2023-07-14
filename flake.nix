@@ -75,51 +75,49 @@
       (self: super: (import ./overlays/overlays.nix self super))
     ];
 
-    pkgs_unstable = system: import nixpkgs_unstable {
-      inherit system;
-      config.allowUnfree = true;
-      overlays = common_overlays;
-    };
-
-    pkgsForSystem = system: import nixpkgs {
-      overlays = common_overlays ++ [
-        inputs.nixos-secrets.overlays.${system}.default
-      ];
-      config.allowUnfree = true;
-      inherit system;
-    };
-
-  # Building
-    # Additionnal modules for any nixos configuration
-    base_modules = system: [
-      # TODO  Merge some base files, remove unsued
-      ./base/base.nix
-      ./base/colors.nix
-      ./base/disks.nix
-      ./base/kernel.nix
-      ./base/networking.nix
-      ./base/setup.nix
-      ./base/shell.nix
-      inputs.home-manager.nixosModules.home-manager
-      inputs.StevenBlackHosts.nixosModule
-      inputs.nix-ld.nixosModules.nix-ld
-      inputs.shix.nixosModules.${system}.default
-      # inputs.envfs.nixosModules.envfs
-      ((pkgsForSystem system).secrets.mkModule ./data/secrets/secrets.json)
-      {
-        _module.args = {
-          inherit inputs system;
-          pkgs_unstable = pkgs_unstable system;
-          home-manager-lib = inputs.home-manager.lib.hm;
-        };
-        secrets.decrypt_key_cmd = inp: out: let
-          encryptf = "${inputs.encryptf.packages.${system}.default}/bin/encryptf";
-        in "${encryptf} ${out} --decrypt ${inp}";
-      }
-    ];
-
   in inputs.flake-utils.lib.eachDefaultSystem (system: let
-      pkgs = pkgsForSystem system;
+      pkgs_unstable = import nixpkgs_unstable {
+        inherit system;
+        config.allowUnfree = true;
+        overlays = common_overlays;
+      };
+
+      pkgs = import nixpkgs {
+        overlays = common_overlays ++ [
+          inputs.nixos-secrets.overlays.${system}.default
+        ];
+        config.allowUnfree = true;
+        inherit system;
+      };
+
+    # Building
+      # Additionnal modules for any nixos configuration
+      base_modules = system: [
+        # TODO  Merge some base files, remove unsued
+        ./base/base.nix
+        ./base/colors.nix
+        ./base/disks.nix
+        ./base/kernel.nix
+        ./base/networking.nix
+        ./base/setup.nix
+        ./base/shell.nix
+        inputs.home-manager.nixosModules.home-manager
+        inputs.StevenBlackHosts.nixosModule
+        inputs.nix-ld.nixosModules.nix-ld
+        inputs.shix.nixosModules.${system}.default
+        # inputs.envfs.nixosModules.envfs
+        (pkgs.secrets.mkModule ./data/secrets/secrets.json)
+        {
+          _module.args = {
+            inherit inputs system pkgs_unstable;
+            home-manager-lib = inputs.home-manager.lib.hm;
+          };
+          secrets.decrypt_key_cmd = inp: out: let
+            encryptf = "${inputs.encryptf.packages.${system}.default}/bin/encryptf";
+          in "${encryptf} ${out} --decrypt ${inp}";
+        }
+      ];
+
       targetlib = import ./lib/targets.nix {
         inherit inputs pkgs;
         lib = pkgs.lib;

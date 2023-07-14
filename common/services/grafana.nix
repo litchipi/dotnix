@@ -1,12 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
   cfg = config.services.grafana;
-  secrets = pkgs.secrets.set_common_config {
-    enable = true;
-    user = config.services.grafana.user;
-  } cfg.secrets;
-
   grafana_sub = "graph";
 in
   {
@@ -15,6 +9,11 @@ in
     };
 
     config = {
+      secrets.setup.grafana = {
+        secret = cfg.secrets;
+        user = config.services.grafana.user;
+      };
+
       base.networking.subdomains = [ grafana_sub ];
       networking.firewall.allowedTCPPorts = [ 80 443 ];
 
@@ -41,7 +40,7 @@ in
           name = "grafana";
         };
         settings.analytics.reporting_enabled = false;
-        settings.security.admin_password = "$__file{${secrets.admin_pwd.file}}";
+        settings.security.admin_password = "$__file{${cfg.secrets.admin_pwd.file}}";
       };
 
       services.postgresql = {

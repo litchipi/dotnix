@@ -30,7 +30,11 @@
     ];
   };
 
-  mkNixosSystem = base_modules: { software, hardware ? null, add_modules ? [], ...}: system: inputs.nixpkgs.lib.nixosSystem {
+  mkNixosSystem = base_modules: {
+    software,
+    hardware ? null,
+    add_modules ? [],
+  ...}: system: inputs.nixpkgs.lib.nixosSystem {
     inherit system pkgs;
     modules = [
       software

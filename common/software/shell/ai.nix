@@ -2,18 +2,22 @@
   cfg = config.software.shell.ai;
 in {
   options.software.shell.ai = {
-    token_secret = lib.mkOption {
-      type = lib.types.str;
-      description = "Path to the file containing the token for OpenAI API";
+    token = lib.mkOption {
+      type = lib.types.attrs;
+      description = "Secret token for OpenAI services";
     };
   };
 
   config = {
+    secrets.setup.openai_token = {
+      secret = cfg.token;
+      user = config.base.user;
+    };
     environment.systemPackages = with pkgs; [
       mods
     ];
     environment.interactiveShellInit=''
-      export OPENAI_API_KEY=$(cat ${cfg.token_secret})
+      export OPENAI_API_KEY=$(cat ${cfg.token.file})
     '';
   };
 }
