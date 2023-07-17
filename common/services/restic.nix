@@ -65,9 +65,7 @@ in
       ];
 
       services.restic.backups.global = {
-        extraBackupArgs = [
-          "--files-from ${dynamicFilesListPath}"
-        ];
+        dynamicFilesFrom = "cat ${dynamicFilesListPath}";
         backupPrepareCommand = builtins.concatStringsSep "\n" cfg.prepare_script;
         backupCleanupCommand = builtins.concatStringsSep "\n" cfg.cleanup_script;
       };
