@@ -31,8 +31,9 @@
     };
   };
 
-  base.kernel.package = pkgs.linuxPackages_zen;
   boot = if config.setup.is_vm then {} else {
+    kernelPackages = pkgs.linuxPackages_6_3; #linuxPackages_zen;
+
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
