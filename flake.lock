@@ -807,14 +807,18 @@
         ]
       },
       "locked": {
-        "lastModified": 1689345308,
-        "narHash": "sha256-okJXRKtgitc1g3YgDKipvHgmGQh/ICBiIYKeypWcIRE=",
-        "path": "/home/john/work/perso/nix/nixos-secrets",
-        "type": "path"
+        "lastModified": 1689345446,
+        "narHash": "sha256-MKlLLwW3xu8n05YhdxW5gsBmnlLkShachh7jgvCiHwk=",
+        "owner": "litchipi",
+        "repo": "nixos-secrets",
+        "rev": "55aecb05b43820267001fd9a3fcbf2100cb5adb9",
+        "type": "github"
       },
       "original": {
-        "path": "/home/john/work/perso/nix/nixos-secrets",
-        "type": "path"
+        "owner": "litchipi",
+        "ref": "dev",
+        "repo": "nixos-secrets",
+        "type": "github"
       }
     },
     "nixosgen": {
