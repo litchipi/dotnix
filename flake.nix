@@ -98,7 +98,6 @@
         ./base/base.nix
         ./base/colors.nix
         ./base/disks.nix
-        ./base/kernel.nix
         ./base/networking.nix
         ./base/setup.nix
         ./base/shell.nix
