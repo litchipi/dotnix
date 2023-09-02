@@ -32,7 +32,10 @@
   };
 
   boot = if config.setup.is_vm then {} else {
-    kernelPackages = pkgs.linuxPackages_6_3; #linuxPackages_zen;
+    kernelPackages = pkgs.linuxPackages_6_1; #linuxPackages_zen;
+    kernelParams = [
+      "amdgpu.backlight=0"  # Fix hybrid gpu backlight
+    ];
 
     loader = {
       systemd-boot.enable = true;

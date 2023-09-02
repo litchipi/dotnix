@@ -12,6 +12,8 @@ let
       gnome-text-editor           # Notepad
       firefox                     # Internet browser
       deluge                      # Torrent client
+
+      zip
     ];
 
     multimedia = [

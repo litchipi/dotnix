@@ -23,7 +23,7 @@ in {
     base.user = "john";
     base.email = "litchi.pi@proton.me";
 
-    base.networking.ssh_auth_keys = [ "tim@diamond" ];
+    base.networking.ssh_auth_keys = [];
     base.create_user_dirs = [ "work" "learn" ];
 
     base.add_fonts = let
@@ -37,8 +37,12 @@ in {
       (libdafont.package_font "butler" "sha256-rOnmVSII9qhEIMIpYOAv0giwKW5lJrj+Qjdg1cs3frY=")
     ];
 
-    # Open a bunch of ports for fun things
-    networking.firewall.allowedTCPPorts = [ 4444 4445 4446 4447 4448 ];
+    networking.firewall.allowedTCPPorts = [
+      # Open a bunch of ports for fun things
+      4444 4445 4446 4447 4448
+      # Massa node
+      31244 31245
+    ];
 
     colors.palette = {
       primary = libcolors.fromhex "#b967ff";
@@ -129,6 +133,9 @@ in {
         deluge
         calibre
         imagemagick
+        mold
+        jq
+        openvswitch
       ];
     };
     
@@ -153,9 +160,31 @@ in {
       drivers = [ pkgs.epson-escpr ];
     };
 
-    users.extraGroups.vboxusers.members = [ config.base.user ];
-    virtualisation.virtualbox.host.enable = true;
+    virtualisation = {
+      virtualbox.host.enable = true;
+      lxd.enable = true;
+      lxd.recommendedSysctlSettings = true;
+      lxc.lxcfs.enable = true;
+    };
+    users.users.${config.base.user}.extraGroups = [
+      "lxd"
+      "vboxusers"
+    ];
 
     shix.remoteRepoUrl = "gitlab@git.orionstar.cyou:litchi.pi/shix-shells.git";
+
+    hardware.bluetooth.enable = true;
+    hardware.pulseaudio = {
+      enable = true;
+      package = pkgs.pulseaudioFull;
+    };
+    # hardware.pulseaudio.enable = false;
+    # security.rtkit.enable = true;
+    # services.pipewire = {
+    #   enable = true;
+    #   alsa.enable = true;
+    #   alsa.support32Bit = true;
+    #   pulse.enable = true;
+    # };
   };
 }

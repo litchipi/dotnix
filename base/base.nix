@@ -72,7 +72,11 @@ in
     system.stateVersion = "23.05";
     base.home_cfg.home.stateVersion = "23.05";
 
-    boot.tmp.cleanOnBoot = true;
+    boot = {
+      tmp.cleanOnBoot = true;
+      loader.systemd-boot.editor = false;
+    };
+
     # clean logs older than 2d
     services.cron.systemCronJobs = [
       "0 20 * * * root journalctl --vacuum-time=2d"
