@@ -37,7 +37,7 @@ in
       };
     };
     config.boot.plymouth = {
-      enable = true;
+      enable = lib.mkDefault false;
       theme = config.wm.boot.style.plymouth.theme;
       themePackages = [ plymouth_themes ];
       # extraConfig = ''

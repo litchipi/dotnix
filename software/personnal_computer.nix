@@ -90,6 +90,7 @@ in {
       };
       package_sets.complete = true;
     };
+
     base.home_cfg.programs.irssi.networks.libera.channels = {
       rust.autoJoin = true;
       nixos.autoJoin = true;
@@ -136,6 +137,7 @@ in {
         mold
         jq
         openvswitch
+        gamemode
       ];
     };
     
@@ -171,20 +173,19 @@ in {
       "vboxusers"
     ];
 
-    shix.remoteRepoUrl = "gitlab@git.orionstar.cyou:litchi.pi/shix-shells.git";
+    shix = {
+      # remoteRepoUrl = "gitlab@git.orionstar.cyou:litchi.pi/shix-shells.git";
+      pullBeforeEditing = false;
+      pushAfterEditing = false;
+    };
 
     hardware.bluetooth.enable = true;
-    hardware.pulseaudio = {
+    hardware.pulseaudio.enable = false;
+    services.pipewire = {
       enable = true;
-      package = pkgs.pulseaudioFull;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
     };
-    # hardware.pulseaudio.enable = false;
-    # security.rtkit.enable = true;
-    # services.pipewire = {
-    #   enable = true;
-    #   alsa.enable = true;
-    #   alsa.support32Bit = true;
-    #   pulse.enable = true;
-    # };
   };
 }
