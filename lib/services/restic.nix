@@ -1,5 +1,5 @@
 { config, lib, pkgs, ... }: let
-  libextbk = import ../../lib/external_backup.nix {inherit config lib pkgs;};
+  libextbck = import ../../lib/external_backup.nix {inherit config lib pkgs;};
 in {
   mkBackupOptions = {
     name,
@@ -27,7 +27,7 @@ in {
       description = "Enable saving the backup to Google Drive";
     };
   } // (if copy_external then {
-    external_copy = libextbk.mkOption;
+    external_copy = libextbck.mkOption;
   } else {});
 
   mkBackupConfig = {
@@ -59,15 +59,15 @@ in {
       inherit user paths;
     };
   } // (if copy_external then {
-    fileSystems = libextbk.mkFileSystems cfg.external_copy;
+    fileSystems = libextbck.mkFileSystems cfg.external_copy;
 
-    systemd.services = libextbk.mkSystemdService cfg.external_copy {
+    systemd.services = libextbck.mkSystemdService cfg.external_copy {
       basename = "restic_${name}_backup";
       bind = "restic-backups-${name}.service";
       paths = {
         ${cfg.repo_path} = "${config.base.hostname}/${name}";
       } // external_copy_add_paths;
-    } // (libextbk.mkGdriveBckService {
+    } // (libextbck.mkGdriveBckService {
       enabled = cfg.gdrive;
       basename = "restic_${name}_backup";
       bind = "restic-backups-${name}.service";

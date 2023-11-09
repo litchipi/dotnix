@@ -89,6 +89,7 @@ in {
         default_nick = "stixp";
       };
       package_sets.complete = true;
+      jrnl.editor = "hx";
     };
 
     base.home_cfg.programs.irssi.networks.libera.channels = {

@@ -30,7 +30,6 @@ in {
 
     editor = lib.mkOption {
       type = lib.types.str;
-      default = "nvim";
       description = "Command to use for journal edition";
     };
   };
