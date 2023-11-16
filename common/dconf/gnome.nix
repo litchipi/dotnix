@@ -1,4 +1,4 @@
-{config, lib, pkgs, inputs, ...}:
+{config, lib, inputs, ...}:
 with inputs.home-manager.lib.hm.gvariant;
   {
     config.base.home_cfg = {
@@ -18,7 +18,7 @@ with inputs.home-manager.lib.hm.gvariant;
         };
 
         "org/gnome/desktop/notifications" = {
-          show-banners = false;
+          show-banners = true;
           show-in-lock-screen = false;
         };
 
