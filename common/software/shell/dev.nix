@@ -90,15 +90,15 @@ let
       helixlang = let
         lsp = "${pkgs_unstable.rust-analyzer}/bin/rust-analyzer";
       in ''
-        [language.language-server]
+        language-servers = ["rust-analyzer"]
+
+        [language-server.rust-analyzer]
         command = "${lsp}"
         timeout = 60
-
-        [language.config]
         cachePriming.enable = false
         cargo.features = "all"
 
-        [language.config.inlayHints]
+        [language-server.rust-analyzer.inlayHints]
         closingBraceHints = true
         closureReturnTypeHints.enable = "skip_trivial"
         parameterHints.enable = false
@@ -149,7 +149,10 @@ let
       helixlang = let
         lsp = "${pkgs_unstable.nil}/bin/nil";
       in ''
-        language-server = { command = "${lsp}" }
+        language-servers = ["nil"]
+
+        [language-server.nil]
+        command = "${lsp}"
       '';
     };
 
@@ -177,7 +180,10 @@ let
       helixlang = let
         lsp = "${pkgs_unstable.python310Packages.python-lsp-server}/bin/pylsp";
       in ''
-        language-server = { command = "${lsp}" }
+        language-servers = ["pylsp"]
+
+        [language-server.pylsp]
+        command = "${lsp}"
       '';
     };
 
@@ -199,7 +205,10 @@ let
       helixlang = let
         lsp = "${pkgs_unstable.nodePackages_latest.svelte-language-server}/bin/svelteserver";
       in ''
-        language-server = { command = "${lsp}" }
+        language-servers = ["svelteserver"]
+
+        [language-server.svelteserver]
+        command = "${lsp}"
         indent = { tab-width = 4, unit = "    " }
       '';
     };
@@ -209,16 +218,11 @@ let
       helixlang = let
         lsp = "${pkgs_unstable.nodePackages_latest.typescript-language-server}/bin/typescript-language-server";
       in ''
-        language-server = { command = "${lsp}", args = ["--stdio"] }
-      '';
-    };
+        language-servers = ["typescript-lsp"]
 
-    javascript = lang_profile {
-      name = "javascript";
-      helixlang = let
-        lsp = "${pkgs_unstable.nodePackages_latest.typescript-language-server}/bin/typescript-language-server";
-      in ''
-        language-server = { command = "${lsp}", args = ["--stdio"] }
+        [language-server.typescript-lsp]
+        command = "${lsp}"
+        args = ["--stdio"]
       '';
     };
   };

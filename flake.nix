@@ -25,8 +25,8 @@
     };
 
     shix = {
-      # url = "github:litchipi/shix";
-      url = "path:/home/john/.local/share/shix";
+      url = "github:litchipi/shix";
+      # url = "path:/home/john/.local/share/shix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
