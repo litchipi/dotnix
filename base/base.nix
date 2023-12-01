@@ -94,7 +94,7 @@ in
         isNormalUser = true;
         group = cfg.user;
         extraGroups = [ "wheel" ];
-        passwordFile = config.secrets.store.credentials.logins.${cfg.hostname}.${cfg.user}.file;
+        hashedPasswordFile = config.secrets.store.credentials.logins.${cfg.hostname}.${cfg.user}.file;
       };
       mutableUsers = false;
     };
@@ -176,8 +176,8 @@ in
     fonts = {
       fontDir.enable = lib.mkDefault true;
       fontconfig.enable = lib.mkDefault true;
-      enableDefaultFonts = lib.mkDefault true;
-      fonts = with pkgs; [
+      enableDefaultPackages = lib.mkDefault true;
+      packages = with pkgs; [
         pkgs_unstable.nerdfonts
         pkgs_unstable.powerline-fonts
         ubuntu_font_family

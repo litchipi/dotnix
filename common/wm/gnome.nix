@@ -1,4 +1,4 @@
-{ config, lib, pkgs, pkgs_unstable, ... }:
+{ config, lib, pkgs, pkgs_old, pkgs_unstable, ... }:
 let
   libgnome = import ../../lib/software/gnome.nix { inherit config lib pkgs; };
 
@@ -52,8 +52,6 @@ in
 
     config = {
       environment.systemPackages = (with pkgs_unstable.gnomeExtensions; libgnome.adaptGnomeExtensions "44" [
-        # TODO  Update once available on Gnome 44
-        # audio-selector
         (bring-out-submenu-of-power-offlogout-button.overrideAttrs (old: {
           src = pkgs.fetchFromGitHub {
             owner = "PRATAP-KUMAR";
@@ -69,7 +67,14 @@ in
         runcat
         tray-icons-reloaded
         bluetooth-quick-connect
-        static-background-in-overview
+        (pkgs_old.gnomeExtensions.static-background-in-overview.overrideAttrs (old: {
+          src = pkgs.fetchFromGitHub {
+            owner = "litchipi";
+            repo = "gnome-static-background";
+            rev = "9dd17943ed24bb2611d9ade1d2caf3b490ec83d6";
+            sha256 = "sha256-5KImW7Scd2dLiM9XJHiQpJPnLLYL9DUd+2ZFtM0/ASQ=";
+          };
+        }))
         dash-to-dock
       ]) ++ (cfg.add_extensions) ++ (with pkgs; [
         gnome.gnome-tweaks
@@ -87,7 +92,8 @@ in
       security.pam.services.login.enableGnomeKeyring = true;
 
       programs.dconf.enable = true;
-      nixpkgs.config.firefox.enableGnomeExtensions = true;
+      # TODO  FIXME
+      # nixpkgs.config.firefox.enableGnomeExtensions = true;
       services.gnome = {
         core-os-services.enable = true;
         core-shell.enable = true;

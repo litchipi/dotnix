@@ -13,6 +13,9 @@ auto-save = true
 soft-wrap.enable = true
 text-width = 100
 
+[editor.smart-tab]
+enable = false
+
 [editor.statusline]
 left = ["spinner", "mode", "version-control"]
 center = ["diagnostics"]

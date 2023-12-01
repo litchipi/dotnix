@@ -38,7 +38,7 @@ in
         fzf
         ripgrep
         autojump
-        zenith
+        # zenith # TODO FIXME Panic during build
         python310
         unzip unrar
 

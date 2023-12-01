@@ -2,7 +2,8 @@
   description = "NixOs config builder";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
+    nixpkgs_old.url = "github:nixos/nixpkgs/nixos-23.05";
     nixpkgs_unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     flake-utils.url = "github:numtide/flake-utils";
@@ -13,7 +14,7 @@
     };
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-23.05";
+      url = "github:nix-community/home-manager/release-23.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -61,7 +62,7 @@
     helix.url = "github:helix-editor/helix/23.10";
   };
 
-  outputs = { nixpkgs, nixpkgs_unstable, ...}@inputs:
+  outputs = { nixpkgs, nixpkgs_old, nixpkgs_unstable, ...}@inputs:
   let
     # Prepare the nixpkgs for a specific system;
     # TODO  Pass the libraries as an overlay
@@ -77,7 +78,11 @@
         config.allowUnfree = true;
         overlays = common_overlays;
       };
-
+      pkgs_old = import nixpkgs_old {
+        inherit system;
+        config.allowUnfree = true;
+        overlays = common_overlays;
+      };
       pkgs = import nixpkgs {
         overlays = common_overlays ++ [
           inputs.nixos-secrets.overlays.${system}.default
@@ -103,7 +108,7 @@
         (pkgs.secrets.mkModule ./data/secrets/secrets.json)
         {
           _module.args = {
-            inherit inputs system pkgs_unstable;
+            inherit inputs system pkgs_unstable pkgs_old;
             home-manager-lib = inputs.home-manager.lib.hm;
           };
           secrets.decrypt_key_cmd = inp: out: let
