@@ -37,11 +37,16 @@ in {
       (libdafont.package_font "butler" "sha256-rOnmVSII9qhEIMIpYOAv0giwKW5lJrj+Qjdg1cs3frY=")
     ];
 
+    networking.extraHosts = ''
+      192.168.1.163 orionstar.cyou
+      192.168.1.163 git.orionstar.cyou
+      192.168.1.163 nextcloud.orionstar.cyou
+      192.168.1.163 paper.orionstar.cyou
+      192.168.1.163 bookmarks.orionstar.cyou
+    '';
     networking.firewall.allowedTCPPorts = [
       # Open a bunch of ports for fun things
       4444 4445 4446 4447 4448
-      # Massa node
-      31244 31245
     ];
 
     colors.palette = {
