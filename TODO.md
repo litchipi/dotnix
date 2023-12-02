@@ -4,6 +4,12 @@ Upgrade to 23.11 with working gnome extensions, and zenith
 
 # Suzie
 
+Backup old suzie setup:
+- Every git repository cloned locally (after filter)
+- Nextcloud data
+- Paperless data
+- Shiori data
+
 Do not use nginx subdomains, simply expose other ports
 In /etc/hosts of personnal laptop, add `suzie.local` for the IP address
 Then use port number inside bookmark (`suzie.local:8081`)
