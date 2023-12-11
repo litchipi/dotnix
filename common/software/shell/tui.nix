@@ -38,7 +38,7 @@ in
         fzf
         ripgrep
         autojump
-        # zenith # TODO FIXME Panic during build
+        # zenith   # TODO Update once fix merged in 23.11 branch
         python310
         unzip unrar
 
