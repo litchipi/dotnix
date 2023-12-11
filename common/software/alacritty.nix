@@ -19,7 +19,7 @@ in
         env.TERM = "xterm-256color";
         window = {
           decorations = "none";
-          opacity = 0.7;
+          opacity = 0.85;
           padding = {
             x = 15;
             y = 15;
