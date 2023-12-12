@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   cfg = config.wm.boot.style.plymouth;
-  plymouth_themes = pkgs.stdenv.mkDerivation rec {
+  plymouth_themes = pkgs.stdenv.mkDerivation {
     pname = "plymouth-themes";
     version = "0.0.1";
 

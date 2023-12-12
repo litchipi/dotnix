@@ -24,7 +24,7 @@ in
     imports = [
       ./wm.nix
       ./plymouth.nix
-      # ../dconf/gnome.nix
+      ../dconf/gnome.nix
     ];
 
     options.wm.gnome = {
