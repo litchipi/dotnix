@@ -1,4 +1,4 @@
-{config, lib, pkgs, inputs, ...}: with inputs.home-manager.lib.hm.gvariant;
+{inputs, ...}: with inputs.home-manager.lib.hm.gvariant;
   {
     config.base.home_cfg.dconf.settings = {
       "org/gnome/nautilus/preferences" = {

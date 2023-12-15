@@ -71,8 +71,8 @@ in
           src = pkgs.fetchFromGitHub {
             owner = "litchipi";
             repo = "gnome-static-background";
-            rev = "9dd17943ed24bb2611d9ade1d2caf3b490ec83d6";
-            sha256 = "sha256-5KImW7Scd2dLiM9XJHiQpJPnLLYL9DUd+2ZFtM0/ASQ=";
+            rev = "0cbacd31cf97fa87d8e2600b3abb32a4a030a9b3";
+            sha256 = "sha256-zrw44lj8nShgTc0Yjh2U83PlKqZGC/SnbJuE1QCpdn8=";
           };
         }))
         dash-to-dock

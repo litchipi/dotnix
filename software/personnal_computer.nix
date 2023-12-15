@@ -139,12 +139,12 @@ in {
         # zenith-nvidia
         libreoffice
         deluge
-        calibre
         imagemagick
         mold
         jq
         openvswitch
         gamemode
+        foliate # Ebook reader
       ];
     };
     
