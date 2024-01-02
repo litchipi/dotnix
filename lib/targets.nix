@@ -1,4 +1,4 @@
-{ inputs, lib, pkgs, ...}: rec {
+{ inputs, pkgs, ...}: rec {
   simple_script = name: text: {
     type = "app";
     program = let
