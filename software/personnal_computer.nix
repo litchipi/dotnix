@@ -61,7 +61,7 @@ in {
       dimmed = libcolors.fromhex "#AB7776";
     };
 
-    boot.plymouth.enable = true;
+    boot.plymouth.enable = false; #true;
     wm = {
       boot.style.plymouth.theme = "glowing"; #hexagon_2";   # TODO  Test splash screen
       autologin = true;
