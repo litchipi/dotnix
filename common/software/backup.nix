@@ -77,11 +77,13 @@ in {
     };
   };
   config = {
+    users.groups.restic.members = lib.attrsets.mapAttrsToList (_: srv: srv.user) cfg.services;
     setup.directories = [
       {
         path = cfg.base_dir;
-        perms = "750";
+        perms = "770";
         owner = "root";
+        group = "restic";
       }
     ];
   } // (lib.attrsets.mergeAttrsList (
