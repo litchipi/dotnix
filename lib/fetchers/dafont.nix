@@ -25,7 +25,6 @@
       unzip ${name}.zip
     '' + (builtins.concatStringsSep "\n" (builtins.map (ext: ''
       set -x
-      echo "Extensions ${ext}"
       find -name '*.${ext}' -exec mv {} $out/share/fonts/${name} \;
     '') all_fonts_extensions));
   };

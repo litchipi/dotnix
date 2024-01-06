@@ -36,11 +36,7 @@ in {
     ];
 
     networking.extraHosts = ''
-      192.168.1.163 orionstar.cyou
-      192.168.1.163 git.orionstar.cyou
-      192.168.1.163 nextcloud.orionstar.cyou
-      192.168.1.163 paper.orionstar.cyou
-      192.168.1.163 bookmarks.orionstar.cyou
+      192.168.1.163 suzie.local
     '';
     networking.firewall.allowedTCPPorts = [
       # Open a bunch of ports for fun things
