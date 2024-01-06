@@ -59,7 +59,7 @@
     };
 
     # Packages
-    helix.url = "github:helix-editor/helix/23.10";
+    helix.url = "github:helix-editor/helix/master";
   };
 
   outputs = { nixpkgs, nixpkgs_old, nixpkgs_unstable, ...}@inputs:
