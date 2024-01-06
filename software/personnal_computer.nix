@@ -18,8 +18,6 @@ in {
     ../common/system/nixcfg.nix
   ];
   config = {
-    secrets.provision_key.key = ../data/secrets/privkeys/sparta;
-
     base.user = "john";
     base.email = "litchi.pi@proton.me";
 

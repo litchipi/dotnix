@@ -53,7 +53,6 @@
     };
 
     encryptf = {
-      # url = "path:/home/john/encrypt";
       url = "github:litchipi/encrypt";
       inputs.nixpkgs.follows = "nixpkgs";
     };
