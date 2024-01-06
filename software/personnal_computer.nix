@@ -145,6 +145,8 @@ in {
         openvswitch
         gamemode
         foliate # Ebook reader
+
+        litchipi.docgen
       ];
     };
     

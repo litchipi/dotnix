@@ -5,7 +5,7 @@
     owner = "litchipi";
     repo = "docgen";
     rev = "f957832110b0647a8c7253fac6005ed328c29000";
-    sha256 = lib.fakeSha256;
+    sha256 = "sha256-GoFyIAfNbgWDwKzUQRK9psgnCM0Ayc70J75UDBlDt6E=";
   };
   cargoLock = {
     lockFile = "${src}/Cargo.lock";
