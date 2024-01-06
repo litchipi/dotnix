@@ -160,7 +160,6 @@
 
         edit_secrets = pkgs.secrets.scripts.mkEditScript {
           secretf = "data/secrets/secrets.json";
-          editor_fct = fpath: "${inputs.json-repl.packages.${system}.default} ${fpath}";
           pubk_dirs = [ "data/secrets/pubkeys" ];
         };
       };
