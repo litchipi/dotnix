@@ -31,6 +31,7 @@ in
       };
       mailerPasswordFile = cfg.secrets.mailer_pwd.file;
       database.passwordFile = cfg.secrets.db_pwd.file;
+      settings.actions.ENABLED = config.services.forgejo-runners.enable;
     };
 
     backup.services = lib.attrsets.optionalAttrs cfg.backup {
@@ -38,9 +39,6 @@ in
         inherit (cfg) user secrets;
         paths = [ cfg.dump.backupDir ];
       };
-    };
-
-    services.gitea-actions-runner.instances = lib.attrsets.optionalAttrs cfg.localCiRunner {
     };
   };
 }

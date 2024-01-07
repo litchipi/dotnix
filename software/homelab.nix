@@ -7,6 +7,7 @@
     ../common/services/paperless.nix
     ../common/services/shiori.nix
     ../common/services/forgejo.nix
+    ../common/services/forgejo-runner.nix
     ../common/software/shell/helix.nix
   ];
 
@@ -82,19 +83,43 @@
     '';
   };
 
-  # TODO Forgejo runners
   # TODO  Module overlay
   secrets.setup.forgejo = {
     user = config.services.forgejo.user;
     secret = config.secrets.store.services.forgejo.${config.base.hostname};
   };
-
   services.forgejo = {
     enable = true;
     settings.server.HTTP_PORT = 8083;
     secrets = config.secrets.store.services.forgejo.${config.base.hostname};
     backup = true;
     lfs.contentDir = "/data/forgejo-lfs";
+  };
+
+  # TODO Forgejo runners
+  # - Test forgejo runners on suzie
+  # - Have to provide a TOKEN first in the secrets
+  services.forgejo-runners = {
+    enable = true;
+    tokenFile = config.secrets.store.services.forgejo-runner.${config.base.hostname}.token;
+    labels = {
+      nix = {
+        repo = "nixos/nix";
+        versions = [ "latest" "2.19.2" ];
+      };
+      ubuntu = {
+        repo = "ubuntu";
+        versions = [ "latest" "22.04" "23.04" "23.10"];
+      };
+      rust = {
+        repo = "cimg/rust";
+        versions = ["1.75.0" "1.72.0" "1.70.0" "1.65.0" "1.60.0"];
+      };
+      python = {
+        repo = "cimg/python";
+        versions = ["3.10" "3.11" "3.12"];
+      };
+    };
   };
 
   services.mealie = {
