@@ -10,6 +10,11 @@ in
       backup = lib.mkEnableOption { 
         description = "Enable the backup service for forgejo";
       };
+      localCiRunner = lib.mkOption {
+        description = "Allow to host a CI runner on the same host";
+        default = true;
+        type = lib.types.bool;
+      };
     };
 
   config = lib.mkIf cfg.enable {
@@ -33,6 +38,9 @@ in
         inherit (cfg) user secrets;
         paths = [ cfg.dump.backupDir ];
       };
+    };
+
+    services.gitea-actions-runner.instances = lib.attrsets.optionalAttrs cfg.localCiRunner {
     };
   };
 }
