@@ -7,6 +7,7 @@
     ../common/services/forgejo.nix
     # ../common/software/shell/tui.nix
     # ../common/software/shell/helix.nix
+    ../common/system/backup.nix
   ];
 
   # TODO Vikunja (+ backup) -> Or other kind of software for this

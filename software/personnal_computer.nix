@@ -16,6 +16,7 @@ in {
     ../common/services/restic.nix
     ../common/system/server.nix
     ../common/system/nixcfg.nix
+    ../common/system/backup.nix
   ];
   config = {
     base.user = "john";
@@ -145,6 +146,11 @@ in {
     services.blueman.enable = true;
     services.flatpak.enable = true;
 
+    backup.base_dir = "/data/Backups/system";
+    backup.services.global = {
+      user = config.base.user;
+      secrets = config.secrets.store.backup.sparta;
+    };
     services.backup.restic.global = {
       secrets = config.secrets.store.services.restic.sparta;
       gdrive = true;

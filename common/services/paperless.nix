@@ -3,6 +3,7 @@ let
   cfg = config.services.paperless;
 in
   {
+    imports = [ ../system/backup.nix ];
     options.services.paperless = {
       secrets = pkgs.secrets.mkSecretOption "Secrets for Paperless";
       backup = lib.mkEnableOption {

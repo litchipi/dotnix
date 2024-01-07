@@ -28,6 +28,11 @@
         description = "Options of snapshots forget";
         default = ["-y 10" "-m 12" "-w 4" "-d 30" "-l 5"];
       };
+      pathsFromFile = lib.mkOption {
+        type = with lib.types; nullOr path;
+        description = "Get the paths to backup from a specified path";
+        default = null;
+      };
     };
   };
 
@@ -39,8 +44,7 @@
     secrets,
     timerConfig,
     pruneOpts,
-    copy_external ? true,
-    external_copy_add_paths ? {},
+    pathsFromFile,
   }: {
     secrets.setup."restic_${name}" = {
       inherit user;
@@ -56,6 +60,7 @@
       initialize = true;
       passwordFile = secrets.restic_repo_pwd.file;
       repository = restic_repo_path;
+      dynamicFilesFrom = "cat ${pathsFromFile}";
       timerConfig = {
         Persistent = true;
       } // timerConfig;

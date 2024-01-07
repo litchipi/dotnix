@@ -3,6 +3,7 @@ let
   cfg = config.services.shiori;
 in
   {
+    imports = [ ../system/backup.nix ];
     options.services.shiori = {
       secrets = pkgs.secrets.mkSecretOption "Secrets for Shiori";
       backup = lib.mkEnableOption { 
