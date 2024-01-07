@@ -4,6 +4,8 @@ Upgrade to 23.11 with working gnome extensions, and zenith
 
 # Suzie
 
+<!-- TODO: Find a way to connect to services when working remotely -->
+
 Backup old suzie setup:
 - Every git repository cloned locally (after filter)
 - Nextcloud data
@@ -22,6 +24,7 @@ Services:
 [ ] Paperless
 [ ] Shiori
 [ ] FTP server
+[ ] Vikunja
 
 Suzie systemd services:
 [ ] Auto backup of remote website (blog):
@@ -44,3 +47,9 @@ Admin scripts on laptop:
 Services on laptop:
 [ ] Fetch backup of suzie, store it locally
 [ ] Store backup of laptop files on suzie
+
+## Additionnal services to look at
+
+- Monica (Relations manager)
+- Penpot (Design / Prototyping platform)
+- Photoprism (Photo hosting app)

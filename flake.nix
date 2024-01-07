@@ -124,7 +124,7 @@
       targets = {
         nixostest = { software = ./software/nixostest.nix; };
         suzie = {
-          software = ./software/company_server.nix;
+          software = ./software/homelab.nix;
           hardware = ./hardware/suzie.nix;
         };
         sparta = {

@@ -18,17 +18,6 @@ in
       description = "SSH authorizedKeys to add for the base user of this machine";
     };
 
-    domain = lib.mkOption {
-      type = lib.types.str;
-      description = "Domain name resolving to the IP of this machine";
-      default = "localhost";
-    };
-
-    static_ip_address = lib.mkOption {
-      type = lib.types.str;
-      description = "Static IP address of this machine";
-    };
-
     # TODO  Use firewall open ports to automatically generate port forwarding
     vm_forward_ports = lib.mkOption {
       type = lib.types.attrs;
@@ -40,12 +29,6 @@ in
       type = with lib.types; listOf str;
       description = "Nameservers to add to the configuration";
       default = [];
-    };
-
-    subdomains = lib.mkOption {
-      type = with lib.types; listOf str;
-      default = [];
-      description = "Set of subdomains to port to set up the proxy";
     };
   };
 
@@ -86,12 +69,7 @@ in
         #     "*" "except:type:wwan" "except:type:gsm"
         #   ];
         # };
-      nameservers = [ "1.1.1.1" "1.0.0.1" "8.8.8.8" ] ++ cfg.add_dns;
-
-      extraHosts = builtins.concatStringsSep "\n" (builtins.map
-        (sub: "127.0.0.1 ${sub}.${config.base.networking.domain}")
-        config.base.networking.subdomains
-      );
+      nameservers = cfg.add_dns ++ [ "1.1.1.1" "1.0.0.1" "8.8.8.8" ];
     };
 
     users.users."${config.base.user}" = {
@@ -133,7 +111,6 @@ in
     };
 
     # Set up  recommended settings for nginx if used
-    # TODO  if no subdomain, redirect to service provided in options, or display 404
     services.nginx = {
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
