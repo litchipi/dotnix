@@ -1,7 +1,6 @@
-{ config, lib, pkgs, pkgs_unstable, ... }@args:
+{ config, lib, pkgs, ... }@args:
 let
   libutils = import ../../../lib/utils.nix {inherit config lib pkgs;};
-  libcolors = import ../../../lib/colors.nix {inherit config lib pkgs;};
   libsoft = import ../../../lib/software/package_set.nix args;
 
   all_packages_sets = with pkgs; {
@@ -26,11 +25,6 @@ in
     ];
     options.software.tui = {
       package_sets = libsoft.mkPackageSetsOptions all_packages_sets;
-      git.ps1 = lib.mkOption {
-        type = lib.types.str;
-        default = "\\[${libcolors.fg.ps1.gitps1}\\]\\`__git_ps1 \\\"<%s> \\\"\\`";
-        description = "Indication of git repo in prompt info of bash";
-      };
     };
     config = {
       environment.systemPackages = with pkgs; [
@@ -38,7 +32,7 @@ in
         fzf
         ripgrep
         autojump
-        # zenith   # TODO Update once fix merged in 23.11 branch
+        # zenith # TODO FIXME Panic during build
         python310
         unzip unrar
 

@@ -59,9 +59,11 @@
 
     # Packages
     helix.url = "github:helix-editor/helix/master";
+
+    mealie.url = "github:litchipi/nixos-service-builder/mealie";
   };
 
-  outputs = { nixpkgs, nixpkgs_old, nixpkgs_unstable, ...}@inputs:
+  outputs = { nixpkgs, nixpkgs_unstable, ...}@inputs:
   let
     # Prepare the nixpkgs for a specific system;
     # TODO  Pass the libraries as an overlay
@@ -77,11 +79,7 @@
         config.allowUnfree = true;
         overlays = common_overlays;
       };
-      pkgs_old = import nixpkgs_old {
-        inherit system;
-        config.allowUnfree = true;
-        overlays = common_overlays;
-      };
+      pkgs_old = import inputs.nixpkgs_old { inherit system; };
       pkgs = import nixpkgs {
         overlays = common_overlays ++ [
           inputs.nixos-secrets.overlays.${system}.default
@@ -103,6 +101,7 @@
         inputs.home-manager.nixosModules.home-manager
         inputs.StevenBlackHosts.nixosModule
         inputs.shix.nixosModules.${system}.default
+        inputs.mealie.nixosModules.${system}.default
         # inputs.envfs.nixosModules.envfs
         (pkgs.secrets.mkModule ./data/secrets/secrets.json)
         {
@@ -146,6 +145,7 @@
         create_provision_key = pkgs.secrets.scripts.mkProvisionKeyScript {
           pubk_dir = "data/secrets/pubkeys";
           privk_dir = "data/secrets/privkeys";
+          secretf= "data/secrets/secrets.json";
           key_type = "rsa";
           runtimeInputs = [ inputs.encryptf.packages.${system}.default ];
           encrypt_key_cmd = inp: out: "encryptf \"${out}\" --encrypt \"${inp}\"";
@@ -153,7 +153,6 @@
 
         decrypt_provision_key = pkgs.secrets.scripts.mkDecryptProvKeyScript {
           privk_dir = "data/secrets/privkeys";
-          keypath = "data/secrets/privkeys/sparta";
           runtimeInputs = [ inputs.encryptf.packages.${system}.default ];
           decrypt_key_cmd = inp: out: "encryptf \"${out}\" --decrypt \"${inp}\"";
         };

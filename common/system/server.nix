@@ -1,9 +1,7 @@
 { config, lib, pkgs, ... }: let
   cfg = config.server;
 in {
-  imports = [
-    ../software/shell/tui.nix
-  ];
+  imports = [ ../software/shell/tui.nix ];
   options.server.full = lib.mkEnableOption {
     description = "Enable the full server mode";
     default = true;
@@ -12,10 +10,6 @@ in {
     base.networking.vm_forward_ports = {
       ssh = { from = "host"; host.port = 40022; guest.port = 22;};
     };
-
-    networking.extraHosts = ''
-      127.0.0.1 ${config.base.networking.domain}
-    '';
 
     environment.systemPackages = with pkgs; if cfg.full then [
       certbot

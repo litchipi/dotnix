@@ -3,8 +3,10 @@
   libcolors = import ../lib/colors.nix {inherit config lib pkgs;};
 in {
   imports = [
-    ../base/shell.nix
     ../common/wm/gnome.nix
+    ../common/system/backup.nix
+    ../common/system/server.nix
+    ../common/system/nixcfg.nix
     ../common/software/basic.nix
     ../common/software/music.nix
     ../common/software/games.nix
@@ -13,10 +15,6 @@ in {
     ../common/software/shell/dev.nix
     ../common/software/shell/tui.nix
     ../common/software/shell/ai.nix
-    ../common/services/restic.nix
-    ../common/system/server.nix
-    ../common/system/nixcfg.nix
-    ../common/system/backup.nix
   ];
   config = {
     base.user = "john";
@@ -150,12 +148,9 @@ in {
     backup.services.global = {
       user = config.base.user;
       secrets = config.secrets.store.backup.sparta;
-    };
-    services.backup.restic.global = {
-      secrets = config.secrets.store.services.restic.sparta;
-      gdrive = true;
       pruneOpts = [ "-y 50" "-m 15" "-w 4" "-d 6" "-l 10" ];
       timerConfig.OnCalendar = "2/5:00:00";
+      pathsFromFile = "/home/${config.base.user}/.backuplist";
     };
 
     sound.enable = true;

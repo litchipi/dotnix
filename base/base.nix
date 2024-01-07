@@ -94,8 +94,11 @@ in
         isNormalUser = true;
         group = cfg.user;
         extraGroups = [ "wheel" ];
+      } // (if config.setup.is_vm then {
+        password = builtins.trace "Using ${cfg.user} as password (VM only)" cfg.user;
+      } else {
         hashedPasswordFile = config.secrets.store.credentials.logins.${cfg.hostname}.${cfg.user}.file;
-      };
+      });
       mutableUsers = false;
     };
 

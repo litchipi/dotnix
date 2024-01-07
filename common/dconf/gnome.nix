@@ -133,8 +133,7 @@ with inputs.home-manager.lib.hm.gvariant;
         "org/gnome/shell" = {
           had-bluetooth-devices-setup = true;
           remember-mount-password = true;
-          welcome-dialog-last-shown-version = pkgs.gnome.gnome-shell.version;
-          disable-extension-version-validation = true;
+          welcome-dialog-last-shown-version = "40.5";
         };
 
         "org/gnome/settings-daemon/plugins/power" = {

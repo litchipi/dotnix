@@ -2,9 +2,14 @@
 
 Upgrade to 23.11 with working gnome extensions, and zenith
 
++ Use new secret management system
+
 # Suzie
 
 <!-- TODO: Find a way to connect to services when working remotely -->
+
+TODO list:
+- install TUI tools on suzie
 
 Backup old suzie setup:
 - Every git repository cloned locally (after filter)
@@ -19,12 +24,12 @@ Then use port number inside bookmark (`suzie.local:8081`)
 Static IP address
 
 Services:
-[ ] Forgejo
-[ ] Forgejo runners
-[ ] Paperless
-[ ] Shiori
-[ ] FTP server
+[x] Forgejo
+[x] Paperless
+[x] Shiori
+[x] Samba server
 [ ] Vikunja
+[ ] Forgejo runners
 
 Suzie systemd services:
 [ ] Auto backup of remote website (blog):

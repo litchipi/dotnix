@@ -1,13 +1,13 @@
-{ config, pkgs, pkgs_unstable, inputs, ... }:
+{ config, pkgs, pkgs_unstable, ... }:
 {
   imports = [
+    ../common/system/server.nix
+    ../common/system/backup.nix
     ../common/system/nixcfg.nix
     ../common/services/paperless.nix
     ../common/services/shiori.nix
     ../common/services/forgejo.nix
-    # ../common/software/shell/tui.nix
-    # ../common/software/shell/helix.nix
-    ../common/system/backup.nix
+    ../common/software/shell/helix.nix
   ];
 
   # TODO Vikunja (+ backup) -> Or other kind of software for this
@@ -21,17 +21,19 @@
     { address = "192.168.1.163"; prefixLength = 24; }
   ];
 
-  environment.systemPackages = with pkgs; [
-    # zenith
-  ];
+  # environment.systemPackages = with pkgs; [
+  #   # zenith
+  # ];
 
+  # TODO  IMPORTANT  Wire this to Google drive rclone
   backup.base_dir = "/data/backup";
-
-  networking.firewall.allowedTCPPorts = [
-    config.services.paperless.port
-    config.services.shiori.port
-    config.services.forgejo.settings.server.HTTP_PORT
-  ];
+  backup.services.global = {
+    user = config.base.user;
+    secrets = config.secrets.store.backup.suzie;
+    timerConfig.OnCalendar = "02/5:00:00";
+    pruneOpts = ["-y 10" "-m 12" "-w 4" "-d 30" "-l 5"];
+    pathsFromFile = "/home/${config.base.user}/.backuplist";
+  };
 
   services.paperless = {
     enable = true;
@@ -124,19 +126,5 @@
     "84.200.69.80"
   ];
 
-  # TODO  IMPORTANT  Wire this to Google drive rclone
-  # TODO FIXME Secret doesn't exist
-  #  Use the same format as used with sparta
-  services.restic.backups.global = {
-    initialize = true;
-    user = config.base.user;
-    dynamicFilesFrom = "cat /home/${config.base.user}/.backup_list";
-    passwordFile = config.secrets.store.services.restic.${config.base.hostname}.restic_repo_pwd.file;
-    repository = "${config.backup.base_dir}/${config.base.user}";
-    timerConfig = {
-      Persistent = true;
-      OnCalendar = "02/5:00:00";
-    };
-    pruneOpts = ["-y 10" "-m 12" "-w 4" "-d 30" "-l 5"];
-  };
+  software.tui.jrnl.editor = "hx";
 }

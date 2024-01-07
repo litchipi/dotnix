@@ -97,7 +97,7 @@ in
     networking.stevenBlackHosts = {
       blockFakenews = lib.mkDefault true;
       blockGambling = lib.mkDefault true;
-      blockPorn = lib.mkDefault false;
+      blockPorn = lib.mkDefault true;
       blockSocial = lib.mkDefault false;
     };
 

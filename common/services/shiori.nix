@@ -4,6 +4,7 @@ let
 in
   {
     imports = [ ../system/backup.nix ];
+
     options.services.shiori = {
       secrets = pkgs.secrets.mkSecretOption "Secrets for Shiori";
       backup = lib.mkEnableOption { 
@@ -11,11 +12,18 @@ in
       };
     };
 
-    config = {
-      backup.services.shiori = if cfg.backup then {
+  config = lib.mkIf cfg.enable {
+    networking.firewall.allowedTCPPorts = [
+      config.services.shiori.port
+    ];
+
+    backup.services = lib.attrsets.optionalAttrs cfg.backup {
+      shiori = {
         user = "root";
-        paths = [ config.systemd.services.shiori.environment.SHIORI_DIR ];
-        secrets = cfg.secrets;
-      } else {};
+        inherit (cfg) secrets;
+        # Defined in https://github.com/NixOS/nixpkgs/blob/nixos-23.11/nixos/modules/services/web-apps/shiori.nix#L47C32-L47C49
+        paths = [ "/var/lib/shiori" ];
+      };
     };
-  }
+  };
+}
