@@ -32,9 +32,9 @@
   };
 
   boot = if config.setup.is_vm then {} else {
-    kernelPackages = pkgs.linuxPackages_6_1; #linuxPackages_zen;
+    kernelPackages = pkgs.linuxPackages_6_1;
     kernelParams = [
-      "amdgpu.backlight=0"  # Fix hybrid gpu backlight
+      "amdgpu.backlight=0"  # TODO FIXME hybrid gpu backlight
     ];
 
     loader = {

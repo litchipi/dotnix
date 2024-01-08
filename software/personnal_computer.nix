@@ -152,6 +152,13 @@ in {
       timerConfig.OnCalendar = "2/5:00:00";
       pathsFromFile = "/home/${config.base.user}/.backuplist";
     };
+    environment.interactiveShellInit = ''
+      addbackup() {
+        for arg in "$@"; do
+          realpath "$arg" >> /home/${config.base.user}/.backuplist
+        done
+      }
+    '';
 
     sound.enable = true;
 
