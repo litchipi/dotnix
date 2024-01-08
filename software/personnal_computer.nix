@@ -15,13 +15,14 @@ in {
     ../common/software/shell/dev.nix
     ../common/software/shell/tui.nix
     ../common/software/shell/ai.nix
+    ../common/configs/freelance.nix
   ];
   config = {
     base.user = "john";
     base.email = "litchi.pi@proton.me";
 
     base.networking.ssh_auth_keys = [];
-    base.create_user_dirs = [ "work" "learn" ];
+    base.create_user_dirs = [ "work" ];
 
     base.add_fonts = let
       libdafont = import ../lib/fetchers/dafont.nix { inherit config lib pkgs; };
@@ -151,6 +152,7 @@ in {
       pruneOpts = [ "-y 50" "-m 15" "-w 4" "-d 6" "-l 10" ];
       timerConfig.OnCalendar = "2/5:00:00";
       pathsFromFile = "/home/${config.base.user}/.backuplist";
+      paths = [ config.freelance.docgen.rootDir config.freelance.docgen.outputDir ];
     };
     environment.interactiveShellInit = ''
       addbackup() {
@@ -195,6 +197,11 @@ in {
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
+    };
+
+    freelance.docgen = {
+      rootDir = "/home/${config.base.user}/Documents/Freelance/.docgen";
+      outputDir = "/home/${config.base.user}/Documents/Freelance/";
     };
   };
 }
