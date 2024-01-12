@@ -36,10 +36,20 @@
                     description = "Group of the directory";
                     default = null;
                 };
-                perms = lib.mkOption {
+                user_perms = lib.mkOption {
                   type = lib.types.nullOr lib.types.str;
                   description = "Permissions of this directory";
-                  default = null;
+                  default = "+rwX";
+                };
+                group_perms = lib.mkOption {
+                  type = lib.types.nullOr lib.types.str;
+                  description = "Permissions of this directory";
+                  default = "+rwX";
+                };
+                other_perms = lib.mkOption {
+                  type = lib.types.nullOr lib.types.str;
+                  description = "Permissions of this directory";
+                  default = "-rwX";
                 };
             };
         });
@@ -56,7 +66,9 @@
       script = lib.strings.concatStringsSep "\n" (builtins.map (dir: ''
           mkdir -p ${dir.path}
           chown -R ${dir.owner}:${if builtins.isNull dir.group then dir.owner else dir.group} ${dir.path}
-          ${lib.strings.optionalString (!builtins.isNull dir.perms) "chmod -R ${dir.perms} ${dir.path}"}
+          ${lib.strings.optionalString (!builtins.isNull dir.perms)
+            "chmod -R u${dir.user_perms},g${dir.group_perms},o${dir.other_perms} ${dir.path}"
+          }
       '') config.setup.directories);
     };
 

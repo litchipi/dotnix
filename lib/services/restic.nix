@@ -45,7 +45,7 @@ in {
     };
 
     setup.directories = [
-      { path = cfg.repo_path; perms = "750"; owner = user; }
+      { path = cfg.repo_path; perms = "u+rwX,g+rwX,o-rwx"; owner = user; }
     ];
 
     services.restic.backups.${name} = {

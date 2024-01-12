@@ -48,7 +48,7 @@
     };
 
     setup.directories = [
-      { path = restic_repo_path; perms = "750"; owner = bck_cfg.user; }
+      { path = restic_repo_path; owner = bck_cfg.user; }
     ];
 
     services.restic.backups.${name} = {
@@ -89,7 +89,6 @@ in {
     setup.directories = [
       {
         path = cfg.base_dir;
-        perms = "770";
         owner = "root";
         group = "restic";
       }

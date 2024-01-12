@@ -57,7 +57,6 @@
   setup.directories = [
     {
       path = config.services.samba.shares.default.path;
-      perms = "0770";
       owner = "root";
       group = "nas";
     }
