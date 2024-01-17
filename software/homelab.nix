@@ -22,7 +22,10 @@
     { address = "192.168.1.163"; prefixLength = 24; }
   ];
 
-  environment.systemPackages = [ #with pkgs; [
+  environment.systemPackages = with pkgs; [
+    pkg-config
+    binutils
+    bintools
     # zenith
     (pkgs_unstable.rust-bin.stable.latest.default.override {
       extensions = [ "rust-src" ];
