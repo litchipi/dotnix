@@ -31,12 +31,17 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    users.users.gitea-runner = {
+      isSystemUser = true;
+      group = "gitea-runner";
+    };
+    users.groups.gitea-runner = {};
+
     secrets.setup.forgejo-runners = {
       user = "gitea-runner";
       secret = cfg.tokenFile;
     };
     virtualisation.docker.enable = true;
-    services.gitea-actions-runner.enable = true;
     services.gitea-actions-runner.package = pkgs.forgejo-actions-runner;
     services.gitea-actions-runner.instances.baseRunner = {
       enable = true;
