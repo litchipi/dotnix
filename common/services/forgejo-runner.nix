@@ -36,6 +36,7 @@ in {
       secret = cfg.tokenFile;
     };
     virtualisation.docker.enable = true;
+    services.gitea-actions-runner.enable = true;
     services.gitea-actions-runner.package = pkgs.forgejo-actions-runner;
     services.gitea-actions-runner.instances.baseRunner = {
       enable = true;
