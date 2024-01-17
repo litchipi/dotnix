@@ -66,9 +66,7 @@
       script = lib.strings.concatStringsSep "\n" (builtins.map (dir: ''
           mkdir -p ${dir.path}
           chown -R ${dir.owner}:${if builtins.isNull dir.group then dir.owner else dir.group} ${dir.path}
-          ${lib.strings.optionalString (!builtins.isNull dir.perms)
-            "chmod -R u${dir.user_perms},g${dir.group_perms},o${dir.other_perms} ${dir.path}"
-          }
+          chmod -R u${dir.user_perms},g${dir.group_perms},o${dir.other_perms} ${dir.path}
       '') config.setup.directories);
     };
 
