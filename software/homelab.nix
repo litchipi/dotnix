@@ -23,10 +23,8 @@
   ];
 
   environment.systemPackages = with pkgs; [
-    pkg-config
-    binutils
-    bintools
     # zenith
+    gcc
     (pkgs_unstable.rust-bin.stable.latest.default.override {
       extensions = [ "rust-src" ];
     })
