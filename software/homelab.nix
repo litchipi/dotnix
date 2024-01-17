@@ -93,7 +93,10 @@
   };
   services.forgejo = {
     enable = true;
-    settings.server.HTTP_PORT = 8083;
+    settings = {
+      server.HTTP_PORT = 8083;
+      webhook.ALLOWED_HOST_LIST = "*";
+    };
     secrets = config.secrets.store.services.forgejo.${config.base.hostname};
     backup = true;
     lfs.contentDir = "/data/forgejo-lfs";
