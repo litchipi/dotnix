@@ -22,9 +22,12 @@
     { address = "192.168.1.163"; prefixLength = 24; }
   ];
 
-  # environment.systemPackages = with pkgs; [
-  #   # zenith
-  # ];
+  environment.systemPackages = with pkgs; [
+    # zenith
+    (rust-bin.stable.latest.default.override {
+      extensions = [ "rust-src" ];
+    })
+  ];
 
   # TODO  IMPORTANT  Wire this to Google drive rclone
   backup.base_dir = "/data/backup";
