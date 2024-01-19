@@ -31,7 +31,9 @@ in
       };
       mailerPasswordFile = cfg.secrets.mailer_pwd.file;
       database.passwordFile = cfg.secrets.db_pwd.file;
-      settings.actions.ENABLED = config.services.forgejo-runners.enable;
+      settings = {
+        actions.ENABLED = config.services.forgejo-runners.enable;
+      };
     };
 
     backup.services = lib.attrsets.optionalAttrs cfg.backup {

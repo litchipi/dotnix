@@ -94,7 +94,10 @@
   services.forgejo = {
     enable = true;
     settings = {
-      server.HTTP_PORT = 8083;
+      server = rec {
+        HTTP_PORT = 8083;
+        ROOT_URL = "http://192.168.1.163:${builtins.toString HTTP_PORT}";
+      };
       webhook.ALLOWED_HOST_LIST = "*";
     };
     secrets = config.secrets.store.services.forgejo.${config.base.hostname};
