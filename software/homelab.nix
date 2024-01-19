@@ -105,10 +105,6 @@
     lfs.contentDir = "/data/forgejo-lfs";
   };
 
-  # TODO Forgejo runners
-  # - Test forgejo runners on suzie
-  # - Have to provide a TOKEN first in the secrets
-  # TODO  Create a CI workflow to test this repository every time
   services.forgejo-runners = {
     enable = true;
     tokenFile = config.secrets.store.services.forgejo-runner.${config.base.hostname}.token;

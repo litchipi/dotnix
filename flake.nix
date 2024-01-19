@@ -161,6 +161,7 @@
         };
       };
   in {
+    # TODO  Create a CI workflow to test this repository at every push on main
     packages = targetlib.mkAllTargetPackages base_modules targets system;
     apps = (targetlib.mkAllTargetApps base_modules targets system) // common_apps;
   });
