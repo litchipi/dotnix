@@ -1,4 +1,4 @@
-{ config, lib, pkgs, pkgs_old, pkgs_unstable, ... }:
+{ config, lib, pkgs, pkgs_unstable, ... }:
 let
   libgnome = import ../../lib/software/gnome.nix { inherit config lib pkgs; };
 
@@ -67,14 +67,6 @@ in
         runcat
         tray-icons-reloaded
         bluetooth-quick-connect
-        (pkgs_old.gnomeExtensions.static-background-in-overview.overrideAttrs (old: {
-          src = pkgs.fetchFromGitHub {
-            owner = "litchipi";
-            repo = "gnome-static-background";
-            rev = "0cbacd31cf97fa87d8e2600b3abb32a4a030a9b3";
-            sha256 = "sha256-zrw44lj8nShgTc0Yjh2U83PlKqZGC/SnbJuE1QCpdn8=";
-          };
-        }))
         dash-to-dock
       ]) ++ (cfg.add_extensions) ++ (with pkgs; [
         gnome.gnome-tweaks

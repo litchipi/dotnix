@@ -9,6 +9,7 @@
     ../common/services/forgejo.nix
     ../common/services/forgejo-runner.nix
     ../common/software/shell/helix.nix
+    ../common/software/shell/tui.nix
   ];
 
   # TODO Vikunja (+ backup) -> Or other kind of software for this
@@ -23,7 +24,6 @@
   ];
 
   environment.systemPackages = with pkgs; [
-    # zenith
     gcc
     (pkgs_unstable.rust-bin.stable.latest.default.override {
       extensions = [ "rust-src" ];

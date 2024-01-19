@@ -129,7 +129,7 @@ in {
         python310Packages.deemix
         geogebra # Math graph tool
         authenticator # 2FA TOTP app
-        # zenith-nvidia
+        zenith-nvidia
         libreoffice
         deluge
         imagemagick

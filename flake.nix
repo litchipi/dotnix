@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
-    nixpkgs_old.url = "github:nixos/nixpkgs/nixos-23.05";
     nixpkgs_unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     flake-utils.url = "github:numtide/flake-utils";
@@ -79,7 +78,6 @@
         config.allowUnfree = true;
         overlays = common_overlays;
       };
-      pkgs_old = import inputs.nixpkgs_old { inherit system; };
       pkgs = import nixpkgs {
         overlays = common_overlays ++ [
           inputs.nixos-secrets.overlays.${system}.default
@@ -106,7 +104,7 @@
         (pkgs.secrets.mkModule ./data/secrets/secrets.json)
         {
           _module.args = {
-            inherit inputs system pkgs_unstable pkgs_old;
+            inherit inputs system pkgs_unstable;
             home-manager-lib = inputs.home-manager.lib.hm;
           };
           secrets.decrypt_key_cmd = inp: out: let

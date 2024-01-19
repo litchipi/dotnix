@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }@args:
+{ config, lib, pkgs, pkgs_unstable, ... }@args:
 let
   libutils = import ../../../lib/utils.nix {inherit config lib pkgs;};
   libsoft = import ../../../lib/software/package_set.nix args;
@@ -32,9 +32,9 @@ in
         fzf
         ripgrep
         autojump
-        # zenith # TODO FIXME Panic during build
         python310
         unzip unrar
+        pkgs_unstable.zenith
 
         # Custom pomodoro tool from the overlay
         pomodoro

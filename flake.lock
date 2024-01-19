@@ -600,29 +600,13 @@
         "type": "github"
       }
     },
-    "nixpkgs_old": {
-      "locked": {
-        "lastModified": 1704018918,
-        "narHash": "sha256-erjg/HrpC9liEfm7oLqb8GXCqsxaFwIIPqCsknW5aFY=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "2c9c58e98243930f8cb70387934daa4bc8b00373",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "nixos-23.05",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs_unstable": {
       "locked": {
-        "lastModified": 1704194953,
-        "narHash": "sha256-RtDKd8Mynhe5CFnVT8s0/0yqtWFMM9LmCzXv/YKxnq4=",
+        "lastModified": 1705496572,
+        "narHash": "sha256-rPIe9G5EBLXdBdn9ilGc0nq082lzQd0xGGe092R/5QE=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "bd645e8668ec6612439a9ee7e71f7eac4099d4f6",
+        "rev": "842d9d80cfd4560648c785f8a4e6f3b096790e19",
         "type": "github"
       },
       "original": {
@@ -665,7 +649,6 @@
         "nixos-secrets": "nixos-secrets",
         "nixosgen": "nixosgen_2",
         "nixpkgs": "nixpkgs_3",
-        "nixpkgs_old": "nixpkgs_old",
         "nixpkgs_unstable": "nixpkgs_unstable",
         "pomodoro": "pomodoro",
         "rust-overlay": "rust-overlay_3",
