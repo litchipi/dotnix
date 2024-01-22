@@ -10,6 +10,7 @@
     ../common/services/forgejo-runner.nix
     ../common/software/shell/helix.nix
     ../common/software/shell/tui.nix
+    ../common/software/backup-fetcher.nix
   ];
 
   # TODO Vikunja (+ backup) -> Or other kind of software for this
@@ -158,4 +159,52 @@
   ];
 
   software.tui.jrnl.editor = "hx";
+
+  services.backup-fetcher = {
+    enable = true;
+    fetchers = {
+      litchipiBlog = {
+        runtimeDeps = [ pkgs.gzip pkgs.gawk ];
+        outputFile = "/data/backup/blog.zip";
+        sshTarget = "john@litchipi.site";
+        paths = [
+          "/etc/systemd/system/log_rotate.service"
+          "/etc/systemd/system/log_rotate.timer"
+          "/etc/systemd/system/fetch_blog_posts.service"
+          "/etc/systemd/system/fetch_blog_posts.timer"
+          "/etc/systemd/system/blog.service"
+          "/var/www/ecoweb/start.sh"
+          "/home/john/update_ecoweb_bin.sh"
+          "/home/john/update_blog_content.sh"
+          "/home/john/log_rotate.sh"
+          "/home/john/logs/"
+          "/var/log/nginx/*"
+          "/etc/nginx/sites-available/default"
+        ];
+
+        beforeCompressScript = ''
+          mv default ./nginx_conf
+          mkdir -p nginx
+          gunzip *.gz
+          for f in $(ls access.log*); do
+            fdate=$(head -n 1 "$f" | awk '{print $4}'|cut -d '[' -f 2|tr '/' '_'|tr ':' '_')
+            mv "$f" "./nginx/access_$fdate.log"
+          done
+
+          for f in $(ls error.log*); do
+            fdate=$(head -n 1 "$f" | awk '{print $1 "_" $2}' | tr '/' '_' | tr ':' '_')
+            mv "$f" "./nginx/error_$fdate.log"
+          done
+        '';
+      };
+
+      spartaLaptop = {
+        outputFile = "/data/backup/sparta.zip";
+        sshTarget = "john@sparta.local";
+        paths = [
+          "/data/Backups/system"
+        ];
+      };
+    };
+  };
 }

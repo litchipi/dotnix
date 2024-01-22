@@ -20,7 +20,7 @@ in {
     base.user = "john";
     base.email = "litchi.pi@proton.me";
 
-    base.networking.ssh_auth_keys = [];
+    base.networking.ssh_auth_keys = [ "op@suzie" ];
     base.create_user_dirs = [ "work" "learn" ];
 
     base.add_fonts = let
@@ -34,9 +34,6 @@ in {
       (libdafont.package_font "butler" "sha256-rOnmVSII9qhEIMIpYOAv0giwKW5lJrj+Qjdg1cs3frY=")
     ];
 
-    networking.extraHosts = ''
-      192.168.1.163 suzie.local
-    '';
     networking.firewall.allowedTCPPorts = [
       # Open a bunch of ports for fun things
       4444 4445 4446 4447 4448
