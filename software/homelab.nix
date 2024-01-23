@@ -13,8 +13,6 @@
     ../common/software/backup-fetcher.nix
   ];
 
-  # TODO Vikunja (+ backup) -> Or other kind of software for this
-  # TODO Auto-backup remote website
   # TODO Auto system update + reboot
 
   base.user = "op";
@@ -30,16 +28,6 @@
       extensions = [ "rust-src" ];
     })
   ];
-
-  # TODO  IMPORTANT  Wire this to Google drive rclone
-  backup.base_dir = "/data/backup";
-  backup.services.global = {
-    user = config.base.user;
-    secrets = config.secrets.store.backup.suzie;
-    timerConfig.OnCalendar = "02/5:00:00";
-    pruneOpts = ["-y 10" "-m 12" "-w 4" "-d 30" "-l 5"];
-    pathsFromFile = "/home/${config.base.user}/.backuplist";
-  };
 
   services.paperless = {
     enable = true;
@@ -134,6 +122,7 @@
     port = 8084;
   };
 
+  # TODO Vikunja (+ backup) -> Or other kind of software for this
   # services.vikunja = {
   #   enable = true;
   # };
@@ -159,6 +148,16 @@
   ];
 
   software.tui.jrnl.editor = "hx";
+
+  # TODO  IMPORTANT  Wire this to Google drive rclone
+  backup.base_dir = "/data/backup";
+  backup.services.global = {
+    user = config.base.user;
+    secrets = config.secrets.store.backup.suzie;
+    timerConfig.OnCalendar = "02/5:00:00";
+    pruneOpts = ["-y 10" "-m 12" "-w 4" "-d 30" "-l 5"];
+    pathsFromFile = "/home/${config.base.user}/.backuplist";
+  };
 
   services.backup-fetcher = {
     enable = true;
