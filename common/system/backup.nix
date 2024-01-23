@@ -83,7 +83,7 @@ in {
       inherit name bck_cfg;
       restic_repo_path = "${config.backup.base_dir}/${name}";
     }) cfg.services;
-    all_services = lib.attrsets.mergeAttrsList all_services_lst;
+    all_services = builtins.foldl' (acc: x: lib.attrsets.recursiveUpdate acc x) {} all_services_lst;
   in {
     users.groups.restic.members = lib.attrsets.mapAttrsToList (_: srv: srv.user) cfg.services;
     setup.directories = [

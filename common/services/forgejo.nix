@@ -25,7 +25,7 @@ in
     services.forgejo = {
       lfs.enable = lib.mkDefault true;
       dump = lib.mkDefault {
-        enable = true;
+        enable = false;
         type = "tar";
         interval = "04:31";
       };
