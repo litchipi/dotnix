@@ -8,6 +8,7 @@
     ../common/services/shiori.nix
     ../common/services/forgejo.nix
     ../common/services/forgejo-runner.nix
+    ../common/services/nas.nix
     ../common/software/shell/helix.nix
     ../common/software/shell/tui.nix
     ../common/software/backup-fetcher.nix
@@ -44,35 +45,10 @@
     secrets = config.secrets.store.services.shiori.${config.base.hostname};
   };
 
-  # TODO Samba module
-  users.groups.nas = {};
-  users.users.${config.base.user}.extraGroups = [ "nas" ];
-  setup.directories = [
-    {
-      path = config.services.samba.shares.default.path;
-      owner = "root";
-      group = "nas";
-    }
-  ];
-  services.samba = {
+  services.nas = {
     enable = true;
-    openFirewall = true;
-    shares.default = {
-      path = "/data/nas";
-      "read only" = false;
-      browseable = true;
-      "guest ok" = false;
-      comment = "NAS of suzie";
-      "create mask" = "0660";
-      "directory mask" = "0770";
-    };
-    extraConfig = let
-      username_map = pkgs.writeText "samba_username_map" ''
-        ${config.base.user}=john
-      '';
-    in ''
-    username map = ${username_map}
-    '';
+    rootPath = "/data/nas";
+    usernameMap.${config.base.user} = "john";
   };
 
   # TODO  Module overlay
