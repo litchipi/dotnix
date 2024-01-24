@@ -163,6 +163,7 @@
     enable = true;
     fetchers = {
       litchipiBlog = {
+        timerConfig.OnCalendar = "02/5:00:00";
         runtimeDeps = [ pkgs.gzip pkgs.gawk ];
         outputFile = "/data/backup/blog.zip";
         sshTarget = "john@litchipi.site";
@@ -181,6 +182,10 @@
           "/etc/nginx/sites-available/default"
         ];
 
+        # exitTargetScript = ''
+        #   rm /home/john/logs/*
+        # '';
+
         beforeCompressScript = ''
           mv default ./nginx_conf
           mkdir -p nginx
@@ -198,6 +203,7 @@
       };
 
       spartaLaptop = {
+        timerConfig.OnCalendar = "02/5:00:00";
         outputFile = "/data/backup/sparta.zip";
         sshTarget = "john@sparta.local";
         paths = [
