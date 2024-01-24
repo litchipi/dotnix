@@ -206,4 +206,13 @@
       };
     };
   };
+
+  # TODO  Factorize on the backup common module, with a "global" option
+  environment.interactiveShellInit = ''
+    addbackup() {
+      for arg in "$@"; do
+        realpath "$arg" >> /home/${config.base.user}/.backuplist
+      done
+    }
+  '';
 }
