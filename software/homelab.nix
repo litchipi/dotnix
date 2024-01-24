@@ -151,12 +151,18 @@
 
   # TODO  IMPORTANT  Wire this to Google drive rclone
   backup.base_dir = "/data/backup";
-  backup.services.global = {
-    user = config.base.user;
-    secrets = config.secrets.store.backup.suzie;
-    timerConfig.OnCalendar = "02/5:00:00";
-    pruneOpts = ["-y 10" "-m 12" "-w 4" "-d 30" "-l 5"];
-    pathsFromFile = "/home/${config.base.user}/.backuplist";
+  backup.services = {
+    global = {
+      user = config.base.user;
+      secrets = config.secrets.store.backup.suzie;
+      timerConfig.OnCalendar = "02/5:00:00";
+      pruneOpts = ["-y 10" "-m 12" "-w 4" "-d 30" "-l 5"];
+      pathsFromFile = "/home/${config.base.user}/.backuplist";
+      gdrive = true;
+    };
+    paperless.gdrive = true;
+    forgejo.gdrive = true;
+    shiori.gdrive = true;
   };
 
   services.backup-fetcher = {

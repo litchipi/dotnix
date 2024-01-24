@@ -1,4 +1,4 @@
-{ config, lib, ... }: let
+{ config, lib, pkgs, ... }: let
   cfg = config.backup;
 
   # TODO Have a specific type for backup service secret
@@ -6,6 +6,7 @@
 
   backup_service = lib.types.submodule {
     options = {
+      gdrive = lib.mkEnableOption { description = "Upload the backup to Google drive"; };
       user = lib.mkOption {
         description = "User under which the backup service is run";
         type = lib.types.str;
@@ -37,6 +38,23 @@
     };
   };
 
+  mkGdriveBckService = {bind, paths, rclone_conf }: {
+    after = [ bind ];
+    wantedBy = [ bind ];
+    serviceConfig.PrivateTmp = true;
+    script = let
+      rclone = "${pkgs.rclone}/bin/rclone -q --config /tmp/gdrive.conf";
+      srm = "${pkgs.srm}/bin/srm";
+    in ''
+      cp ${rclone_conf} /tmp/gdrive.conf
+      chmod 700 /tmp/gdrive.conf
+    '' + (builtins.concatStringsSep "\n" (lib.attrsets.mapAttrsToList (from: to: ''
+      ${rclone} sync ${from} dotnix:${to}
+    '') paths)) + ''
+      ${srm} /tmp/gdrive.conf
+    '';
+  };
+
   mkBackupConfig = {
     name,
     restic_repo_path,
@@ -61,7 +79,15 @@
         Persistent = true;
       } // bck_cfg.timerConfig;
     };
+
+    systemd.services."rclone-${name}-backup" = if bck_cfg.gdrive then (mkGdriveBckService {
+      bind = "restic-backups-${name}.service";
+      rclone_conf = bck_cfg.secrets.rclone_conf.file;
+      paths.${restic_repo_path} = "${config.base.hostname}_${name}_backup";
+    }) else {};
   };
+
+  mergeRecursAttrs = builtins.foldl' (acc: x: lib.attrsets.recursiveUpdate acc x) {}; 
   
 in {
   options.backup = {
@@ -83,7 +109,7 @@ in {
       inherit name bck_cfg;
       restic_repo_path = "${config.backup.base_dir}/${name}";
     }) cfg.services;
-    all_services = builtins.foldl' (acc: x: lib.attrsets.recursiveUpdate acc x) {} all_services_lst;
+    all_services =  mergeRecursAttrs all_services_lst;
   in {
     users.groups.restic.members = lib.attrsets.mapAttrsToList (_: srv: srv.user) cfg.services;
     setup.directories = [
@@ -95,5 +121,6 @@ in {
     ] ++ (all_services.setup.directories or []);
     services.restic = all_services.services.restic or {};
     secrets.setup = all_services.secrets.setup or {};
+    systemd.services = all_services.systemd.services or {};
   };
 }
