@@ -125,7 +125,6 @@
 
   software.tui.jrnl.editor = "hx";
 
-  # TODO  IMPORTANT  Wire this to Google drive rclone
   backup.base_dir = "/data/backup";
   backup.services = {
     global = {
