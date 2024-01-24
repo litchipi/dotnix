@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }@args:
+{ config, lib, pkgs, ... }:
 let
   libtmux = import ../../../lib/software/tmux.nix {inherit config lib pkgs;};
 

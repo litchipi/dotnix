@@ -1,6 +1,5 @@
 { config, lib, pkgs, ... }:
 let
-  libdata = import ../../lib/manage_data.nix {inherit config lib pkgs;};
   cfg = config.wm;
 
   theme_type = lib.types.submodule {

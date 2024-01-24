@@ -100,7 +100,7 @@ in {
     #  message = TODO;
     # }) cfg.fetchers;
 
-    systemd.timers = builtins.mapAttrs (name: opts: {
+    systemd.timers = builtins.mapAttrs (_: opts: {
       wantedBy = [ "timers.target" ];
       inherit (opts) timerConfig;
     }) cfg.fetchers;

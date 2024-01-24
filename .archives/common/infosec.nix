@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }@args:
+{ config, pkgs, ... }@args:
 let
   libsoft = import ../../lib/software/package_set.nix args;
 

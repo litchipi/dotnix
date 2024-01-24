@@ -52,7 +52,7 @@ in
 
     config = {
       environment.systemPackages = (with pkgs_unstable.gnomeExtensions; libgnome.adaptGnomeExtensions "44" [
-        (bring-out-submenu-of-power-offlogout-button.overrideAttrs (old: {
+        (bring-out-submenu-of-power-offlogout-button.overrideAttrs (_: {
           src = pkgs.fetchFromGitHub {
             owner = "PRATAP-KUMAR";
             repo = "Bring-Out-Submenu-of-Power-Off-Logout";

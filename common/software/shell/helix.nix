@@ -1,4 +1,4 @@
-{ config, lib, pkgs, pkgs_unstable, inputs, system, ... }:
+{ config, lib, pkgs, inputs, system, ... }:
 let
   cfg = config.software.tui.helix;
   libdata = import ../../../lib/manage_data.nix { inherit config lib pkgs; };
