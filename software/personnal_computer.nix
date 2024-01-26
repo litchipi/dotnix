@@ -23,6 +23,13 @@ in {
     base.networking.ssh_auth_keys = [ "op@suzie" ];
     base.create_user_dirs = [ "work" "learn" ];
 
+    users.users.${config.base.user}.extraGroups = [
+      "lxd"
+      "vboxusers"
+      "scanner"
+      "lp"
+    ];
+
     base.add_fonts = let
       libdafont = import ../lib/fetchers/dafont.nix { inherit config lib pkgs; };
     in [
@@ -174,10 +181,6 @@ in {
       lxd.recommendedSysctlSettings = true;
       lxc.lxcfs.enable = true;
     };
-    users.users.${config.base.user}.extraGroups = [
-      "lxd"
-      "vboxusers"
-    ];
 
     shix = {
       # remoteRepoUrl = "gitlab@git.orionstar.cyou:litchi.pi/shix-shells.git";
@@ -192,6 +195,14 @@ in {
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
+    };
+
+    # Scanners
+    services.ipp-usb.enable = true;
+    services.udev.packages = [ pkgs.utsushi ];
+    hardware.sane = {
+      enable = true;
+      extraBackends = [ pkgs.sane-airscan pkgs.utsushi pkgs.epkowa ];
     };
   };
 }
