@@ -33,11 +33,11 @@ in
         default = [ ];
         description = "Extensions to add to the gnome shell";
       };
-      user_icon = lib.mkOption {
-        type = with lib.types; nullOr path;
-        default = null;
-        description = "Icon to use for the user";
-      };
+      # user_icon = lib.mkOption {
+      #   type = with lib.types; nullOr path;
+      #   default = null;
+      #   description = "Icon to use for the user";
+      # };
       theme = lib.mkOption {
         type = lib.types.nullOr gnome_theme_type;
         description = "Gnome Shell theme to set";
@@ -104,18 +104,18 @@ in
         geary
       ];
 
-      system.activationScripts.setup_gnome_user_icon = if builtins.isNull cfg.user_icon then "" else let
-        gdm_user_conf = ''
-          [User]
-          Session=
-          XSession=
-          Icon=${cfg.user_icon}
-          SystemAccount=false
-        '';
-      in ''
-        mkdir -p /var/lib/AccountsService/users/
-        echo '${gdm_user_conf}' > /var/lib/AccountsService/users/${config.base.user}
-      '';
+      # system.activationScripts.setup_gnome_user_icon = if builtins.isNull cfg.user_icon then "" else let
+      #   gdm_user_conf = ''
+      #     [User]
+      #     Session=
+      #     XSession=
+      #     Icon=${cfg.user_icon}
+      #     SystemAccount=false
+      #   '';
+      # in ''
+      #   mkdir -p /var/lib/AccountsService/users/
+      #   echo '${gdm_user_conf}' > /var/lib/AccountsService/users/${config.base.user}
+      # '';
 
       base.home_cfg = {
         gtk = if builtins.isNull cfg.theme then {} else {

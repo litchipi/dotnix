@@ -1,5 +1,4 @@
 { config, lib, pkgs, ... }: let
-  libdata = import ../lib/manage_data.nix {inherit config lib pkgs;};
   libcolors = import ../lib/colors.nix {inherit config lib pkgs;};
 in {
   imports = [
@@ -23,12 +22,15 @@ in {
     base.networking.ssh_auth_keys = [ "op@suzie" ];
     base.create_user_dirs = [ "work" "learn" ];
 
-    users.users.${config.base.user}.extraGroups = [
-      "lxd"
-      "vboxusers"
-      "scanner"
-      "lp"
-    ];
+    users.users.${config.base.user} = {
+      icon = ../data/assets/desktop/user_icons/litchipi.png;
+      extraGroups = [
+        "lxd"
+        "vboxusers"
+        "scanner"
+        "lp"
+      ];
+    };
 
     base.add_fonts = let
       libdafont = import ../lib/fetchers/dafont.nix { inherit config lib pkgs; };
@@ -83,7 +85,7 @@ in {
         package = pkgs.cantarell-fonts;
       };
 
-      gnome.user_icon = libdata.get_data_path ["assets" "desktop" "user_icons" "litchi.png"];
+      # gnome.user_icon = libdata.get_data_path ["assets" "desktop" "user_icons" "litchi.png"];
     };
 
     software.tui = {

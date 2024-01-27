@@ -96,6 +96,7 @@
         ./base/networking.nix
         ./base/setup.nix
         ./base/shell.nix
+        ./base/usericon.nix
         inputs.home-manager.nixosModules.home-manager
         inputs.StevenBlackHosts.nixosModule
         inputs.shix.nixosModules.${system}.default
