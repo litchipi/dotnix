@@ -7,12 +7,6 @@ with inputs.home-manager.lib.hm.gvariant;
           remember-recent-files = false;
         };
 
-        "org/gnome/desktop/background" = {
-          picture-uri="file://${config.wm.bck-img}";
-          picture-uri-dark="file://${config.wm.bck-img}";
-          picture-options="zoom";
-        };
-
         "org/gnome/desktop/notifications" = {
           show-banners = true;
           show-in-lock-screen = false;
@@ -36,9 +30,7 @@ with inputs.home-manager.lib.hm.gvariant;
         };
 
         "org/gnome/desktop/screensaver" = {
-          picture-uri="file://${config.wm.bck-img}";
           lock-delay = mkUint32 0;
-          picture-options = "zoom";
         };
 
         "org/gnome/desktop/session" = {

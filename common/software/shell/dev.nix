@@ -96,7 +96,9 @@ let
         command = "${lsp}"
         timeout = 60
         cachePriming.enable = false
-        cargo.features = "all"
+
+        [language-server.rust-analyzer.config]
+        cargo = { features = "all" }
 
         [language-server.rust-analyzer.inlayHints]
         closingBraceHints = true

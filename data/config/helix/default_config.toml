@@ -79,9 +79,7 @@ f = "buffer_picker"
 r = "vsplit"
 space = "code_action"
 "²" = "workspace_symbol_picker"
-# TODO    Get this working
-# "$" = [ "command_mode", ":toggle_option lsp.inlayHint"]
-"$" = "last_picker"
+"$" = ":toggle-option lsp.display-inlay-hints"
 "i" = "rename_symbol"
 
 [keys.insert]

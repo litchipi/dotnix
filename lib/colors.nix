@@ -58,12 +58,12 @@ rec {
     };
   };
 
-  tohex = {r, g, b, ...}: let
+  toHex = {r, g, b, ...}: let
     f = x: lib.strings.toLower (lib.strings.fixedWidthString 2 "0" (lib.trivial.toHexString x));
   in
     "${f r}${f g}${f b}";
 
-  fromhex = hex_raw: let
+  fromHex = hex_raw: let
     hex = lib.strings.toLower (lib.strings.removePrefix "#" hex_raw);
     col = idx: hexToDec (builtins.substring idx 2 hex);
   in

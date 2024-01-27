@@ -21,11 +21,6 @@ in
     ];
 
     options.wm = {
-      bck-img = lib.mkOption {
-        type = lib.types.path;
-        description = "The background image to set";
-        default = ../../data/assets/desktop/wallpapers/forest.jpg;
-      };
       iconTheme = lib.mkOption {
         type = lib.types.nullOr theme_type;
         default = null;

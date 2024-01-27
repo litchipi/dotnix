@@ -4,6 +4,64 @@ let
 
   colors = import ../lib/colors.nix {inherit config lib pkgs;};
 
+  syntax = with colors; let
+    cyan = mk_color_option { color={r=130; g=210; b=206;};};
+    blue = mk_color_option { color={r=135; g=198; b=255;};};
+    lime = mk_color_option { color={r=168; g=204; b=104;};};
+    violet = mk_color_option { color={r=175; g=156; b=255;};};
+    yellow = mk_color_option { color={r=235; g=200; b=141;};};
+    pink = mk_color_option { color={r=255; g=176; b=228;};};
+    coral = mk_color_option { color={r=204; g=124; b=138;};};
+    gray = mk_color_option { color = {r=160; g=160; b=160;};};
+  in {
+    text = mk_color_option { color={r=220; g=220; b=220;};};
+    types = blue;
+    keywords = cyan;
+    regexp = cyan;
+    constants = {
+      variable = violet;
+      boolean = cyan;
+      numeric = yellow;
+      chars = yellow;
+      builtin = coral;
+      string = pink;
+      special_string = yellow;
+    };
+
+    label = yellow;
+    functions = {
+      normal = yellow;
+      macro = lime;
+    };
+
+    attribute = lime;
+    special = lime;
+    member = violet;
+
+    comments = gray;
+
+    punctuation = gray;
+    module = lime;
+    operator = coral;
+
+    markup = {
+      heading = cyan;
+      list = {
+        numbered = cyan;
+        unnumbered = cyan;
+      };
+      link = {
+        url = pink;
+        text = cyan;
+        label = violet;
+      };
+      quote = pink;
+      raw = {
+        inline = cyan;
+        block = pink;
+      };
+    };
+  };
 
   palette_options = with colors; {
     primary = mk_color_option { color={r=217; g=83; b=79;}; };
@@ -19,11 +77,20 @@ let
     ok = mk_color_option { color={r=151; g=240; b=148;}; style=style.bold; };
     warn = mk_color_option { color={r=245; g=207; b=91;}; style=style.bold; };
     bad = mk_color_option { color={r=245; g=91; b=91;}; style=style.bold; };
+
+    grays = {
+      light = mk_color_option { color = {r=209; g=209; b=209;}; };
+      mid = mk_color_option { color = {r=118; g=118; b=118;};};
+      dark = mk_color_option { color = {r=70; g=70; b=70;};};
+    };
+    white = mk_color_option { color = {r=255; g=255; b=255;};};
+    black = mk_color_option { color = {r=0; g=0; b=0;};};
+
+    inherit syntax;
   };
 
 in
 {
-  config = {};
   options.colors = {
     palette = palette_options;
 

@@ -16,7 +16,7 @@ in
     config.home-manager.users.${config.base.user}.programs.alacritty = {
       enable = cfg.enable || (config.software.default_terminal_app.pname == "alacritty");
       settings = lib.attrsets.recursiveUpdate {
-        env.TERM = "xterm-256color";
+        env.TERM = "tmux-256color";
         window = {
           decorations = "none";
           opacity = 0.85;
@@ -31,15 +31,15 @@ in
         };
         mouse.hide_when_typing = false;
         font.normal = {
-          family = "Fira Code";
+          family = "Hack";
           style = "Regular";
         };
         font.bold = {
-          family = "Fira Code";
+          family = "Hack";
           style = "Bold";
         };
         font.italic = {
-          family = "Fira Code";
+          family = "Hack";
           style = "Italic";
         };
         cursor.unfocused_hollow = true;

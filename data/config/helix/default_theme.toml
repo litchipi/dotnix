@@ -6,40 +6,36 @@
 # @matoous
 # @kirawi
 
-"attribute" = "Lime"
+"constant.builtin.boolean" = "Cyan"
+"constant.character.escape" = "Cyan"
+"string.regexp" = "Cyan"
+"keyword" = "Cyan" # .operator / .directive / .function
 
-"type" = "Blue"
-"type.return" = "Blue Light"
-"type.parameter" = "Blue Light"
 "constructor" = "Yellow"
+"constant.character" = "Yellow"
+"constant.numeric" = "Yellow"
+"label" = "Yellow"
+"function" = "Yellow"
+
+"attribute" = "Lime"
+"special" = "Lime"
+"function.macro" = "Lime"
+"function.builtin" = "Lime"
+"function.special" = "Lime"
+
+# "constant.builtin" = {} # .boolean
+"string.special" = { fg = "Yellow", modifiers = ["underlined"] } #.path / .url / .symbol
 
 "constant" = "Violet"
-# "constant.builtin" = {} # .boolean
-"constant.builtin.boolean" = "Cyan"
-"constant.character" = "Yellow"
-"constant.character.escape" = "Cyan"
-"constant.numeric" = "Yellow"
+"variable.other.member" = "Violet"
+
+"variable.builtin" = { fg = "Coral" }
 "string" = "Pink"
-"string.regexp" = "Cyan"
-"string.special" = { fg = "Yellow", modifiers = ["underlined"] } #.path / .url / .symbol
 
 "comment" = "Gray 90" # .line
 # "comment.block" = {} # .documentation
 "variable" = "Gray 120" # .builtin
-"variable.builtin" = { fg = "Coral" }
-# "variable.other" = {} # .member
-"variable.other.member" = "Violet"
-"label" = "Yellow"
-"keyword" = "Cyan" # .operator / .directive / .function
-"function" = "Yellow"
 "function.declaration" = "#EFEFEF"
-"function.macro" = "Lime"
-"function.builtin" = "Lime"
-"function.special" = "Lime"
-#"function.declaration.method" = { fg = "lightest", modifiers = ["bold"] } #depends on #4892
-"tag" = "Blue"
-"special" = "Lime"
-"namespace" = "Blue"
 
 # used in theming
 # "markup" = {} # .normal / .quote / .raw
@@ -59,10 +55,6 @@
 "markup.raw" = "Pink"
 "markup.raw.inline" = "Cyan" # .completion / .hover
 "markup.raw.block" = "#EB83E2"
-
-"diff.plus" = "Green 50"
-"diff.minus" = "Red 50"
-"diff.delta" = "Blue 80"
 
 # ui specific
 "ui.background" = { }

@@ -186,6 +186,7 @@ in
         ubuntu_font_family
         fira-code
         fira-code-symbols
+        hack-font
       ] ++ cfg.add_fonts;
     };
   };

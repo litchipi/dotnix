@@ -2,7 +2,7 @@
   libcolors = import ../colors.nix {inherit config lib pkgs;};
 
   pal = config.colors.palette;
-  col = c: if c == "default" then c else "#${libcolors.tohex c}";
+  col = c: if c == "default" then c else "#${libcolors.toHex c}";
 
   tmuxstyle = {fg ? null, bg ? null, add ? null, ...}: builtins.concatStringsSep ","
       ((if (builtins.isNull fg) then [] else [ "fg=${col fg}" ]) ++

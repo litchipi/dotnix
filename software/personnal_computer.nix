@@ -77,26 +77,24 @@ in {
       4444 4445 4446 4447 4448
     ];
 
+    # TODO  Get this in hex directly in options, then convert to rgb after
     colors.palette = {
-      primary = libcolors.fromhex "#b967ff";
-      secondary = libcolors.fromhex "#01cdfe";
-      tertiary = libcolors.fromhex "#05ffa1";
-      highlight = libcolors.fromhex "#DD25E9";
-      dark = libcolors.fromhex "#6A3D68";
-      light = libcolors.fromhex "#FBEEBF";
-      active = libcolors.fromhex "#85E9FF";
-      inactive = libcolors.fromhex "#85B2BC";
-      dimmed = libcolors.fromhex "#AB7776";
+      primary = libcolors.fromHex "#e34967";
+      secondary = libcolors.fromHex "#77de81";
+      tertiary = libcolors.fromHex "#a2b2f0";
+
+      highlight = libcolors.fromHex "#DD25E9";
+      dark = libcolors.fromHex "#712433";
+      light = libcolors.fromHex "#F3B6C2";
+      active = libcolors.fromHex "#BBEEDA";
+      inactive = libcolors.fromHex "#5B5B5B";
+      dimmed = libcolors.fromHex "#DFBBC2";
     };
 
     boot.plymouth.enable = false; #true;
     wm = {
       boot.style.plymouth.theme = "glowing"; #hexagon_2";   # TODO  Test splash screen
       autologin = true;
-      bck-img = pkgs.fetchurl {
-        url = "https://wallpapershome.com/images/wallpapers/river-1920x1080-forest-sky-evening-hd-15669.jpg";
-        sha256 = "sha256-/THwmWhPqf1g8l0mMd8Uh2Lt+2GWJ/TZUROAWim48kc";
-      };
       cursorTheme = {
         name = "Qogir-dark";
         package = pkgs.qogir-icon-theme;
@@ -207,6 +205,13 @@ in {
     hardware.sane = {
       enable = true;
       extraBackends = [ pkgs.sane-airscan pkgs.utsushi pkgs.epkowa ];
+    };
+
+    software.tui.helix.configuration.editor = {
+      true-color = true;
+      bufferline = "always";
+      file-picker.hidden = false;
+      indent-guides.character = "│";
     };
   };
 }
