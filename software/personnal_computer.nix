@@ -23,7 +23,7 @@ in {
     base.create_user_dirs = [ "work" "learn" ];
 
     users.users.${config.base.user} = {
-      icon = ../data/assets/desktop/user_icons/litchipi.png;
+      icon = ../data/assets/user_icons/litchipi.png;
       extraGroups = [
         "lxd"
         "vboxusers"

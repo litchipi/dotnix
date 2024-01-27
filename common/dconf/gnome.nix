@@ -7,10 +7,6 @@ with inputs.home-manager.lib.hm.gvariant;
           remember-recent-files = false;
         };
 
-        "org/gnome/login-screen" = {
-          logo="${../../data/assets/desktop/gdm_greeting_logo.png}";
-        };
-
         "org/gnome/desktop/background" = {
           picture-uri="file://${config.wm.bck-img}";
           picture-uri-dark="file://${config.wm.bck-img}";
