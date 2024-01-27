@@ -69,8 +69,8 @@ in
   };
 
   config = {
-    system.stateVersion = "23.05";
-    base.home_cfg.home.stateVersion = "23.05";
+    system.stateVersion = "23.11";
+    base.home_cfg.home.stateVersion = "23.11";
 
     boot = {
       tmp.cleanOnBoot = true;
