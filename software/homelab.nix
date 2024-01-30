@@ -73,6 +73,7 @@
   services.forgejo-runners = {
     enable = true;
     tokenFile = config.secrets.store.services.forgejo-runner.${config.base.hostname}.token;
+    cacheDir = "/data/forgejo-actions-cache";
     labels = {
       nix = {
         repo = "nixos/nix";

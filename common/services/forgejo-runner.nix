@@ -28,6 +28,11 @@ in {
       default = {};
       type = lib.types.attrs;
     };
+    cacheDir = lib.mkOption {
+      type = lib.types.path;
+      description = "Directory where to store the cached data on actions";
+      default = "/var/cache/forgejo-actions/";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -53,6 +58,7 @@ in {
         container.network = lib.mkDefault "host";
         runner.capacity = lib.mkDefault 8;
         runner.timeout = lib.mkDefault "1h";
+        cache.dir = cfg.cacheDir;
       };
     };
   };
