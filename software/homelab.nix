@@ -82,14 +82,7 @@
         repo = "ubuntu";
         versions = [ "latest" "22.04" "23.04" "23.10"];
       };
-      rust = {
-        repo = "cimg/rust";
-        versions = ["1.75.0-node"];
-      };
-      python = {
-        repo = "cimg/python";
-        versions = ["3.10-node" "3.11-node" "3.12-node"];
-      };
+      # TODO  Add Windows and MacOS here
     };
   };
 

@@ -48,7 +48,12 @@ in {
       name = "base-runner";
       url = cfg.forgejoUrl;
       tokenFile = cfg.tokenFile.file;
-      labels = mkLabelList cfg.labels;
+      labels = (mkLabelList cfg.labels) ++ [ "docker" ];
+      settings = {
+        container.network = lib.mkDefault "host";
+        runner.capacity = lib.mkDefault 8;
+        runner.timeout = lib.mkDefault "1h";
+      };
     };
   };
 }
