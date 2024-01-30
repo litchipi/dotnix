@@ -36,6 +36,10 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    setup.directories = [
+      { path = cfg.cacheDir; owner = "gitea-runner"; }
+    ];
+
     users.users.gitea-runner = {
       isSystemUser = true;
       group = "gitea-runner";
