@@ -84,11 +84,11 @@
       };
       rust = {
         repo = "cimg/rust";
-        versions = ["1.75.0" "1.72.0" "1.70.0" "1.65.0" "1.60.0"];
+        versions = ["1.75.0-node"];
       };
       python = {
         repo = "cimg/python";
-        versions = ["3.10" "3.11" "3.12"];
+        versions = ["3.10-node" "3.11-node" "3.12-node"];
       };
     };
   };
