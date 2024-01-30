@@ -62,6 +62,7 @@ in {
         container.network = lib.mkDefault "host";
         runner.capacity = lib.mkDefault 8;
         runner.timeout = lib.mkDefault "1h";
+        cache.enabled = true;
         cache.dir = cfg.cacheDir;
       };
     };
