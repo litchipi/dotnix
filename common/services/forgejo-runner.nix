@@ -37,7 +37,7 @@ in {
 
   config = lib.mkIf cfg.enable {
     setup.directories = [
-      { path = cfg.cacheDir; owner = "gitea-runner"; }
+      { path = cfg.cacheDir; owner = "gitea-runner"; other_perms = "+rwX"; }
     ];
 
     users.users.gitea-runner = {
