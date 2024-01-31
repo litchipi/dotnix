@@ -28,10 +28,10 @@ in {
       default = {};
       type = lib.types.attrs;
     };
-    cacheDir = lib.mkOption {
+    baseDir = lib.mkOption {
       type = lib.types.path;
       description = "Directory where to store the cached data on actions";
-      default = "/var/cache/forgejo-actions/";
+      default = "/var/lib/forgejo-runners/";
     };
   };
 
@@ -41,6 +41,7 @@ in {
     ];
 
     users.users.gitea-runner = {
+      home = cfg.baseDir;
       isSystemUser = true;
       group = "gitea-runner";
     };
@@ -60,11 +61,9 @@ in {
       labels = (mkLabelList cfg.labels) ++ [ "docker" ];
       settings = {
         container.network = lib.mkDefault "host";
-        container.valid_volumes = [ cfg.cacheDir ];
         runner.capacity = lib.mkDefault 8;
         runner.timeout = lib.mkDefault "1h";
         cache.enabled = true;
-        cache.dir = cfg.cacheDir;
       };
     };
   };
