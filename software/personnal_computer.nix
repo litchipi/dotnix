@@ -22,6 +22,33 @@ in {
     base.networking.ssh_auth_keys = [ "op@suzie" ];
     base.create_user_dirs = [ "work" "learn" ];
 
+    environment = {
+      variables.EDITOR = "hx";
+      systemPackages = with pkgs; [
+        newsflash # RSS reader
+        gimp-with-plugins # Image editor
+        apostrophe  # Markdown editor
+        gummi
+        gnome-latex
+        blanket # Play relaxing sound
+        shortwave # Listen Internet radio
+        gnome-podcasts # Listen to podcasts
+        audacity
+        python310Packages.deemix
+        geogebra # Math graph tool
+        authenticator # 2FA TOTP app
+        zenith-nvidia
+        libreoffice
+        deluge
+        imagemagick
+        mold
+        jq
+        openvswitch
+        gamemode
+        foliate # Ebook reader
+      ];
+    };
+
     users.users.${config.base.user} = {
       icon = ../data/assets/user_icons/litchipi.png;
       extraGroups = [
@@ -119,33 +146,6 @@ in {
     };
 
     networking.stevenBlackHosts.enable = true;
-
-    environment = {
-      variables.EDITOR = "hx";
-      systemPackages = with pkgs; [
-        newsflash # RSS reader
-        gimp-with-plugins # Image editor
-        apostrophe  # Markdown editor
-        gummi
-        gnome-latex
-        blanket # Play relaxing sound
-        shortwave # Listen Internet radio
-        gnome-podcasts # Listen to podcasts
-        audacity
-        python310Packages.deemix
-        geogebra # Math graph tool
-        authenticator # 2FA TOTP app
-        zenith-nvidia
-        libreoffice
-        deluge
-        imagemagick
-        mold
-        jq
-        openvswitch
-        gamemode
-        foliate # Ebook reader
-      ];
-    };
     
     services.blueman.enable = true;
     services.flatpak.enable = true;
