@@ -46,6 +46,8 @@ in {
         openvswitch
         gamemode
         foliate # Ebook reader
+
+        config.boot.kernelPackages.perf
       ];
     };
 
