@@ -32,7 +32,7 @@
   };
 
   boot = if config.setup.is_vm then {} else {
-    kernelPackages = pkgs.linuxPackages_6_1;
+    kernelPackages = pkgs.linuxPackages_xanmod_latest;
     kernelParams = [
       "amdgpu.backlight=0"  # TODO FIXME hybrid gpu backlight
     ];
