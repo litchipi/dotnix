@@ -213,5 +213,15 @@ in {
       file-picker.hidden = false;
       indent-guides.character = "│";
     };
+    software.tui.helix.configuration.keys = {
+      select."Y" = ":clipboard-yank";
+      normal=  {
+        "Y" = ":clipboard-yank";
+        "$" = {
+          s = ":buffer-close";
+          S = ":buffer-close!";
+        };
+      };
+    };
   };
 }

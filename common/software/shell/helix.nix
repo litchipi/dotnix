@@ -123,7 +123,7 @@ in {
         };
 
         selection = { fg = grays.light; bg = grays.mid; };
-        selection.primary = { fg=grays.mid; bg = dark; modifiers = ["italic"]; };
+        selection.primary = { bg = black; modifiers = ["italic" "reversed"]; };
         cursorline.bg = verydarkgray;
         linenr.fg = grays.mid;
         linenr.selected = {
