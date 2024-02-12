@@ -3,6 +3,7 @@
     # services.getty.autologinUser = config.base.user;
     setup.is_vm = true;
     virtualisation = {
+      writableStoreUseTmpfs = false;
       qemu.options = [
         "-cpu host"
         "-machine accel=kvm"
