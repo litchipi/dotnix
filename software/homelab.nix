@@ -149,6 +149,7 @@
           "/etc/systemd/system/fetch_blog_posts.timer"
           "/etc/systemd/system/blog.service"
           "/var/www/ecoweb/start.sh"
+          "/var/www/uploads/"
           "/home/john/update_ecoweb_bin.sh"
           "/home/john/update_blog_content.sh"
           "/home/john/log_rotate.sh"
@@ -157,9 +158,9 @@
           "/etc/nginx/sites-available/default"
         ];
 
-        # exitTargetScript = ''
-        #   rm /home/john/logs/*
-        # '';
+        exitTargetScript = ''
+          rm /home/john/logs/*
+        '';
 
         beforeCompressScript = ''
           mv default ./nginx_conf
