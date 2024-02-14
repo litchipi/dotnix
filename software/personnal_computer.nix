@@ -157,6 +157,7 @@ in {
       pruneOpts = [ "-y 50" "-m 15" "-w 4" "-d 6" "-l 10" ];
       timerConfig.OnCalendar = "2/5:00:00";
       pathsFromFile = "/home/${config.base.user}/.backuplist";
+      rcloneConf = config.secrets.store.backup.rclone.owncloud;
     };
     environment.interactiveShellInit = ''
       addbackup() {

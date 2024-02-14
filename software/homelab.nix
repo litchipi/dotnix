@@ -122,6 +122,7 @@
   software.tui.jrnl.editor = "hx";
 
   backup.base_dir = "/data/backup";
+  # TODO  Migrate backups to Owncloud instead
   backup.services = {
     global = {
       user = config.base.user;
@@ -129,11 +130,11 @@
       timerConfig.OnCalendar = "02/5:00:00";
       pruneOpts = ["-y 10" "-m 12" "-w 4" "-d 30" "-l 5"];
       pathsFromFile = "/home/${config.base.user}/.backuplist";
-      gdrive = true;
+      rcloneConf = config.secrets.store.backup.rclone.owncloud;
     };
-    paperless.gdrive = true;
-    forgejo.gdrive = true;
-    shiori.gdrive = true;
+    paperless.rcloneConf = config.secrets.store.backup.rclone.owncloud;
+    forgejo.rcloneConf = config.secrets.store.backup.rclone.owncloud;
+    shiori.rcloneConf = config.secrets.store.backup.rclone.owncloud;
   };
 
   services.backup-fetcher = {

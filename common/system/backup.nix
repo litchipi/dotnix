@@ -4,9 +4,25 @@
   # TODO Have a specific type for backup service secret
   backup_service_secret = lib.types.attrs;
 
+  defaultRcloneEnv = {
+     RCLONE_DRIVE_USE_TRASH = "false";
+  };
+
   backup_service = lib.types.submodule {
     options = {
-      gdrive = lib.mkEnableOption { description = "Upload the backup to Google drive"; };
+      # TODO  Make this a list of rclone configs
+      #  Iter through each one of them to upload the backups to different endpoints
+      #  Do not fail the whole script if one of them is unavailable
+      rcloneConf = lib.mkOption {
+        type = with lib.types; nullOr attrs;
+        description = "Path to file where the rclone configuration is stored";
+        default = null;
+      };
+      rcloneEnv = lib.mkOption {
+        type = lib.types.attrsOf lib.types.str;
+        description = "Environment to set for the rclone command execution";
+        default = {};
+      };
       user = lib.mkOption {
         description = "User under which the backup service is run";
         type = lib.types.str;
@@ -38,20 +54,21 @@
     };
   };
 
-  mkGdriveBckService = {bind, paths, rclone_conf }: {
+  mkRcloneService = {bind, paths, rclone_conf, env}: {
     after = [ bind ];
     wantedBy = [ bind ];
     serviceConfig.PrivateTmp = true;
+    environment = lib.recursiveUpdate defaultRcloneEnv env;
     script = let
-      rclone = "${pkgs.rclone}/bin/rclone -q --config /tmp/gdrive.conf";
+      rclone = "${pkgs.rclone}/bin/rclone -q --config /tmp/rclone.conf";
       srm = "${pkgs.srm}/bin/srm";
     in ''
-      cp ${rclone_conf} /tmp/gdrive.conf
-      chmod 700 /tmp/gdrive.conf
+      cp ${rclone_conf} /tmp/rclone.conf
+      chmod 700 /tmp/rclone.conf
     '' + (builtins.concatStringsSep "\n" (lib.attrsets.mapAttrsToList (from: to: ''
       ${rclone} sync ${from} dotnix:${to}
     '') paths)) + ''
-      ${srm} /tmp/gdrive.conf
+      ${srm} /tmp/rclone.conf
     '';
   };
 
@@ -60,9 +77,15 @@
     restic_repo_path,
     bck_cfg,
   }: {
-    secrets.setup."restic_${name}" = {
-      inherit (bck_cfg) user;
-      secret = bck_cfg.secrets;
+    secrets.setup = {
+      "restic_${name}" = {
+        inherit (bck_cfg) user;
+        secret = bck_cfg.secrets;
+      };
+      "rclone_${name}" = {
+        inherit (bck_cfg) user;
+        secret = bck_cfg.rcloneConf;
+      };
     };
 
     setup.directories = [
@@ -80,11 +103,14 @@
       } // bck_cfg.timerConfig;
     };
 
-    systemd.services."rclone-${name}-backup" = if bck_cfg.gdrive then (mkGdriveBckService {
-      bind = "restic-backups-${name}.service";
-      rclone_conf = bck_cfg.secrets.rclone_conf.file;
-      paths.${restic_repo_path} = "${config.base.hostname}_${name}_backup";
-    }) else {};
+    systemd.services."rclone-${name}-backup" = if (builtins.isNull bck_cfg.rcloneConf.file)
+      then {}
+      else (mkRcloneService {
+        bind = "restic-backups-${name}.service";
+        rclone_conf = bck_cfg.rcloneConf.file;
+        paths.${restic_repo_path} = "${config.base.hostname}_${name}_backup";
+        env = bck_cfg.rcloneEnv;
+      });
   };
 
   mergeRecursAttrs = builtins.foldl' (acc: x: lib.attrsets.recursiveUpdate acc x) {}; 
