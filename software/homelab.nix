@@ -23,6 +23,8 @@
     { address = "192.168.1.163"; prefixLength = 24; }
   ];
 
+    networking.firewall.allowedTCPPorts = [ 8080 ];
+
   environment.systemPackages = with pkgs; [
     gcc
     (pkgs_unstable.rust-bin.stable.latest.default.override {
