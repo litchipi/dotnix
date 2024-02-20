@@ -105,17 +105,19 @@ in {
       inherit (opts) timerConfig;
     }) cfg.fetchers;
 
-    # TODO  Add a "fetch-backup-${name}" modifier on name (on timers too)
-    systemd.services = builtins.mapAttrs (name: opts: {
-      description = "Backup fetcher ${name}";
-      wants = [ "network-online.target" ];
-      after = [ "network-online.target" ];
-      path = [ pkgs.openssh_hpn pkgs.zip pkgs.unzip ] ++ opts.runtimeDeps;
+    systemd.services = lib.attrsets.mapAttrs' (name: opts: {
+      name = "fetch-backup-${name}";
+      value = {
+        description = "Backup fetcher ${name}";
+        wants = [ "network-online.target" ];
+        after = [ "network-online.target" ];
+        path = [ pkgs.openssh_hpn pkgs.zip pkgs.unzip ] ++ opts.runtimeDeps;
 
-      serviceConfig = {
-        Type = "oneshot";
-        ExecStart = pkgs.writeShellScript "fetch-backup-${name}" (mkScript opts);
-        PrivateTmp = true;
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = pkgs.writeShellScript "fetch-backup-${name}" (mkScript opts);
+          PrivateTmp = true;
+        };
       };
     }) cfg.fetchers;
   };
