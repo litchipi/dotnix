@@ -40,26 +40,6 @@ in
         pomodoro
       ] ++ (libsoft.mkPackageSetsConfig cfg.package_sets all_packages_sets);
 
-      software.tui.shell_aliases = {
-        music.enable = cfg.package_sets.complete.enable;
-        git.enable = true;
-      } // (if builtins.hasAttr "neovim" config.software.tui
-        then { neovim = {
-            vimcfg = [''
-              " GitGutter
-              let g:gitgutter_git_executable="${pkgs.git}/bin/git"
-              let g:gitgutter_set_sign_backgrounds = 0
-              let g:gitgutter_map_keys = 0
-            ''];
-            add_plugins = with pkgs.vimPlugins; [
-              vim-fugitive
-              vim-gitgutter
-              coc-git
-            ];
-          };
-        }
-        else {});
-
       base.home_cfg.programs.git = {
         enable = true;
         userName = lib.mkDefault (libutils.email_to_name config.base.email);

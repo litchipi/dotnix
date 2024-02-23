@@ -2,15 +2,15 @@
 let
   libdata = import ../../../lib/manage_data.nix {inherit config lib pkgs;};
   libcolors = import ../../../lib/colors.nix {inherit config lib pkgs;};
-  cfg = config.software.tui.shell_aliases;
-  # TODO  Create standardized functions definition for aliases, with variable shell
 
+  # TODO  Create nix shell alias to wrap `nix shell nixpkgs/<pinned version>#package
   all_aliases = {
     filesystem.shellAliases = {
       tmpdir = "cd $(mktemp -d)";
       ".." = "cd .. && ls";
       "..." = "cd ../../ && ls ";
       "...." = "cd ../../../ && ls";
+      "....." = "cd ../../../../ && ls";
       lh = "ls -lh";
       lha = "ls -lah";
       ll = "ls -l";
@@ -18,6 +18,7 @@ let
       lla = "ls -la";
       grep="grep --color=auto";
     };
+
     git.interactiveShellInit = ''
         source ${libdata.get_data_path [ "shell" "git-completion" ]}
         __git_complete gbc _git_branch
@@ -44,22 +45,6 @@ let
           git branch "$name" 2>/dev/null
           echo "$name"
         }
-        function gsave() {
-          if [ $# -ne 1 ] ; then
-            echo "Usage: $0 <branch name>. Will create a temporary commit and checkout to the given branch"
-            exit 1;
-          fi
-          git add . && git commit -m "TMP COMMIT" && git checkout $1
-        }
-        __git_complete gsave _git_checkout
-        function gload() {
-          if [ $# -ne 1 ] ; then
-            echo "Usage: $0 <branch name>. Will create a temporary commit and checkout to the given branch"
-            exit 1;
-          fi
-          git checkout $1 && git reset --mixed HEAD~1
-        }
-        __git_complete gload _git_checkout
 
         function __gh() {
           echo -e "${libcolors.fg.palette.primary} $1:   ${libcolors.reset} $2"
@@ -85,7 +70,10 @@ let
           __gh "gl" "Commit log of current branch"
           __gh "gla" "Commit log of every branches"
           __gh "gdf" "Print the diff since last commit"
+          __gh "gds" "Print the staged diffs"
+          __gh "gdu" "Print the unstaged diffs"
           __gh "grs" "Remove file from staged state"
+          __gd "gru" "Restore the unstaged file"
           echo ""
           __gh "grh" "Reset HARD the branch to a given ref (default: HEAD)"
           __gh "grm" "Reset MIXED the branch to a given ref (default: HEAD)"
@@ -97,8 +85,6 @@ let
           __gh "ggka" "Starts git gui with gitka, both in background"
           echo ""
           __gh "gkeep" " Create a temporary branch on the given commit to keep the ref"
-          __gh "gsave" "Create a temporary commit with the ongoing changes, and checkout the given branch"
-          __gh "gload" "Checkout the given branch, and restore the last commit made into ongoing changes"
           echo ""
         }
     '';
@@ -120,7 +106,10 @@ let
       gla="gl --all";
 
       gdf="git diff --staged && echo -e '\n\n\n\n' && git diff";
+      gds="git diff --staged";
+      gdu="git diff";
       grs="git restore --staged";
+      gru="git restore";
 
       grh="git reset --hard";
       grm="git reset --mixed";
@@ -135,16 +124,9 @@ let
       ggk="git gui & gitk &";
       ggka="git gui & gitka &";
     };
-    music.options = {
-      command_args = lib.mkOption {
-        description = "Additionnal args to pass to yt-dlp";
-        default = [];
-        type = lib.types.listOf lib.types.str;
-      };
-    };
     # TODO    Add deemix to it
     music.shellAliases = let
-      args = cfg.music.command_args ++ [ "-x" "--add-metadata"];
+      args = [ "-x" "--add-metadata"];
       dl = "${pkgs.yt-dlp}/bin/yt-dlp ${builtins.concatStringsSep " " args}";
       mp3_args = "--audio-format mp3 --audio-quality 0";
     in {
@@ -152,19 +134,15 @@ let
       ziksearch = "${dl} ${mp3_args} --default-search \"ytsearch\"";
       zikflac = "${dl} --audio-format flac --audio-quality 0";
     };
-    network.options = {
-      website = lib.mkOption {
-        description = "Website to ping for internet connection test";
-        type = lib.types.str;
-        default = "8.8.8.8";
-      };
-    };
-    network.shellAliases = {
+    network.shellAliases = let
+        dns = "8.8.8.8";
+    in {
+      # TODO  FIXME  Pingt
       pingt = builtins.concatStringsSep " " [
         "ping"
         "-c 1"
         "-W 1"
-        cfg.network.website
+        dns
         "1> /dev/null"
         "2> /dev/null"
         "&&"
@@ -179,29 +157,10 @@ let
         libcolors.reset
       ];
     };
-    # TODO  Create usefull nix shellAliases
-    #   Enter a nix shell with a specific package / package list
     fzf.shellAliases = {
       fnvim = "nvim $(fzf)";
     };
-    jrnl.interactiveShellInit = ''
-      function djrnl {
-        jrnl "$@" -1500 | less +G -r
-      }
-      complete -F _jrnl_autocomplete jrnl
-      function _jrnl_autocomplete {
-        COMPREPLY=($(compgen -W "$(jrnl --ls | grep "*" | awk '{print $2}')" -- "''${COMP_WORDS[COMP_CWORD]}"))
-      }
-      complete -F _djrnl_autocomplete djrnl
-      function _djrnl_autocomplete {
-        COMPREPLY=($(compgen -W "$(jrnl --ls | grep "*" | awk '{print $2}')" -- "''${COMP_WORDS[COMP_CWORD]}"))
-      }
-    '';
   };
-
-  mkAliasOptions = aliases: builtins.mapAttrs (name: aliases: {
-    enable = lib.mkEnableOption { description = "Enable the ${name} shell aliases"; };
-  } // (aliases.options or {})) aliases;
 
   mkAliasConfigs = aliases: {
     interactiveShellInit = builtins.concatStringsSep "\n\n"
@@ -210,6 +169,5 @@ let
   };
 in
   {
-    options.software.tui.shell_aliases = mkAliasOptions all_aliases;
     config.environment = mkAliasConfigs all_aliases;
   }

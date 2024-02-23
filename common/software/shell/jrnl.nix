@@ -2,7 +2,6 @@
 let
   cfg = config.software.tui.jrnl;
 in {
-  imports = [ ./shell_aliases.nix ];
   options.software.tui.jrnl = {
     opts_override = lib.mkOption {
       type = lib.types.attrs;
@@ -58,6 +57,19 @@ in {
       timeformat: '%Y-%m-%d %H:%M'
       version: v2.8.3
     '';
-    software.tui.shell_aliases.jrnl.enable = true;
+
+    environment.interactiveShellInit = ''
+      function djrnl {
+        jrnl "$@" -1500 | less +G -r
+      }
+      complete -F _jrnl_autocomplete jrnl
+      function _jrnl_autocomplete {
+        COMPREPLY=($(compgen -W "$(jrnl --ls | grep "*" | awk '{print $2}')" -- "''${COMP_WORDS[COMP_CWORD]}"))
+      }
+      complete -F _djrnl_autocomplete djrnl
+      function _djrnl_autocomplete {
+        COMPREPLY=($(compgen -W "$(jrnl --ls | grep "*" | awk '{print $2}')" -- "''${COMP_WORDS[COMP_CWORD]}"))
+      }
+    '';
   };
 }
