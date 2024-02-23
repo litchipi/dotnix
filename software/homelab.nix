@@ -9,6 +9,7 @@
     ../common/services/forgejo.nix
     ../common/services/forgejo-runner.nix
     ../common/services/nas.nix
+    ../common/services/radicale.nix
     ../common/software/shell/helix.nix
     ../common/software/shell/tui.nix
     ../common/software/backup-fetcher.nix
@@ -23,7 +24,7 @@
     { address = "192.168.1.163"; prefixLength = 24; }
   ];
 
-    networking.firewall.allowedTCPPorts = [ 8080 ];
+  networking.firewall.allowedTCPPorts = [ 8080 ];
 
   environment.systemPackages = with pkgs; [
     gcc
@@ -94,6 +95,13 @@
     port = 8084;
   };
 
+  services.radicale = {
+    enable = true;
+    port = 8085;
+    secrets = config.secrets.store.services.radicale.suzie;
+    backup = true;
+  };
+
   # TODO Vikunja (+ backup) -> Or other kind of software for this
   # services.vikunja = {
   #   enable = true;
@@ -122,18 +130,21 @@
   software.tui.jrnl.editor = "hx";
 
   backup.base_dir = "/data/backup";
-  backup.services = {
+  backup.services = let
+    rcloneConf = config.secrets.store.backup.rclone.owncloud;
+  in {
     global = {
       user = config.base.user;
       secrets = config.secrets.store.backup.suzie;
       timerConfig.OnCalendar = "02/5:00:00";
       pruneOpts = ["-y 10" "-m 12" "-w 4" "-d 30" "-l 5"];
       pathsFromFile = "/home/${config.base.user}/.backuplist";
-      rcloneConf = config.secrets.store.backup.rclone.owncloud;
+      inherit rcloneConf;
     };
-    paperless.rcloneConf = config.secrets.store.backup.rclone.owncloud;
-    forgejo.rcloneConf = config.secrets.store.backup.rclone.owncloud;
-    shiori.rcloneConf = config.secrets.store.backup.rclone.owncloud;
+    paperless.rcloneConf = rcloneConf;
+    forgejo.rcloneConf = rcloneConf;
+    shiori.rcloneConf = rcloneConf;
+    radicale.rcloneConf = rcloneConf;
   };
 
   services.backup-fetcher = {
