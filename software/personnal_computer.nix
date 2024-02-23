@@ -171,7 +171,6 @@ in {
     sound.enable = true;
 
     software.protonvpn.secrets = config.secrets.store.credentials.protonvpn;
-    software.shell.ai.token = config.secrets.store.tokens.openai;
     # TODO    Use SDDM instead of gdm ?
 
     services.printing = {
