@@ -24,6 +24,7 @@ in {
 
     environment = {
       variables.EDITOR = "hx";
+      # TODO  Setup autojump
       systemPackages = with pkgs; [
         newsflash # RSS reader
         gimp-with-plugins # Image editor
