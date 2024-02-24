@@ -29,9 +29,6 @@ in {
         newsflash # RSS reader
         gimp-with-plugins # Image editor
         apostrophe  # Markdown editor
-        gummi
-        gnome-latex
-        blanket # Play relaxing sound
         shortwave # Listen Internet radio
         gnome-podcasts # Listen to podcasts
         audacity
@@ -44,9 +41,10 @@ in {
         imagemagick
         mold
         jq
-        openvswitch
         gamemode
         foliate # Ebook reader
+        protonmail-bridge
+        evolution
 
         config.boot.kernelPackages.perf
       ];
