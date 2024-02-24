@@ -122,7 +122,6 @@
   software.tui.jrnl.editor = "hx";
 
   backup.base_dir = "/data/backup";
-  # TODO  Migrate backups to Owncloud instead
   backup.services = {
     global = {
       user = config.base.user;

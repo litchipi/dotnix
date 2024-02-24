@@ -82,11 +82,12 @@
         inherit (bck_cfg) user;
         secret = bck_cfg.secrets;
       };
+    } // (lib.attrsets.optionalAttrs (!builtins.isNull bck_cfg.rcloneConf) {
       "rclone_${name}" = {
         inherit (bck_cfg) user;
         secret = bck_cfg.rcloneConf;
       };
-    };
+    });
 
     setup.directories = [
       { path = restic_repo_path; owner = bck_cfg.user; }
@@ -103,7 +104,7 @@
       } // bck_cfg.timerConfig;
     };
 
-    systemd.services."rclone-${name}-backup" = if (builtins.isNull bck_cfg.rcloneConf.file)
+    systemd.services."rclone-${name}-backup" = if (builtins.isNull bck_cfg.rcloneConf)
       then {}
       else (mkRcloneService {
         bind = "restic-backups-${name}.service";
