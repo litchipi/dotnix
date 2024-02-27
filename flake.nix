@@ -58,8 +58,6 @@
 
     # Packages
     helix.url = "github:helix-editor/helix/master";
-
-    mealie.url = "github:litchipi/nixos-service-builder/mealie";
   };
 
   outputs = { nixpkgs, nixpkgs_unstable, ...}@inputs:
@@ -78,9 +76,14 @@
         config.allowUnfree = true;
         overlays = common_overlays;
       };
+
+      pkgs_from_unstable = self: super: {
+      };
+
       pkgs = import nixpkgs {
         overlays = common_overlays ++ [
           inputs.nixos-secrets.overlays.${system}.default
+          pkgs_from_unstable
         ];
         config.allowUnfree = true;
         inherit system;
@@ -100,7 +103,6 @@
         inputs.home-manager.nixosModules.home-manager
         inputs.StevenBlackHosts.nixosModule
         inputs.shix.nixosModules.${system}.default
-        inputs.mealie.nixosModules.${system}.default
         # inputs.envfs.nixosModules.envfs
         (pkgs.secrets.mkModule ./data/secrets/secrets.json)
         {

@@ -9,6 +9,7 @@
     ../common/services/forgejo.nix
     ../common/services/forgejo-runner.nix
     ../common/services/nas.nix
+    ../common/services/mealie.nix
     ../common/services/radicale.nix
     ../common/software/shell/helix.nix
     ../common/software/shell/tui.nix
@@ -93,6 +94,8 @@
   services.mealie = {
     enable = true;
     port = 8084;
+    secrets = config.secrets.store.services.mealie.suzie;
+    backup = true;
   };
 
   services.radicale = {

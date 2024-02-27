@@ -10,7 +10,7 @@
       ];
       cores = 8;
       memorySize = 1024*4;
-      diskSize = 1024*40;
+      # diskSize = lib.mkForce 1024*40;
       forwardPorts = lib.attrsets.mapAttrsToList (_: value: value) config.base.networking.vm_forward_ports;
     };
 
