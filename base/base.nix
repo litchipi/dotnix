@@ -139,6 +139,9 @@ in
       gnupg pinentry pinentry-curses
       file
       srm
+
+      # Libraries used pretty much everywhere
+      openssl.dev
     ];
 
     nix.settings = {
