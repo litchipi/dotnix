@@ -19,7 +19,6 @@ in
   {
     imports = [
       ./shell_aliases.nix
-      ./jrnl.nix
       ./tmux.nix
       ./irssi.nix
     ];

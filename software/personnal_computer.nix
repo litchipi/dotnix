@@ -120,7 +120,6 @@ in {
         default_nick = "stixp";
       };
       package_sets.complete = true;
-      jrnl.editor = "hx";
     };
 
     base.home_cfg.programs.irssi.networks.libera.channels = {
@@ -158,14 +157,6 @@ in {
       pathsFromFile = "/home/${config.base.user}/.backuplist";
       rcloneConf = config.secrets.store.backup.rclone.owncloud;
     };
-    environment.interactiveShellInit = ''
-      addbackup() {
-        for arg in "$@"; do
-          realpath "$arg" >> /home/${config.base.user}/.backuplist
-        done
-      }
-    '';
-
     sound.enable = true;
 
     software.protonvpn.secrets = config.secrets.store.credentials.protonvpn;
@@ -222,5 +213,15 @@ in {
         };
       };
     };
+
+    environment.shellAliases = {
+    };
+    environment.interactiveShellInit = ''
+      addbackup() {
+        for arg in "$@"; do
+          realpath "$arg" >> /home/${config.base.user}/.backuplist
+        done
+      }
+    '';
   };
 }
