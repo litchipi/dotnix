@@ -223,5 +223,8 @@ in {
         done
       }
     '';
+
+    # Allow to write to /etc/hosts (with admin rights)
+    environment.etc.hosts.mode = "0644";
   };
 }
