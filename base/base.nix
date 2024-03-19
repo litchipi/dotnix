@@ -139,6 +139,7 @@ in
       gnupg pinentry pinentry-curses
       file
       srm
+      zip
 
       # Libraries used pretty much everywhere
       openssl.dev
