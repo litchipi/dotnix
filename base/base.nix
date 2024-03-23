@@ -168,6 +168,7 @@ in
     hardware.opengl = {
       enable = true;
       driSupport = true;
+      driSupport32Bit = true;
       extraPackages = builtins.attrValues {
         inherit (pkgs)
           vaapiVdpau
