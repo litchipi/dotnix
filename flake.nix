@@ -73,8 +73,8 @@
   in inputs.flake-utils.lib.eachDefaultSystem (system: let
       pkgs_unstable = import nixpkgs_unstable {
         inherit system;
-        config.allowUnfree = true;
         overlays = common_overlays;
+        config.allowUnfree = true;
       };
 
       pkgs_from_unstable = self: super: {

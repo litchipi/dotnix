@@ -29,13 +29,11 @@
       nvidiaSettings = true;
 
       package = config.boot.kernelPackages.nvidiaPackages.stable;
-      prime = lib.mkForce {
-        amdgpuBusId = "PCI:5:0:0";
-        nvidiaBusId = "PCI:1:0:0";
-      };
+      # prime = lib.mkForce {
+      #   amdgpuBusId = "PCI:5:0:0";
+      #   nvidiaBusId = "PCI:1:0:0";
+      # };
     };
-
-    bumblebee.enable = true;
   };
 
   boot = if config.setup.is_vm then {} else {
