@@ -7,7 +7,7 @@
     setbrightness = "${pkgs.brightnessctl}/bin/brightnessctl -d amdgpu_bl1 set";
   };
 
-  services.xserver.videoDrivers = [ "nvidia" ];
+  services.xserver.videoDrivers = [ "amdgpu" "nvidia" ];
 
   hardware.opengl.extraPackages = with pkgs; [
     amdvlk
@@ -30,12 +30,12 @@
 
       package = config.boot.kernelPackages.nvidiaPackages.stable;
       prime = lib.mkForce {
-        offload.enable = false;
-        sync.enable = true;
         amdgpuBusId = "PCI:5:0:0";
         nvidiaBusId = "PCI:1:0:0";
       };
     };
+
+    bumblebee.enable = true;
   };
 
   boot = if config.setup.is_vm then {} else {
