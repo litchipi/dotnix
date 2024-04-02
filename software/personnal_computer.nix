@@ -47,8 +47,15 @@ in {
         evolution
 
         config.boot.kernelPackages.perf
+        dolphin-emu
+        handbrake
       ];
     };
+
+    services.udev.packages = with pkgs; [
+      utsushi
+      dolphin-emu
+    ];
 
     users.users.${config.base.user} = {
       icon = ../data/assets/user_icons/litchipi.png;
@@ -191,7 +198,6 @@ in {
 
     # Scanners
     services.ipp-usb.enable = true;
-    services.udev.packages = [ pkgs.utsushi ];
     hardware.sane = {
       enable = true;
       extraBackends = [ pkgs.sane-airscan pkgs.utsushi pkgs.epkowa ];
