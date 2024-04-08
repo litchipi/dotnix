@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }: let
+{ config, lib, pkgs, pkgs_unstable, ... }: let
   libcolors = import ../lib/colors.nix {inherit config lib pkgs;};
 in {
   imports = [
@@ -191,6 +191,7 @@ in {
     hardware.pulseaudio.enable = false;
     services.pipewire = {
       enable = true;
+      package = pkgs_unstable.pipewire;
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
