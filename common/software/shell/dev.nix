@@ -66,7 +66,7 @@ let
       name = "rust";
       add_pkgs = with pkgs_unstable; [
         gcc
-        (rust-bin.stable.latest.default.override {
+        (rust-bin.stable."1.75.0".default.override {
           extensions = [ "rust-src" ];
         })
         cargo-watch
@@ -88,7 +88,7 @@ let
         cargocheck = "cargo-watch -c -x 'check --tests'";
       };
       helixlang = let
-        lsp = "${pkgs_unstable.rust-analyzer}/bin/rust-analyzer";
+        lsp = "${pkgs.rust-analyzer}/bin/rust-analyzer";
       in ''
         language-servers = ["rust-analyzer"]
 
