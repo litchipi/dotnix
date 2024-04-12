@@ -138,16 +138,16 @@ let
     nix = lang_profile {
       name = "nix";
       add_pkgs = with pkgs_unstable; [
-        rnix-lsp
+        # rnix-lsp
         manix
       ];
       vimplugs = with pkgs_unstable.vimPlugins; [
         vim-nix
       ];
-      coc-settings.languageserver.nix = {
-        command = "rnix-lsp";
-        filetypes = ["nix"];
-      };
+      # coc-settings.languageserver.nix = {
+      #   command = "rnix-lsp";
+      #   filetypes = ["nix"];
+      # };
       helixlang = let
         lsp = "${pkgs_unstable.nil}/bin/nil";
       in ''
