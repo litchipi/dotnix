@@ -6,6 +6,7 @@ in {
     ../common/system/backup.nix
     ../common/system/server.nix
     ../common/system/nixcfg.nix
+    ../common/system/cleaner.nix
     ../common/software/basic.nix
     ../common/software/music.nix
     ../common/software/games.nix
@@ -235,5 +236,7 @@ in {
 
     # Allow to write to /etc/hosts (with admin rights)
     environment.etc.hosts.mode = "0644";
+
+    cleaner.enable = true;
   };
 }
