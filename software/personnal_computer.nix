@@ -49,6 +49,8 @@ in {
         config.boot.kernelPackages.perf
         dolphin-emu
         handbrake
+        vlc
+        kicad-small
       ];
     };
 
