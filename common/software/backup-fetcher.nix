@@ -100,9 +100,12 @@ in {
     #  message = TODO;
     # }) cfg.fetchers;
 
-    systemd.timers = builtins.mapAttrs (_: opts: {
-      wantedBy = [ "timers.target" ];
-      inherit (opts) timerConfig;
+    systemd.timers = lib.attrsets.mapAttrs' (name: opts: {
+      name = "fetch-backup-${name}";
+      value = {
+        wantedBy = [ "timers.target" ];
+        inherit (opts) timerConfig;
+      };
     }) cfg.fetchers;
 
     systemd.services = lib.attrsets.mapAttrs' (name: opts: {
