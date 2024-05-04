@@ -130,8 +130,6 @@
     "84.200.69.80"
   ];
 
-  software.tui.jrnl.editor = "hx";
-
   backup.base_dir = "/data/backup";
   backup.services = let
     rcloneConf = config.secrets.store.backup.rclone.owncloud;
