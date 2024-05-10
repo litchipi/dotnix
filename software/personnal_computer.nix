@@ -52,6 +52,7 @@ in {
         handbrake
         vlc
         kicad-small
+        protonmail-bridge
       ];
     };
 
