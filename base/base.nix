@@ -122,28 +122,32 @@ in
        enableSSHSupport = true;
     };
 
-    environment.variables = {
-      DOTNIX_SRC="${./..}";
+    environment = {
+      variables = {
+        DOTNIX_SRC="${./..}";
+      };
+
+      localBinInPath = true;
+
+      systemPackages = with pkgs; [
+        # TODO    Put in hardware.firmware directly ?
+        # Firmwares
+        linux-firmware
+        sof-firmware
+        alsa-firmware
+
+        complete-alias
+        coreutils-full
+        gitFull git-crypt pass-git-helper git-lfs
+        gnupg pinentry pinentry-curses
+        file
+        srm
+        zip
+
+        # Libraries used pretty much everywhere
+        openssl.dev
+      ];
     };
-
-    environment.systemPackages = with pkgs; [
-      # TODO    Put in hardware.firmware directly ?
-      # Firmwares
-      linux-firmware
-      sof-firmware
-      alsa-firmware
-
-      complete-alias
-      coreutils-full
-      gitFull git-crypt pass-git-helper
-      gnupg pinentry pinentry-curses
-      file
-      srm
-      zip
-
-      # Libraries used pretty much everywhere
-      openssl.dev
-    ];
 
     nix.settings = {
       experimental-features = [ "nix-command" "flakes" ];
