@@ -238,6 +238,6 @@ in {
     # Allow to write to /etc/hosts (with admin rights)
     environment.etc.hosts.mode = "0644";
 
-    cleaner.enable = true;
+    # cleaner.enable = true;
   };
 }
