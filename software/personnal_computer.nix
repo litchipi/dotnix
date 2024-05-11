@@ -6,7 +6,7 @@ in {
     ../common/system/backup.nix
     ../common/system/server.nix
     ../common/system/nixcfg.nix
-    ../common/system/cleaner.nix
+    ../common/system/maintenance.nix
     ../common/software/basic.nix
     ../common/software/music.nix
     ../common/software/games.nix
@@ -239,5 +239,10 @@ in {
     environment.etc.hosts.mode = "0644";
 
     # cleaner.enable = true;
+    maintenance = {
+      enable = true;
+      nixStoreOptimize.enable = true;
+      flatpakUpdate.enable = true;
+    };
   };
 }

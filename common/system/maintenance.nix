@@ -4,7 +4,7 @@
   cmd = c: err: "${c} 2>&1 || echo 'ERR: ${err}'";
 
   scripts = {
-    flatpak = cmd "flatpak update --noninteractive" "Flatpak update failed";
+    flatpakUpdate = cmd "flatpak update --noninteractive" "Flatpak update failed";
 
     flakeUpdateAll = ''
       cd ${config.setup.config_repo_path}
@@ -39,7 +39,7 @@
     (optionalString cfg.nixosUpgrade.enable 
       (scripts.nixosUpgrade cfg.nixosUpgrade.dry)
     )
-    (optionalString cfg.flatpak.enable scripts.flatpak)
+    (optionalString cfg.flatpakUpdate.enable scripts.flatpakUpdate)
     (optionalString cfg.nixGc.enable (scripts.nixGc cfg.nixGc.olderThan))
     (optionalString cfg.nixStoreOptimize.enable scripts.nixStoreOptimize)
     "echo 'Maintenance done'"
@@ -57,7 +57,7 @@ in {
       default = { OnCalendar = "daily"; };
     };
 
-    flatpak.enable = lib.mkEnableOption {
+    flatpakUpdate.enable = lib.mkEnableOption {
       description = "Update automatically the flatpak installed packages";
     };
 
