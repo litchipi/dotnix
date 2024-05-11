@@ -114,11 +114,14 @@ in {
       wants = [ "local-fs.target" ];
       wantedBy = lib.mkForce [];
       after = [ "local-fs.target" ];
+
       path = with pkgs; [
         nixos-rebuild 
         nix
         git
-      ];
+      ] 
+        ++ (if cfg.flatpakUpdate.enable then [ pkgs.flatpak ] else [])
+      ;
 
       script = mkScript cfg;
 
