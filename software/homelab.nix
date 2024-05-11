@@ -4,6 +4,7 @@
     ../common/system/server.nix
     ../common/system/backup.nix
     ../common/system/nixcfg.nix
+    ../common/system/maintenance.nix
     ../common/services/paperless.nix
     ../common/services/shiori.nix
     ../common/services/forgejo.nix
@@ -15,8 +16,6 @@
     ../common/software/shell/tui.nix
     ../common/software/backup-fetcher.nix
   ];
-
-  # TODO Auto system update + reboot
 
   base.user = "op";
   base.email = "litchi.pi@proton.me";
@@ -211,4 +210,11 @@
       done
     }
   '';
+
+  maintenance = {
+    enable = true;
+    flakeUpdateAll.enable = true;
+    nixosUpgrade.enable = true;
+    nixStoreOptimize.enable = true;
+  };
 }

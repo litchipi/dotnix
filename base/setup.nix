@@ -16,7 +16,7 @@
     config_repo_path = lib.mkOption {
       type = lib.types.str;
       description = "Path of the git repository where the dotnix files are";
-      default = "$HOME/dotnix";
+      default = "/home/${config.base.user}/dotnix";
     };
 
     directories = lib.mkOption {
