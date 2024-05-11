@@ -125,7 +125,9 @@ in {
 
       script = mkScript cfg;
 
-      serviceConfig.Type = "oneshot";
+      serviceConfig = {
+        Type = "oneshot";
+      };
     };
   };
 }
