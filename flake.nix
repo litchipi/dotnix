@@ -134,6 +134,10 @@
             inputs.nixos-hardware.nixosModules.lenovo-legion-15arh05h
           ];
         };
+        bertha = {
+          software = ./software/bertha.nix;
+          hardware = ./hardware/bertha.nix;
+        };
       };
 
       common_apps = {

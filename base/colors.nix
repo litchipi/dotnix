@@ -102,6 +102,11 @@ in
         style = colors.style.bold;
       };
 
+      hostname = colors.mk_color_option {
+        description = "Color for PS1 hostname";
+        color = colors.basic.gray 120;
+      };
+
       wdir = colors.mk_color_option {
         description = "Color for PS1 word directory";
         color = cfg.palette.secondary;
