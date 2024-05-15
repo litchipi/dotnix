@@ -1,9 +1,9 @@
 { config, lib, ... }:
 let
-  escape_code = ''\033['';
+  ansi_code = code: ''\[\033${code}\]'';
 
-  ansi_fg = {r, g, b, style}: style + escape_code + "38;2;${builtins.toString r};${builtins.toString g};${builtins.toString b}m";
-  ansi_bg = {r, g, b, style}: style + escape_code + "38;2;${builtins.toString r};${builtins.toString g};${builtins.toString b}m";
+  ansi_fg = {r, g, b, style}: style + (ansi_code "38;2;${builtins.toString r};${builtins.toString g};${builtins.toString b}m");
+  ansi_bg = {r, g, b, style}: style + (ansi_code "38;2;${builtins.toString r};${builtins.toString g};${builtins.toString b}m");
 
   apply_to_all_colors = f: set:
     lib.attrsets.mapAttrs (_: value:
@@ -77,15 +77,15 @@ rec {
     subsat = a: b: lib.trivial.max 0 (builtins.sub a b);
   in {r=subsat r amnt; g=subsat g amnt; b=subsat b amnt;};
 
-  reset = escape_code + "0m";
+  reset = ansi_code "0m";
 
   style = {
-    bold = reset + escape_code + "1m";
-    italic = reset + escape_code + "3m";
-    underline = reset + escape_code + "4m";
-    reverse = reset + escape_code + "7m";
-    striked = reset + escape_code + "9m";
-    double_underline = reset + escape_code + "21m";
+    bold = reset + (ansi_code "1m");
+    italic = reset + (ansi_code "3m");
+    underline = reset + (ansi_code "4m");
+    reverse = reset + (ansi_code "7m");
+    striked = reset + (ansi_code "9m");
+    double_underline = reset + (ansi_code "21m");
   };
 
   mk_color_option = {
