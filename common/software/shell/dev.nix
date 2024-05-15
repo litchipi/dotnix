@@ -159,9 +159,7 @@ let
     };
 
     python = let
-      pythonpkg = pkgs.python310.withPackages (p: with p; [
-        pip
-        virtualenv
+      pythonpkg = pkgs.python312.withPackages (p: with p; [
         requests
       ]);
     in lang_profile {
@@ -172,21 +170,14 @@ let
         poetry
         black
       ];
-      vimplugs = with pkgs_unstable.vimPlugins; [
-        coc-pyright
-      ];
-      coc-settings.python = {
-        pythonPath = "${pythonpkg}/bin/python3";
-        pyright.server = "${pkgs.nodePackages.pyright}/bin/pyright";
-      };
-      helixlang = let
-        lsp = "${pkgs_unstable.python310Packages.python-lsp-server}/bin/pylsp";
-      in ''
-        language-servers = ["pylsp"]
 
-        [language-server.pylsp]
-        command = "${lsp}"
-      '';
+      # TODO  Fixme  Fix python lsp
+      # helixlang = ''
+      #   language-servers = ["pylsp"]
+
+      #   [language-server.pylsp]
+      #   command = "${pkgs.python312Packages.python-lsp-server}/bin/python-lsp-server"
+      # '';
     };
 
     c = lang_profile {
