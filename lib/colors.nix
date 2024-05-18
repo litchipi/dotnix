@@ -1,6 +1,6 @@
 { config, lib, ... }:
 let
-  ansi_code = code: ''\[\033${code}\]'';
+  ansi_code = code: ''\[\033[${code}\]'';
 
   ansi_fg = {r, g, b, style}: style + (ansi_code "38;2;${builtins.toString r};${builtins.toString g};${builtins.toString b}m");
   ansi_bg = {r, g, b, style}: style + (ansi_code "38;2;${builtins.toString r};${builtins.toString g};${builtins.toString b}m");
