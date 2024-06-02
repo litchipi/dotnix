@@ -61,15 +61,18 @@ in
 
       programs.dconf.enable = true;
 
+      services.libinput.enable = true;
+      services.displayManager.autoLogin = {
+        enable = cfg.autologin;
+        user = config.base.user;
+      };
+
       services.xserver = {
         enable = true;
-        layout = "fr";
-        xkbOptions = "eurosign:e";
-        libinput.enable = true;
-        xkbVariant = "";
-        displayManager.autoLogin = {
-          enable = cfg.autologin;
-          user = config.base.user;
+        xkb = {
+          variant = "";
+          options = "eurosign:e";
+          layout = "fr";
         };
         desktopManager.wallpaper.mode = lib.mkIf config.services.xserver.enable "fill";
 
