@@ -69,8 +69,8 @@ in
   };
 
   config = {
-    system.stateVersion = "23.11";
-    base.home_cfg.home.stateVersion = "23.11";
+    system.stateVersion = "24.05";
+    base.home_cfg.home.stateVersion = "24.05";
 
     boot = {
       tmp.cleanOnBoot = true;
@@ -118,7 +118,6 @@ in
     services.pcscd.enable = lib.mkDefault true;
     programs.gnupg.agent = {
        enable = lib.mkDefault true;
-       pinentryFlavor = "curses";
        enableSSHSupport = true;
     };
 

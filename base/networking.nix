@@ -84,7 +84,7 @@ in
             workstation = true;
             addresses = true;
         };
-        nssmdns = true;
+        nssmdns4 = true;
     };
 
     networking.wireless.networks = builtins.listToAttrs (

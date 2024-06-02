@@ -24,8 +24,8 @@ in {
     services.paperless = {
       address = "0.0.0.0";
       passwordFile = cfg.secrets.admin_pwd.file;
-      extraConfig.PAPERLESS_OCR_LANGUAGE = "fra+eng";
-      extraConfig.PAPERLESS_OCR_USER_ARGS = builtins.toJSON {
+      settings.PAPERLESS_OCR_LANGUAGE = "fra+eng";
+      settings.PAPERLESS_OCR_USER_ARGS = builtins.toJSON {
         optimize = 1;
         pdfa_image_compression = "lossless";
         invalidate_digital_signatures = true;
