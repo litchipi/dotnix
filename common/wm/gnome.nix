@@ -52,18 +52,7 @@ in
 
     config = {
       environment.systemPackages = (with pkgs_unstable.gnomeExtensions; libgnome.adaptGnomeExtensions "44" [
-        (bring-out-submenu-of-power-offlogout-button.overrideAttrs (_: {
-          src = pkgs.fetchFromGitHub {
-            owner = "PRATAP-KUMAR";
-            repo = "Bring-Out-Submenu-of-Power-Off-Logout";
-            rev = "708150539cd5a173023a9ac7f3b1488d76510b83";
-            sha256 = "sha256-hxG4+YH/zVd41oUKySQnV7rVK8xbNLDdd4y7gEIq3NA=";
-          };
-        }))
-        disable-workspace-switcher
-        gnome-40-ui-improvements
         caffeine
-        hide-activities-button
         runcat
         tray-icons-reloaded
         bluetooth-quick-connect
@@ -73,7 +62,6 @@ in
       ]) ++ (if builtins.isNull cfg.theme then [] else [ cfg.theme.package ]);
 
       environment.shellAliases = {
-        logout = "dbus-send --session --type=method_call --print-reply --dest=org.gnome.SessionManager /org/gnome/SessionManager org.gnome.SessionManager.Logout uint32:1";
       };
 
       services.xserver = {

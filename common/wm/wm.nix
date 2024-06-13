@@ -76,9 +76,9 @@ in
         };
         desktopManager.wallpaper.mode = lib.mkIf config.services.xserver.enable "fill";
 
-        screenSection = ''
-          Option         "TripleBuffer" "on"
-        '';
+        # screenSection = ''
+        #   Option         "TripleBuffer" "on"
+        # '';
       };
 
       # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
