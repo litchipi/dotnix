@@ -233,6 +233,7 @@ in
         openssl.dev
         openssl_3.dev
         dbus.dev
+        nasm
       ];
       environment.variables.OPENSSL_DEV = "${pkgs.openssl.dev}";
       environment.variables.PKG_CONFIG_PATH = "$PKG_CONFIG_PATH:${pkgs.openssl.dev}/lib/pkgconfig";
