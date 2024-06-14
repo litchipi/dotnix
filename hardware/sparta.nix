@@ -3,10 +3,6 @@
 
   powerManagement.cpuFreqGovernor = "performance";
 
-  environment.shellAliases = {
-    setbrightness = "${pkgs.brightnessctl}/bin/brightnessctl -d amdgpu_bl1 set";
-  };
-
   services.xserver.videoDrivers = [ "amdgpu" "nvidia" ];
 
   hardware.opengl.extraPackages = with pkgs; [
@@ -37,10 +33,7 @@
   };
 
   boot = if config.setup.is_vm then {} else {
-    kernelPackages = pkgs.linuxPackages_xanmod_latest;
-    kernelParams = [
-      "amdgpu.backlight=0"  # TODO FIXME hybrid gpu backlight
-    ];
+    kernelPackages = pkgs.linuxPackages_latest;
 
     loader = {
       systemd-boot.enable = true;
