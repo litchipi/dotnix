@@ -33,7 +33,7 @@
   };
 
   boot = if config.setup.is_vm then {} else {
-    kernelPackages = pkgs.linuxPackages_xanmod_stable;
+    kernelPackages = pkgs.linuxPackages_zen;
 
     loader = {
       systemd-boot.enable = true;
