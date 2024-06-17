@@ -53,6 +53,7 @@ in {
         vlc
         kicad-small
         protonmail-bridge
+        gnome.pomodoro
       ];
     };
 
@@ -179,7 +180,8 @@ in {
     };
 
     virtualisation = {
-      virtualbox.host.enable = true;
+      # TODO  IMPORTANT  Re-enable
+      # virtualbox.host.enable = true;
       lxd.enable = true;
       lxd.recommendedSysctlSettings = true;
       lxc.lxcfs.enable = true;
