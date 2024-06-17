@@ -123,6 +123,10 @@ in {
         package = pkgs.cantarell-fonts;
       };
 
+      gnome.add_extensions = with pkgs.gnomeExtensions; [
+        cronomix
+        window-is-ready-remover
+      ];
       # gnome.user_icon = libdata.get_data_path ["assets" "desktop" "user_icons" "litchi.png"];
     };
 
