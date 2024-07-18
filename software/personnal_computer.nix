@@ -54,6 +54,7 @@ in {
         kicad-small
         protonmail-bridge
         gnome.pomodoro
+        gdb
       ];
     };
 
@@ -160,6 +161,10 @@ in {
     };
 
     networking.stevenBlackHosts.enable = true;
+    networking.hosts = {
+      "127.0.0.1" = [ "suzie.local" ];
+      "192.168.1.163" = [ "suzie.local" ];
+    };
     
     services.blueman.enable = true;
     services.flatpak.enable = true;
