@@ -59,6 +59,7 @@
   };
 
   config = {
+    programs.git.config.safe.directory = config.setup.config_repo_path;
     systemd.services.create_setup_dirs = {
       wantedBy = [ "local-fs.target" ];
       after = [ "local-fs.target" ];
