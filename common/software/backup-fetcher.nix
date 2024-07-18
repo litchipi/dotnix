@@ -77,7 +77,7 @@
 
     set -x
     zip "${opts.outputFile}" -9 -v -T -r .
-    chown ${opts.outfileOwner} ${opts.outputFile}
+    chown ${opts.outfileOwner}:${opts.outfileOwner} ${opts.outputFile}
     chmod ${opts.outfilePerms} ${opts.outputFile}
   '' + (lib.strings.optionalString (!builtins.isNull opts.exitTargetScript) ''
     ssh -i ${opts.identityFile} ${opts.sshTarget} << 'ENDSSH'
