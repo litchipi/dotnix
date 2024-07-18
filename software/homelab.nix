@@ -164,7 +164,7 @@
         ];
 
         exitTargetScript = ''
-          rm /home/john/logs/*
+          rm -f /home/john/logs/*
         '';
 
         beforeCompressScript = ''
