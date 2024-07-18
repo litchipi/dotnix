@@ -6,6 +6,7 @@
     ../common/system/nixcfg.nix
     ../common/system/maintenance.nix
     ../common/services/paperless.nix
+    ../common/services/firefly.nix
     ../common/services/forgejo.nix
     ../common/services/forgejo-runner.nix
     ../common/services/nas.nix
@@ -39,6 +40,13 @@
     backup = true;
     port = 8081;
     secrets = config.secrets.store.services.paperless.${config.base.hostname};
+  };
+
+  services.firefly-iii = {
+    enable = true;
+    backup = true;
+    port = 8082;
+    secrets = config.secrets.store.services.firefly.${config.base.hostname};
   };
 
   services.nas = {
