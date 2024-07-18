@@ -69,7 +69,7 @@
   in ''
     set -ex
     OUTDIR=$(mktemp -d)
-    scp ${ssh_opts} -OT -r ${opts.sshTarget}:"${all_files}" "$OUTDIR/"
+    scp ${ssh_opts} -OT -r ${opts.sshTarget}:"${all_files}" "$OUTDIR/" || echo "Some files were not found"
     cd "$OUTDIR"
     set +x
 
