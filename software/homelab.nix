@@ -47,13 +47,6 @@
     secrets = config.secrets.store.services.paperless.${config.base.hostname};
   };
 
-  services.shiori = {
-    enable = true;
-    backup = true;
-    port = 8082;
-    secrets = config.secrets.store.services.shiori.${config.base.hostname};
-  };
-
   services.nas = {
     enable = true;
     rootPath = "/data/nas";
