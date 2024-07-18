@@ -23,6 +23,7 @@
   networking.interfaces.enp2s0.ipv4.addresses = [
     { address = "192.168.1.163"; prefixLength = 24; }
   ];
+  server.full = true;
 
   networking.firewall.allowedTCPPorts = [ 8080 ];
 
@@ -32,12 +33,6 @@
       extensions = [ "rust-src" ];
     })
   ];
-
-  services.fail2ban = {
-    enable = true;
-    ignoreIP = [ "192.168.0.0/16" ];
-    bantime = "6h";
-  };
 
   services.paperless = {
     enable = true;

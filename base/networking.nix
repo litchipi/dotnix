@@ -35,10 +35,13 @@ in
   config = let
     ssh_ident = "${config.base.user}@${config.base.hostname}";
   in {
+
     secrets.store.ssh_privk.${config.base.hostname}.${config.base.user} = {
       link = "/home/${config.base.user}/.ssh/id_rsa";
       transform = "cat - <(echo \"\")";
     };
+
+    # TODO  IMPORTANT  Fixup ssh id private key permissions
     secrets.setup.ssh_privk = {
       user = config.base.user;
       secret = config.secrets.store.ssh_privk.${config.base.hostname}.${config.base.user};
