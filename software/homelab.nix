@@ -6,7 +6,6 @@
     ../common/system/nixcfg.nix
     ../common/system/maintenance.nix
     ../common/services/paperless.nix
-    ../common/services/shiori.nix
     ../common/services/forgejo.nix
     ../common/services/forgejo-runner.nix
     ../common/services/nas.nix
@@ -137,7 +136,6 @@
     };
     paperless.rcloneConf = rcloneConf;
     forgejo.rcloneConf = rcloneConf;
-    shiori.rcloneConf = rcloneConf;
     radicale.rcloneConf = rcloneConf;
   };
 
