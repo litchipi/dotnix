@@ -1,5 +1,17 @@
 { config, lib, pkgs, pkgs_unstable, ... }: let
   libcolors = import ../lib/colors.nix {inherit config lib pkgs;};
+
+  suzie_ip = "78.123.114.124";
+  port_fwd = [ 8081 8082 8083 8084 8085 8086 8087 8088 8089 ];
+  port_fwd_args = builtins.concatStringsSep " " (builtins.map (
+    port: "-L ${builtins.toString port}:localhost:${builtins.toString port}"
+  ) port_fwd);
+  suzie_bridge = pkgs.writeScriptBin "suzie-bridge" ''
+    set -e
+    echo "Forwarding ports ${builtins.concatStringsSep ", " (builtins.map builtins.toString port_fwd)}"
+    ping -c 1 ${suzie_ip} -W 5 1>/dev/null && echo "Suzie reachable"
+    ssh -N ${port_fwd_args} op@${suzie_ip}
+  '';
 in {
   imports = [
     ../common/wm/gnome.nix
@@ -55,6 +67,7 @@ in {
         protonmail-bridge
         gnome.pomodoro
         gdb
+        suzie_bridge
       ];
     };
 
@@ -165,6 +178,7 @@ in {
       "127.0.0.1" = [ "suzie.local" ];
       "192.168.1.163" = [ "suzie.local" ];
     };
+
     
     services.blueman.enable = true;
     services.flatpak.enable = true;
