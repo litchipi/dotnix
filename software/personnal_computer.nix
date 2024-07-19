@@ -175,10 +175,9 @@ in {
 
     networking.stevenBlackHosts.enable = true;
     networking.hosts = {
-      "127.0.0.1" = [ "suzie.local" ];
       "192.168.1.163" = [ "suzie.local" ];
+      "${suzie_ip}" = [ "suzie.local" "suzie.remote" ];
     };
-
     
     services.blueman.enable = true;
     services.flatpak.enable = true;
