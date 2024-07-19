@@ -11,6 +11,7 @@
     ../common/services/forgejo-runner.nix
     ../common/services/nas.nix
     ../common/services/mealie.nix
+    ../common/services/ifm.nix
     ../common/services/radicale.nix
     ../common/software/shell/helix.nix
     ../common/software/shell/tui.nix
@@ -102,6 +103,15 @@
     enable = true;
     port = 8085;
     secrets = config.secrets.store.services.radicale.suzie;
+    backup = true;
+  };
+
+  users.users.ifm.extraGroups = [ "nas" ]; # Allow access to folder /data/nas
+  services.ifm = {
+    enable = true;
+    port = 8086;
+    dataDir = "/data/nas";
+    secrets = config.secrets.store.services.ifm.suzie;
     backup = true;
   };
 
