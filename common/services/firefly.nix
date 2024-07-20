@@ -14,6 +14,12 @@ in {
       type = lib.types.port;
       description = "Port on which to serve the service";
     };
+
+    listenAddress = lib.mkOption {
+      type = lib.types.str;
+      default = "0.0.0.0";
+      description = "On which address to serve the service";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -30,7 +36,7 @@ in {
       after = [ "network-online.target" ];
 
       script = ''
-        ${lib.getExe pkgs.php83} -S ${builtins.toString cfg.port} -t ${cfg.package}
+        ${lib.getExe pkgs.php83} -S ${cfg.listenAddress}:${builtins.toString cfg.port} -t ${cfg.package}/public
       '';
     };
 

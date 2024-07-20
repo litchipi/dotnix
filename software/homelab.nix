@@ -7,6 +7,7 @@
     ../common/system/maintenance.nix
     ../common/services/paperless.nix
     ../common/services/firefly.nix
+    ../common/services/firefly_data_importer.nix
     ../common/services/forgejo.nix
     ../common/services/forgejo-runner.nix
     ../common/services/nas.nix
@@ -27,6 +28,9 @@
   server.full = true;
 
   networking.firewall.allowedTCPPorts = [ 8080 ];
+  networking.hosts = {
+    "127.0.0.1" = [ "suzie.local" "suzie.remote"];
+  };
 
   environment.systemPackages = with pkgs; [
     gcc
@@ -48,6 +52,12 @@
     backup = true;
     port = 8082;
     secrets = config.secrets.store.services.firefly.${config.base.hostname};
+    data-importer = {
+      enable = true;
+      port = 8087;
+      settings.FIREFLY_III_URL = "http://suzie.local:8082";
+      settings.FIREFLY_III_CLIENT_ID = 5;
+    };
   };
 
   services.nas = {

@@ -1,0 +1,13 @@
+diff --git a/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php b/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php
+index 264b3e5..2e24666 100644
+--- a/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php
++++ b/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php
+@@ -892,7 +892,7 @@ if (! function_exists('storage_path')) {
+      */
+     function storage_path($path = '')
+     {
+-        return app()->storagePath($path);
++        return env('STORAGE_PATH') . '/' . $path;
+     }
+ }
+ 
