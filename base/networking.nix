@@ -81,7 +81,7 @@ in
     };
 
     services.avahi = {
-        enable = true;
+        enable = lib.mkDefault true;
         publish = {
             enable = true;
             workstation = true;

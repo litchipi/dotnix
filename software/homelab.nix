@@ -31,6 +31,7 @@
   networking.hosts = {
     "127.0.0.1" = [ "suzie.local" "suzie.remote"];
   };
+  services.avahi.enable = false;
 
   environment.systemPackages = with pkgs; [
     gcc
@@ -76,7 +77,7 @@
     settings = {
       server = rec {
         HTTP_PORT = 8083;
-        ROOT_URL = "http://192.168.1.163:${builtins.toString HTTP_PORT}";
+        ROOT_URL = "http://suzie.local:${builtins.toString HTTP_PORT}";
       };
       webhook.ALLOWED_HOST_LIST = "*";
     };
