@@ -2,15 +2,11 @@
   libcolors = import ../lib/colors.nix {inherit config lib pkgs;};
 
   suzie_ip = "78.123.114.124";
-  port_fwd = [ 8081 8082 8083 8084 8085 8086 8087 8088 8089 ];
-  port_fwd_args = builtins.concatStringsSep " " (builtins.map (
-    port: "-L ${builtins.toString port}:localhost:${builtins.toString port}"
-  ) port_fwd);
+  socks_port = 22022;
   suzie_bridge = pkgs.writeScriptBin "suzie-bridge" ''
     set -e
-    echo "Forwarding ports ${builtins.concatStringsSep ", " (builtins.map builtins.toString port_fwd)}"
     ping -c 1 ${suzie_ip} -W 5 1>/dev/null && echo "Suzie reachable"
-    ssh -N ${port_fwd_args} op@${suzie_ip}
+    ssh -N -D ${builtins.toString socks_port} -v op@${suzie_ip}
   '';
 in {
   imports = [
@@ -176,7 +172,7 @@ in {
     networking.stevenBlackHosts.enable = true;
     networking.hosts = {
       "192.168.1.163" = [ "suzie.local" ];
-      "${suzie_ip}" = [ "suzie.local" "suzie.remote" ];
+      "${suzie_ip}" = [ "suzie.remote" ];
     };
     
     services.blueman.enable = true;
