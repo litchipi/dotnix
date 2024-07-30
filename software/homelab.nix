@@ -117,13 +117,10 @@
     backup = true;
   };
 
-  users.users.ifm.extraGroups = [ "nas" ]; # Allow access to folder /data/nas
   services.ifm = {
     enable = true;
     port = 8086;
     dataDir = "/data/nas";
-    secrets = config.secrets.store.services.ifm.suzie;
-    backup = true;
   };
 
   # TODO Vikunja (+ backup) -> Or other kind of software for this
