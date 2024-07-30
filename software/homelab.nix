@@ -166,6 +166,8 @@
     paperless.rcloneConf = rcloneConf;
     forgejo.rcloneConf = rcloneConf;
     radicale.rcloneConf = rcloneConf;
+    firefly-iii.rcloneConf = rcloneConf;
+    mealie.rcloneConf = rcloneConf;
   };
 
   services.backup-fetcher = {
