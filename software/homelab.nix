@@ -128,6 +128,17 @@
   #   enable = true;
   # };
 
+  # TODO  Set up overlay with backup enabled
+  users.users.${config.services.jellyfin.user}.extraGroups = ["nas"];
+  services.jellyfin = {
+    enable = true;
+    logDir = "/var/lib/jellyfin/log";
+    configDir = "/var/lib/jellyfin/config";
+    dataDir = "/var/lib/jellyfin";
+    # Ports taken: 8096 8920
+    openFirewall = true;
+  };
+
   services.homepage-dashboard = {
     enable = true;
     openFirewall = true;
@@ -168,6 +179,11 @@
         description = "Improved File Manager, a web-based file manager";
         href = "http://suzie.local:8086";
         icon = "mdi-text-box";
+      }; }
+      { "Jellyfin" = {
+        description = "Selfhosted Netflix";
+        href = "http://suzie.local:8096";
+        icon = "jellyfin.svg";
       }; }
     ];}];
 
