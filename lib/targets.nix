@@ -12,6 +12,7 @@
       inherit pkgs format;
       modules = [ software ] ++ (if builtins.isNull hardware then [] else [hardware])
         ++ (base_modules system) ++ add_modules ++ format_modules;
+      specialArgs.inputs = inputs;
       };
 
   mkTargetPackages = base_modules: machine: system: {
@@ -41,6 +42,7 @@
       { config.setup.is_nixos = true; }
     ] ++ (if builtins.isNull hardware then [] else [hardware])
     ++ (base_modules system) ++ add_modules;
+    specialArgs.inputs = inputs;
   };
 
   mkTargetApps = base_modules: { name, ...}@machine: system: let

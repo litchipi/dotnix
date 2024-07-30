@@ -107,7 +107,7 @@
         (pkgs.secrets.mkModule ./data/secrets/secrets.json)
         {
           _module.args = {
-            inherit inputs system pkgs_unstable;
+            inherit system pkgs_unstable;
             home-manager-lib = inputs.home-manager.lib.hm;
           };
           secrets.decrypt_key_cmd = inp: out: let
