@@ -128,6 +128,101 @@
   #   enable = true;
   # };
 
+  services.homepage-dashboard = {
+    enable = true;
+    openFirewall = true;
+    listenPort = 8088;
+
+    services = [{ "Main" = [
+      { "Paperless" = {
+        description = "Document management system";
+        href = "http://suzie.local:8081/";
+        icon = "paperless.svg";
+      }; }
+      { "Firefly III" = {
+        description = "Money management platform";
+        href = "http://suzie.local:8082";
+        icon = "firefly.png";
+      }; }
+      { "Firefly data importer" = {
+        description = "Data importer for Firefly-iii";
+        href = "http://suzie.local:8087";
+        icon = "mdi-database-refresh";
+      }; }
+      { "Forgejo" = {
+        description = "Code forging platform";
+        href = "http://suzie.local:8083";
+        icon = "forgejo.svg";
+      }; }
+      { "Mealie" = {
+        description = "Meal planning and recipes scraper";
+        href = "http://suzie.local:8084";
+        icon = "mealie.svg";
+      }; }
+      { "Radicale" = {
+        description = "CalDAV contacts addressbook server";
+        href = "http://suzie.local:8085";
+        icon = "radicale.svg";
+      }; }
+      { "IFM" = {
+        description = "Improved File Manager, a web-based file manager";
+        href = "http://suzie.local:8086";
+        icon = "mdi-text-box";
+      }; }
+    ];}];
+
+    settings = {
+      title = "Suzie homelab";
+      background = {
+        # TODO  Put this somewhere directly on suzie ?
+        image = "https://vsthemes.org/uploads/posts/2022-04/1650638025_22-04-2022-19_32_45.webp";
+        blur = "sm";
+        opacity = 75;
+        brightness = 50;
+      };
+      theme = "dark";
+      color = "stone";
+      headerStyle = "clean";
+      language = "fr";
+      target = "_blank";
+      layout."Main" = {
+        style = "row";
+        columns = 4;
+      };
+    };
+
+    widgets = [
+      { resources = {
+        label = "System";
+        cpu = true;
+        disk = "/";
+        memory = true;
+        uptime = true;
+        cputemp = true;
+      }; }
+      { search = {
+        provider = "duckduckgo";
+        showSearchSuggestions = true;
+        target = "_self";
+      }; }
+      { resources = {
+        label = "Nix Store";
+        disk = "/nix/store";
+      }; }
+      { resources = {
+        label = "NAS";
+        expanded = true;
+        disk = "/data";
+      }; }
+    ];
+
+    customJS = ''
+    '';
+
+    customCSS = ''
+    '';
+  };
+
   nix.ecospace = {
     gc-enable = true;
     olderthan = "15d";
