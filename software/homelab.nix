@@ -57,7 +57,7 @@
       enable = true;
       port = 8087;
       settings.FIREFLY_III_URL = "http://suzie.local:8082";
-      settings.FIREFLY_III_CLIENT_ID = 5;
+      settings.FIREFLY_III_CLIENT_ID = 2;
     };
   };
 

@@ -31,12 +31,53 @@ in {
     };
 
     systemd.services.firefly-iii-serve = {
-      description = "Firefly iii accounting tool";
+      description = "Firefly iii accounting tool, web server";
       wants = [ "network-online.target" ];
       after = [ "network-online.target" ];
+      wantedBy = [ "multi-user.target" ];
 
-      script = ''
-        ${lib.getExe pkgs.php83} -S ${cfg.listenAddress}:${builtins.toString cfg.port} -t ${cfg.package}/public
+      serviceConfig.User = cfg.user;
+      serviceConfig.LogsDirectory = "firefly-iii";
+
+      script = let
+        nginx_config = pkgs.writeText "firefly-nginx-config" ''
+          pid /var/log/firefly-iii/ff3.pid;
+          daemon off;
+          events {}
+          http {
+            include ${pkgs.mailcap}/etc/nginx/mime.types;
+            types_hash_max_size 4096;
+            include ${pkgs.nginx}/conf/fastcgi.conf;
+            include ${pkgs.nginx}/conf/uwsgi_params;
+            default_type application/octet-stream;
+            sendfile on;
+            tcp_nopush on;
+            tcp_nodelay on;
+            gzip on;
+            server_tokens off;
+
+            access_log /var/log/firefly-iii/access.log;
+            server {
+              listen ${builtins.toString cfg.port};
+              root ${cfg.package}/public;
+              location / {
+                index index.php;
+                try_files $uri $uri/ /index.php?$query_string;
+                sendfile off;
+              }
+              location ~ .php$ {
+                include ${pkgs.nginx}/conf/fastcgi_params;
+                fastcgi_param SCRIPT_FILENAME $request_filename;
+                fastcgi_param modHeadersAvailable true;
+                fastcgi_pass unix:${config.services.phpfpm.pools.firefly-iii.socket};
+              }
+            }
+          }
+        '';
+      in ''
+        ${lib.getExe pkgs.nginx} \
+          -c ${nginx_config} \
+          -e /var/log/firefly-iii/error.log \
       '';
     };
 
