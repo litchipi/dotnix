@@ -8,6 +8,9 @@ in {
   config = lib.mkIf cfg.enable {
     services.ifm.listenAddress = "0.0.0.0";
     networking.firewall.allowedTCPPorts = [ cfg.port ];
-    systemd.services.ifm.wants = ["network-online.target"];
+    systemd.services.ifm = {
+      wants = ["network-online.target"];
+      serviceConfig.Group = "nas";
+    };
   };
 }
