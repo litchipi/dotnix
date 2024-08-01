@@ -42,8 +42,8 @@ in {
         browseable = lib.mkDefault true;
         "guest ok" = lib.mkDefault false;
         comment = lib.mkDefault "NAS of ${config.base.hostname}";
-        "create mask" = lib.mkDefault "0660";
-        "directory mask" = lib.mkDefault "0770";
+        "create mask" = lib.mkDefault "0664";      # Read only for other users
+        "directory mask" = lib.mkDefault "0777";   # Complete access to the directories
       };
 
       extraConfig = let
