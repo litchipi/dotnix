@@ -161,23 +161,21 @@ let
     python = let
       pythonpkg = pkgs.python312.withPackages (p: with p; [
         requests
+        toml
+        tkinter
       ]);
     in lang_profile {
       name = "python";
-      # TODO    Add an alias that generate a virtualenv with some packages automatically installed
-      add_pkgs = with pkgs; [
-        pythonpkg
-        poetry
-        black
-      ];
+      add_pkgs = [ pythonpkg ];
 
-      # TODO  Fixme  Fix python lsp
-      # helixlang = ''
-      #   language-servers = ["pylsp"]
+      helixlang = ''
+      language-servers = ["pylsp"]
+      formatter = { command = "${lib.getExe pkgs.black}", args = ["--quiet", "-"] }
+      auto-format = true
 
-      #   [language-server.pylsp]
-      #   command = "${pkgs.python312Packages.python-lsp-server}/bin/python-lsp-server"
-      # '';
+      [language-server.pylsp]
+      command = "${lib.getExe pkgs.python312Packages.python-lsp-server}"
+      '';
     };
 
     c = lang_profile {
