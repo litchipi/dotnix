@@ -53,6 +53,7 @@ in {
     };
     virtualisation.docker.enable = true;
     services.gitea-actions-runner.package = pkgs.forgejo-actions-runner;
+    systemd.services.gitea-runner-baseRunner.unitConfig.Nice = 10;
     services.gitea-actions-runner.instances.baseRunner = {
       enable = true;
       name = "base-runner";
