@@ -33,7 +33,6 @@ in {
 
     environment = {
       variables.EDITOR = "hx";
-      # TODO  Setup autojump
       systemPackages = with pkgs; [
         newsflash # RSS reader
         gimp-with-plugins # Image editor
@@ -48,7 +47,6 @@ in {
         libreoffice
         deluge
         imagemagick
-        mold
         jq
         gamemode
         foliate # Ebook reader
@@ -62,7 +60,6 @@ in {
         kicad-small
         protonmail-bridge
         gnome.pomodoro
-        gdb
         suzie_bridge
       ];
     };
@@ -98,7 +95,6 @@ in {
       4444 4445 4446 4447 4448
     ];
 
-    # TODO  Get this in hex directly in options, then convert to rgb after
     colors.palette = {
       primary = libcolors.fromHex "#e34967";
       secondary = libcolors.fromHex "#77de81";
@@ -190,7 +186,6 @@ in {
     sound.enable = true;
 
     software.protonvpn.secrets = config.secrets.store.credentials.protonvpn;
-    # TODO    Use SDDM instead of gdm ?
 
     services.printing = {
       enable = true;
@@ -199,7 +194,7 @@ in {
 
     virtualisation = {
       # TODO  IMPORTANT  Re-enable
-      # virtualbox.host.enable = true;
+      virtualbox.host.enable = true;
       lxd.enable = true;
       lxd.recommendedSysctlSettings = true;
       lxc.lxcfs.enable = true;
@@ -211,11 +206,10 @@ in {
       pushAfterEditing = false;
     };
 
-    hardware.bluetooth.enable = true;
     hardware.pulseaudio.enable = false;
+    security.rtkit.enable = true;
     services.pipewire = {
       enable = true;
-      package = pkgs_unstable.pipewire;
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;

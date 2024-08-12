@@ -179,11 +179,6 @@ in
       };
     };
 
-    zramSwap = {
-      enable = lib.mkDefault true;
-      algorithm = "zstd";
-    };
-
     fonts = {
       fontDir.enable = lib.mkDefault true;
       fontconfig.enable = lib.mkDefault true;

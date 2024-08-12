@@ -1,10 +1,14 @@
-{ lib, pkgs, config, ... }: {
+{ lib, pkgs, config, pkgs_unstable, ... }: {
   base.hostname = "sparta";
 
   powerManagement.cpuFreqGovernor = "performance";
 
   services.xserver.videoDrivers = [ "amdgpu" "nvidia" ];
 
+  hardware.bluetooth = {
+    enable = true;
+    package = pkgs_unstable.bluez;
+  };
   hardware.opengl.extraPackages = with pkgs; [
     amdvlk
 
@@ -34,6 +38,14 @@
 
   boot = if config.setup.is_vm then {} else {
     kernelPackages = pkgs.linuxPackages_6_6;
+    kernelParams = [
+      "cpufreq.default_governor=performance"
+      "nowatchdog"
+      "usbcore.autosuspend=-1"
+      "audit=0"
+      # "quiet"
+      # "splash"
+    ];
 
     loader = {
       systemd-boot.enable = true;

@@ -33,36 +33,24 @@ in
         default = [ ];
         description = "Extensions to add to the gnome shell";
       };
-      # user_icon = lib.mkOption {
-      #   type = with lib.types; nullOr path;
-      #   default = null;
-      #   description = "Icon to use for the user";
-      # };
       theme = lib.mkOption {
         type = lib.types.nullOr gnome_theme_type;
         description = "Gnome Shell theme to set";
         default = null;
       };
-      mutter_dynamic_buffering = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Wether to add the dynamic buffering patch";
-      };
     };
 
     config = {
-      environment.systemPackages = (with pkgs_unstable.gnomeExtensions; libgnome.adaptGnomeExtensions "44" [
+      environment.systemPackages = (with pkgs_unstable.gnomeExtensions; libgnome.adaptGnomeExtensions pkgs.gnome.gnome-shell.version [
         caffeine
         runcat
         tray-icons-reloaded
         bluetooth-quick-connect
         dash-to-dock
-      ]) ++ (cfg.add_extensions) ++ (with pkgs; [
-        gnome.gnome-tweaks
-      ]) ++ (if builtins.isNull cfg.theme then [] else [ cfg.theme.package ]);
-
-      environment.shellAliases = {
-      };
+      ])
+      ++ [ pkgs.gnome.gnome-tweaks ]
+      ++ (cfg.add_extensions)
+      ++ (if builtins.isNull cfg.theme then [] else [ cfg.theme.package ]);
 
       services.xserver = {
         displayManager.gdm.enable = true;
@@ -91,19 +79,6 @@ in
         epiphany
         geary
       ];
-
-      # system.activationScripts.setup_gnome_user_icon = if builtins.isNull cfg.user_icon then "" else let
-      #   gdm_user_conf = ''
-      #     [User]
-      #     Session=
-      #     XSession=
-      #     Icon=${cfg.user_icon}
-      #     SystemAccount=false
-      #   '';
-      # in ''
-      #   mkdir -p /var/lib/AccountsService/users/
-      #   echo '${gdm_user_conf}' > /var/lib/AccountsService/users/${config.base.user}
-      # '';
 
       base.home_cfg = {
         gtk = if builtins.isNull cfg.theme then {} else {
